@@ -17,8 +17,10 @@
   },
   "dependencies": {
     "babel-preset-stage-1": "^6.24.1",
+    "bluebird": "^3.5.0",
     "colors": "^1.1.2",
     "es6-promise": "^4.1.0",
-    "ramda": "^0.24.1"
+    "ramda": "^0.24.1",
+    "yamljs": "^0.3.0"
   }
 }
