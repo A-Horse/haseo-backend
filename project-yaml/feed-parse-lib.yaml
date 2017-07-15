@@ -1,0 +1,5 @@
+name: feed-parse-lib
+git: https://github.com/fwchen/feed-parse-lib.git
+flow:
+  - build: npm run build
+  - test: nm run test
