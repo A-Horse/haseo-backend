@@ -6,19 +6,13 @@ import YAML from 'yamljs';
 import Observer from './lib/repo-observer';
 import DispatcherInstance from './lib/dispatcher';
 
-const systemConfig = {
-  repoStoragePath: '/Users/chchen/CI-Storage',
-  projectConfigsPath: '/Users/chchen/CI-Haseo/project-yaml',
-  repoObserverInterval: 10 * 1000
-};
-
 class Controller {
   constructor() {
     this.dispatcher = DispatcherInstance;
     this.projectConfigs = this.readProjectConfigs(
       systemConfig.projectConfigsPath
     );
-    this.observer = new Observer(systemConfig, this.projectConfigs);
+    this.observer = new Observer(this.projectConfigs);
   }
 
   readProjectConfigs(storePath) {
