@@ -18,8 +18,8 @@ class Controller {
 const daemonCtrl = new Controller();
 const app = express();
 
-app.use('/api/hi', function(req, res) {
-  res.send({ msg: 'hello' });
+app.use('/api/alive', function(req, res) {
+  res.send({ msg: 'alive' });
 });
 
 const server = http.createServer(app);
