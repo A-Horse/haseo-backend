@@ -1,6 +1,7 @@
+import path from 'path';
 
 const systemConfig = {
-  repoStoragePath: '/Users/chchen/CI-Storage',
+  repoStoragePath: path.join(__dirname, 'REPOS'),
   repoObserverInterval: 20 * 1000
 };
 
