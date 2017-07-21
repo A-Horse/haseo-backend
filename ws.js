@@ -16,6 +16,10 @@ export default function setupWS(server, daemonCtrl) {
               playload: daemonCtrl.projectManager.getAllProjectInfomation()
             })
           );
+          break;
+        case 'START_PROJECT_FLOW':
+          daemonCtrl.projectManager.startProject(event.playload.name);
+          break;
         default:
           break;
       }
@@ -24,10 +28,12 @@ export default function setupWS(server, daemonCtrl) {
 
   GlobalEmmiterInstance.on('projectStatusUpdate', data => {
     wss.clients.forEach(client => {
-      client.send({
-        type: 'PROEJCT_STATUS_UPDATE',
-        data
-      });
+      client.send(
+        JSON.stringify({
+          type: 'PROEJCT_UPDATE',
+          playload: data
+        })
+      );
     });
   });
 }
