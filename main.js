@@ -2,11 +2,12 @@ import express from 'express';
 import http from 'http';
 
 import ProjectManager from './lib/project-manager';
-
 import setupWS from './ws';
+import TaskManager from './lib/task-manager';
 
 class Controller {
   constructor() {
+    this.taskManager = new TaskManager();
     this.projectManager = new ProjectManager();
   }
 
