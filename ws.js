@@ -30,7 +30,18 @@ export default function setupWS(server, daemonCtrl) {
     wss.clients.forEach(client => {
       client.send(
         JSON.stringify({
-          type: 'PROEJCT_UPDATE',
+          type: 'PROJECT_UPDATE',
+          playload: data
+        })
+      );
+    });
+  });
+
+  GlobalEmmiterInstance.on('PROJECT_UNIT_FRAGMENT_UPDATE', data => {
+    wss.clients.forEach(client => {
+      client.send(
+        JSON.stringify({
+          type: 'PROJECT_UNIT_FRAGMENT_UPDATE',
           playload: data
         })
       );
