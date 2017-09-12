@@ -1,0 +1,5 @@
+name: TEST-ONE
+flow:
+  - first: echo "first"
+  - second: echo "second"
+  - third: echo "third"
