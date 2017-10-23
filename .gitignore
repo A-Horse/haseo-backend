@@ -3,3 +3,5 @@ node_modules/
 REPOS/
 yarn-error.log
 TAGS
+dist/
+/db.sqlite3

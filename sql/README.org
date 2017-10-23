@@ -1,0 +1,7 @@
+* project sql files
+** init database
+   #+BEGIN_SRC shell
+     cd root
+     sqlite3 db.sqlite3 < sql/create-table.sql
+   #+END_SRC
+   
