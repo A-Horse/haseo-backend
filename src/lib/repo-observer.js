@@ -63,9 +63,11 @@ export default class Observer {
     cprocess.on('close', code => {
       logger.info('polling shell ouput', this.repoPath, code, output);
       if (!!code) {
+        logger.error('polling shell ouput error', this.repoPath, code, output);
         clearInterval(this.timer);
         this.eventEmitter.emit('repoObserverFail', output);
       } else {
+        logger.info('polling shell output has new commit', this.repoPath);
         const commitIdPath = path.join(repoPath, '.commit_id');
         if (fs.existsSync(commitIdPath)) {
           this.eventEmitter.emit('newCommit', fs.readFileSync(commitIdPath));

@@ -71,6 +71,7 @@ export default class Project {
     this.flowController.start();
   }
 
+  // TODO 只能在这里监听，不能在其他地方监听，其他地方需要的话在这里调用
   setupEventListen() {
     this.eventEmitter.on('repoObserverFail', errorMsg => {});
 
