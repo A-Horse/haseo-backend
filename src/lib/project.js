@@ -11,14 +11,17 @@ import gloablEmmiterInstance from './global-emmiter';
 export default class Project {
   projectConfig = {};
 
-  constructor(repoPath, repoName) {
+  constructor(repoPath, repoName, isStandlone) {
     this.repoPath = repoPath;
     this.repoName = repoName;
+    this.isStandlone = isStandlone;
     this.eventEmitter = new EventEmitter();
     this.projectStatus = new ProjectStatus();
     this.setupEventListen();
+    if (!isStandlone) {
+      this.repoObserver = new Observer(this.repoPath, this.eventEmitter);
+    }
     this.updateProjectConfig();
-    this.repoObserver = new Observer(this.repoPath, this.eventEmitter);
     this.flowController = new FlowController(
       this.projectConfig,
       this.eventEmitter,
@@ -67,7 +70,7 @@ export default class Project {
       return;
     }
     this.projectStatus.initStatus();
-    this.repoObserver.stopObserve();
+    !this.isStandlone && this.repoObserver.stopObserve();
     this.flowController.start();
   }
 

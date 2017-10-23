@@ -47,7 +47,7 @@ export default class Observer {
 
     const repoPath = path.join(this.repoPath);
     this.state.isPulling = true;
-    const cprocess = exec(path.join(__dirname, './update-repo.sh'), {
+    const cprocess = exec(path.join(__dirname, '../../shell/update-repo.sh'), {
       cwd: repoPath
     });
 

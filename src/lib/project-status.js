@@ -14,7 +14,9 @@ export default class ProjectStatus {
       currentFlowName: null,
       flowErrorName: null,
       flowsOutput: [],
-      successedFlow: []
+      successedFlow: [],
+      newCommitDate: null,
+      flowStartDate: null
     };
   }
 

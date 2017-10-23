@@ -25,6 +25,7 @@ export default class FlowController {
 
   stop() {
     // this.isRunning = false;
+    //
   }
 
   next(flows) {
@@ -45,7 +46,10 @@ export default class FlowController {
     });
 
     cprocess.stdout.on('data', data => {
-      const text = data.toString().replace(/\u0008/g, '').replace(/\[[0-9;]*m/g, '');
+      const text = data
+        .toString()
+        .replace(/\u0008/g, '')
+        .replace(/\[[0-9;]*m/g, '');
       this.eventEmitter.emit('flowUnitMessageUpdate', flowName, {
         type: 'stdout',
         text
@@ -54,7 +58,10 @@ export default class FlowController {
     });
 
     cprocess.stderr.on('data', data => {
-      const text = data.toString().replace(/\u0008/g, '').replace(/\[[0-9;]*m/g, '');
+      const text = data
+        .toString()
+        .replace(/\u0008/g, '')
+        .replace(/\[[0-9;]*m/g, '');
       this.eventEmitter.emit('flowUnitMessageUpdate', flowName, {
         type: 'stderr',
         text
