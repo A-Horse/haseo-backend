@@ -58,7 +58,7 @@ export default class FlowController {
 
   next(flows) {
     if (!flows.length) {
-      this.success();
+      return this.success();
     }
 
     const flow = R.take(1, flows)[0];
