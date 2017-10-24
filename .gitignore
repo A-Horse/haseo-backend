@@ -5,3 +5,5 @@ yarn-error.log
 TAGS
 dist/
 /db.sqlite3
+jest_0/
+v8-compile-cache-0/
