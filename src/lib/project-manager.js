@@ -1,6 +1,5 @@
 import fs from 'fs';
 import path from 'path';
-import YAML from 'yamljs';
 import logger from '../util/logger';
 import R from 'ramda';
 
@@ -32,8 +31,7 @@ export default class ProjectManager {
     logger.debug('startProject', projectName);
     const project = R.find(project => project.getInfomartion().name === projectName)(this.projects);
     project.updateProjectConfig();
-    // project.pullFromRemote();
-    project.goBattlefield();
+    project.addToTaskManager();
   }
 
   getAllProjectInfomation() {

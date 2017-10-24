@@ -7,7 +7,6 @@ export default class ProjectStatus {
 
   initStatus() {
     this.status = {
-      isWaitting: false,
       isRunning: false,
       isPulling: false,
       isSuccess: false,

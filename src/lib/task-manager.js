@@ -7,32 +7,36 @@ export const TaskEventEmitter = new EventEmitter();
 export default class TaskManager {
   queue = [];
   looping = false;
+
   constructor() {
-    TaskEventEmitter.on('add', project => {
-      this.addProjetToRun(project);
-    });
+    TaskEventEmitter.on('add', this.addToWaitRun.bind(this));
   }
 
-  addProjetToRun(project) {
-    logger.debug('task manager addProjetToRun', project.repoName);
-    this.queue.push(project);
+  addToWaitRun(projectName, flowController) {
+    logger.debug('task manager addProjetToRun', projectName);
+    this.queue.push({
+      projectName,
+      flowController
+    });
     if (!this.looping) {
       this.loop();
     }
   }
 
+  // TODO 这里设计成了单线程的了，以后改掉
   loop() {
-    logger.debug('task manager start loop');
+    logger.debug('task manager loop');
     if (!this.queue.length) {
       this.looping = false;
       return;
     }
     this.looping = true;
-    const project = this.queue[0];
-    project.eventEmitter.once('flowFinish', () => {
+    const item = R.head(this.queue);
+
+    item.flowController.eventEmitter.once('FLOW_FINISH', () => {
       this.queue = this.queue.slice(1);
       this.loop();
     });
-    project.start();
+    item.flowController.start();
   }
 }

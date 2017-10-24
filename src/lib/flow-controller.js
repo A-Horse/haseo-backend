@@ -1,27 +1,34 @@
 import { exec } from 'child_process';
+import { EventEmitter } from 'events';
 import R from 'ramda';
 import logger from '../util/logger';
 
 export default class FlowController {
   projectConfig = null;
 
-  constructor(projectConfig, eventEmitter, projectStatus) {
-    // TODO 这又弄个 configure 对象干屌
-    this.updateProjectConfig(projectConfig);
-    this.eventEmitter = eventEmitter;
-    this.projectStatus = projectStatus;
+  static init(flows, repoPath) {
+    return new FlowController(flows, repoPath);
   }
 
-  updateProjectConfig(projectConfig) {
-    this.projectConfig = projectConfig;
+  // constructor(projectConfig, eventEmitter, projectStatus) {
+  //   // TODO 这又弄个 configure 对象干屌
+  //   this.updateProjectConfig(projectConfig);
+  //   this.eventEmitter = eventEmitter;
+  //   this.projectStatus = projectStatus;
+  // }
+
+  constructor(flows, repoPath) {
+    this.flows = flows;
+    this.repoPath = repoPath;
+    this.eventEmitter = new EventEmitter();
   }
+  // updateProjectConfig(projectConfig) {
+  //   this.projectConfig = projectConfig;
+  // }
 
   start() {
-    if (this.projectStatus.get('isRunning')) {
-      return;
-    }
-    this.eventEmitter.emit('flowStart');
-    this.next(this.projectConfig.flow);
+    this.eventEmitter.emit('FLOW_START');
+    this.next(this.flows);
   }
 
   stop() {
@@ -29,16 +36,37 @@ export default class FlowController {
     //
   }
 
+  kill() {
+    this.eventEmitter.removeAllListeners();
+    this.eventEmitter = null;
+  }
+
+  failure() {
+    this.eventEmitter.emit('FLOW_FAILURE');
+    this.finish();
+  }
+
+  finish() {
+    this.eventEmitter.emit('FLOW_FINISH');
+    this.kill();
+  }
+
+  success() {
+    this.eventEmitter.emit('FLOW_SUCCESS');
+    this.finish();
+  }
+
   next(flows) {
     if (!flows.length) {
-      this.stop();
-      return this.eventEmitter.emit('FLOW_SUCCESS');
+      this.success();
     }
+
     const flow = R.take(1, flows)[0];
 
     const [flowName, flowCommand] = R.flatten([R.keys(flow), R.values(flow)]);
     logger.info(`run flow: ${flowName} ${flowCommand}`);
-    const repoPath = this.projectConfig.repoPath;
+
+    const repoPath = this.repoPath;
 
     this.eventEmitter.emit('flowUnitStart', flowName);
 
@@ -74,7 +102,7 @@ export default class FlowController {
       cprocess.kill();
       if (!!code) {
         this.eventEmitter.emit('FLOW_UNIT_FAILURE', flowName);
-        this.stop();
+        this.failure();
       } else {
         this.eventEmitter.emit('FLOW_UNIT_SUCCESS', flowName);
         this.next(R.drop(1, flows));

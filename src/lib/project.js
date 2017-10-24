@@ -11,23 +11,28 @@ import knex from '../service/knex';
 
 export default class Project {
   projectConfig = {};
+  state = {};
 
-  constructor(repoPath, repoName, isStandlone, options = {}) {
+  constructor(repoPath, repoName, options = {}) {
     this.repoPath = repoPath;
     this.repoName = repoName;
-    this.isStandlone = isStandlone;
+    this.options = options;
+    this.projectConfig = this.getProjectConfig();
     this.eventEmitter = new EventEmitter();
     this.projectStatus = new ProjectStatus();
-    this.setupEventListen();
-    if (!isStandlone) {
+
+    if (!this.options.isStandlone) {
       this.repoObserver = new Observer(this.repoPath, this.eventEmitter);
     }
-    this.projectConfig = this.updateProjectConfig();
+
+    this.setupObserveEventListen();
     this.flowController = new FlowController(
       this.projectConfig,
       this.eventEmitter,
       this.projectStatus
     );
+
+    this.addToTaskManager();
   }
 
   async saveBuildReport() {
@@ -69,8 +74,8 @@ export default class Project {
     this.repoObserver.poll();
   }
 
-  updateProjectConfig() {
-    logger.debug('project update project configure', this.repoName);
+  getProjectConfig() {
+    logger.info(`project get project configure ${this.repoName}`);
     const heseoConfigFilePath = path.join(this.repoPath, 'haseo.yaml');
     return {
       repoPath: this.repoPath,
@@ -78,16 +83,72 @@ export default class Project {
     };
   }
 
-  goBattlefield() {
-    logger.debug('projet goBattlefielding', this.repoName);
-    if (this.projectStatus.get('isWaitting')) {
+  updateProjectConfig() {
+    logger.info(`project update project configure ${this.repoName}`);
+    this.projectConfig = this.getProjectConfig();
+  }
+
+  addToTaskManager() {
+    logger.debug('projet addToTaskManagering', this.repoName);
+
+    if (this.state.isWaitting) {
       // TODO 这里应该重设一下
-      logger.debug('projet goBattlefield break becasue it is waitting', this.repoName);
+      logger.debug('projet addToTaskManager break becasue it is waitting', this.repoName);
       return;
     }
-    this.projectStatus.set('isWaitting', true);
+
+    this.state.isWaitting = true;
+    const flowController = FlowController.init(this.projectConfig.flow, this.repoPath);
+    this.listenFlowEvent(flowController);
+
     gloablEmmiterInstance.emit('projectStatusUpdate', this.getInfomartion());
-    TaskEventEmitter.emit('add', this);
+    TaskEventEmitter.emit('add', this.projectConfig.name, flowController);
+  }
+
+  listenFlowEvent(flowController) {
+    flowController.eventEmitter.on('flowUnitStart', flowName => {
+      this.projectStatus.set('currentFlowName', flowName);
+      gloablEmmiterInstance.emit('projectStatusUpdate', this.getInfomartion());
+    });
+
+    flowController.eventEmitter.on('FLOW_UNIT_SUCCESS', flowName => {
+      this.projectStatus.pushSuccessedFlow(flowName);
+      gloablEmmiterInstance.emit('projectStatusUpdate', this.getInfomartion());
+    });
+
+    flowController.eventEmitter.on('FLOW_UNIT_FAILURE', flowName => {
+      this.projectStatus.set('flowErrorName', flowName);
+    });
+
+    flowController.eventEmitter.on('FLOW_SUCCESS', () => {
+      this.projectStatus.set('isSuccess', true);
+    });
+
+    flowController.eventEmitter.on('FLOW_FAILURE', () => {
+      this.projectStatus.set('isSuccess', false);
+    });
+
+    flowController.eventEmitter.on('flowUnitMessageUpdate', (flowName, fragment) => {
+      gloablEmmiterInstance.emit('PROJECT_UNIT_FRAGMENT_UPDATE', {
+        name: this.projectConfig.name,
+        flowName,
+        fragment
+      });
+      this.projectStatus.pushFlowOutput(flowName, fragment);
+    });
+
+    flowController.eventEmitter.on('FLOW_START', () => {
+      this.projectStatus.set('isRunning', true);
+      this.projectStatus.set('startDate', new Date());
+      gloablEmmiterInstance.emit('projectStatusUpdate', this.getInfomartion());
+    });
+
+    flowController.eventEmitter.on('FLOW_FINISH', () => {
+      this.projectStatus.set('isRunning', false);
+      this.repoObserver.startObserve();
+      !this.options.isStandlone && this.saveBuildReport();
+      gloablEmmiterInstance.emit('projectStatusUpdate', this.getInfomartion());
+    });
   }
 
   start() {
@@ -97,68 +158,19 @@ export default class Project {
       return;
     }
     this.projectStatus.initStatus();
-    !this.isStandlone && this.repoObserver.stopObserve();
+    !this.options.isStandlone && this.repoObserver.stopObserve();
     this.flowController.start();
   }
 
   // TODO 只能在这里监听，不能在其他地方监听，其他地方需要的话在这里调用
-  setupEventListen() {
-    this.eventEmitter.on('repoObserverFail', errorMsg => {
-      logger.info('repoObserverFail');
-    });
+  setupObserveEventListen() {
+    this.repoObserver.eventEmitter.on('OBSERVE_ERROR', () => {});
 
-    this.eventEmitter.on('newCommit', commitId => {
-      logger.debug('receive observable new commit in project', this.repoName);
-      this.projectConfig = this.updateProjectConfig();
-      this.flowController.updateProjectConfig(this.projectConfig);
-      this.goBattlefield();
-    });
-
-    this.eventEmitter.on('flowUnitStart', flowName => {
-      this.projectStatus.set('currentFlowName', flowName);
-      gloablEmmiterInstance.emit('projectStatusUpdate', this.getInfomartion());
-    });
-
-    this.eventEmitter.on('FLOW_UNIT_SUCCESS', flowName => {
-      this.projectStatus.pushSuccessedFlow(flowName);
-      gloablEmmiterInstance.emit('projectStatusUpdate', this.getInfomartion());
-    });
-
-    this.eventEmitter.on('FLOW_UNIT_FAILURE', flowName => {
-      this.projectStatus.set('flowErrorName', flowName);
-
-      this.eventEmitter.emit('flowFailure');
-      this.eventEmitter.emit('flowFinish');
-    });
-
-    this.eventEmitter.on('FLOW_SUCCESS', () => {
-      this.projectStatus.set('isSuccess', true);
-      this.eventEmitter.emit('flowFinish');
-    });
-
-    this.eventEmitter.on('flowFailure', () => {
-      this.projectStatus.set('isSuccess', false);
-    });
-
-    this.eventEmitter.on('flowUnitMessageUpdate', (flowName, fragment) => {
-      gloablEmmiterInstance.emit('PROJECT_UNIT_FRAGMENT_UPDATE', {
-        name: this.projectConfig.name,
-        flowName,
-        fragment
-      });
-      this.projectStatus.pushFlowOutput(flowName, fragment);
-    });
-
-    this.eventEmitter.on('flowStart', () => {
-      this.projectStatus.set('isRunning', true);
-      this.projectStatus.set('startDate', new Date());
-      gloablEmmiterInstance.emit('projectStatusUpdate', this.getInfomartion());
-    });
-
-    this.eventEmitter.on('flowFinish', () => {
-      this.projectStatus.set('isRunning', false);
-      !this.isStandlone && this.saveBuildReport();
-      gloablEmmiterInstance.emit('projectStatusUpdate', this.getInfomartion());
+    this.repoObserver.eventEmitter.on('OBSERVE_NEW_COMMIT', commitId => {
+      logger.info('receive observable new commit in project', this.repoName);
+      this.updateProjectConfig();
+      // this.flowController.updateProjectConfig(this.projectConfig);
+      this.addToTaskManager();
     });
   }
 }

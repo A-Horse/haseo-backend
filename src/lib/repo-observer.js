@@ -1,30 +1,21 @@
+import fs from 'fs';
 import { exec } from 'child_process';
+import { EventEmitter } from 'events';
 import configure from '../configure';
 import path from 'path';
-import fs from 'fs';
 import logger from '../util/logger';
 
 export default class Observer {
-  git = null;
   state = {
     isPulling: false
   };
 
-  constructor(repoPath, eventEmitter) {
+  constructor(repoPath) {
     this.updateRepoPath(repoPath);
-    this.eventEmitter = eventEmitter;
-
-    this.setupEventListen();
+    this.eventEmitter = new EventEmitter();
 
     this.poll();
     this.startObserve();
-  }
-
-  setupEventListen() {
-    this.eventEmitter.on('flowFinish', () => {
-      logger.info(`start git pull observer ${this.repoPath}`);
-      this.startObserve();
-    });
   }
 
   updateRepoPath(repoPath) {
@@ -61,16 +52,17 @@ export default class Observer {
     });
 
     cprocess.on('close', code => {
+      cprocess.kill();
       logger.info(`polling shell ouput ${this.repoPath} ${code} ${output}`);
       if (!!code) {
         logger.error(`polling shell ouput error ${this.repoPath} ${code} ${output}`);
-        this.eventEmitter.emit('repoObserverFail', output);
+        this.eventEmitter.emit('OBSERVE_ERROR', output);
       } else {
         const commitIdPath = path.join(repoPath, '.commit_id');
         if (fs.existsSync(commitIdPath)) {
           logger.info(`polling shell output has new commit ${this.repoPath}`);
-          this.eventEmitter.emit('newCommit', fs.readFileSync(commitIdPath));
-          clearInterval(this.timer);
+          this.eventEmitter.emit('OBSERVE_NEW_COMMIT', fs.readFileSync(commitIdPath));
+          this.stopObserve();
         }
         this.state.isPulling = false;
       }
