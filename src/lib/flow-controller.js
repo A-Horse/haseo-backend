@@ -10,13 +10,6 @@ export default class FlowController {
     return new FlowController(flows, repoPath);
   }
 
-  // constructor(projectConfig, eventEmitter, buildReport) {
-  //   // TODO 这又弄个 configure 对象干屌
-  //   this.updateProjectConfig(projectConfig);
-  //   this.eventEmitter = eventEmitter;
-  //   this.buildReport = buildReport;
-  // }
-
   constructor(flows, repoPath) {
     this.flows = flows;
     this.repoPath = repoPath;
@@ -29,11 +22,6 @@ export default class FlowController {
   start() {
     this.eventEmitter.emit('FLOW_START');
     this.next(this.flows);
-  }
-
-  stop() {
-    // this.isRunning = false;
-    //
   }
 
   kill() {
@@ -68,7 +56,7 @@ export default class FlowController {
 
     const repoPath = this.repoPath;
 
-    this.eventEmitter.emit('flowUnitStart', flowName);
+    this.eventEmitter.emit('FLOW_UNIT_START', flowName);
 
     const cprocess = exec(flowCommand, {
       cwd: repoPath

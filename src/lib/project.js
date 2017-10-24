@@ -4,7 +4,7 @@ import logger from '../util/logger';
 import Observer from './repo-observer';
 import FlowController from './flow-controller';
 import YAML from 'yamljs';
-import ProjectStatus from './project-status';
+import ProjectReport from './project-build-report';
 import { TaskEventEmitter } from './task-manager';
 import gloablEmmiterInstance from './global-emmiter';
 import knex from '../service/knex';
@@ -19,7 +19,7 @@ export default class Project {
     this.options = options;
     this.projectConfig = this.getProjectConfig();
     this.eventEmitter = new EventEmitter();
-    this.buildReport = new ProjectStatus();
+    this.buildReport = new ProjectReport();
 
     if (!this.options.isStandlone) {
       this.repoObserver = new Observer(this.repoPath, this.eventEmitter);
@@ -106,7 +106,7 @@ export default class Project {
   }
 
   listenFlowEvent(flowController) {
-    flowController.eventEmitter.on('flowUnitStart', flowName => {
+    flowController.eventEmitter.on('FLOW_UNIT_START', flowName => {
       this.buildReport.set('currentFlowName', flowName);
       gloablEmmiterInstance.emit('buildReportUpdate', this.getInfomartion());
     });
