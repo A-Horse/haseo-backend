@@ -67,7 +67,7 @@ export default class FlowController {
         .toString()
         .replace(/\u0008/g, '')
         .replace(/\[[0-9;]*m/g, '');
-      this.eventEmitter.emit('flowUnitMessageUpdate', flowName, {
+      this.eventEmitter.emit('FLOW_UNIT_MESSAGE_UPDATE', flowName, {
         type: 'stdout',
         text
       });
@@ -79,7 +79,7 @@ export default class FlowController {
         .toString()
         .replace(/\u0008/g, '')
         .replace(/\[[0-9;]*m/g, '');
-      this.eventEmitter.emit('flowUnitMessageUpdate', flowName, {
+      this.eventEmitter.emit('FLOW_UNIT_MESSAGE_UPDATE', flowName, {
         type: 'stderr',
         text
       });

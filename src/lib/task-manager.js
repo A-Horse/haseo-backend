@@ -12,12 +12,9 @@ export default class TaskManager {
     TaskEventEmitter.on('add', this.addToWaitRun.bind(this));
   }
 
-  addToWaitRun(projectName, flowController) {
-    logger.debug('task manager addProjetToRun', projectName);
-    this.queue.push({
-      projectName,
-      flowController
-    });
+  addToWaitRun(project) {
+    logger.debug('task manager addProjetToRun', project.projectConfig.name);
+    this.queue.push(project);
     if (!this.looping) {
       this.loop();
     }
@@ -31,12 +28,12 @@ export default class TaskManager {
       return;
     }
     this.looping = true;
-    const item = R.head(this.queue);
+    const project = R.head(this.queue);
 
-    item.flowController.eventEmitter.once('FLOW_FINISH', () => {
+    project.eventEmitter.once('BUILD_FINISH', () => {
       this.queue = this.queue.slice(1);
       this.loop();
     });
-    item.flowController.start();
+    project.start();
   }
 }

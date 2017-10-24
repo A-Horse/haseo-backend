@@ -22,7 +22,7 @@ export default class Project {
     this.buildReport = new ProjectReport();
 
     if (!this.options.isStandlone) {
-      this.repoObserver = new Observer(this.repoPath, this.eventEmitter);
+      this.repoObserver = new Observer(this.repoPath);
     }
 
     this.setupObserveEventListen();
@@ -84,20 +84,29 @@ export default class Project {
   }
 
   addToTaskManager() {
-    logger.debug('projet addToTaskManagering', this.repoName);
+    logger.info(`projet addToTaskManagering ${this.repoName}`);
 
     if (this.state.isWaitting) {
       // TODO 这里应该重设一下
-      logger.debug('projet addToTaskManager break becasue it is waitting', this.repoName);
+      logger.info('projet addToTaskManager break becasue it is waitting', this.repoName);
       return;
     }
 
     this.state.isWaitting = true;
-    const flowController = FlowController.init(this.projectConfig.flow, this.repoPath);
-    this.listenFlowEvent(flowController);
 
     gloablEmmiterInstance.emit('buildReportUpdate', this.getInfomartion());
-    TaskEventEmitter.emit('add', this.projectConfig.name, flowController);
+    TaskEventEmitter.emit('add', this);
+  }
+
+  start() {
+    logger.debug('project starting', this.repoName);
+
+    const flowController = FlowController.init(this.projectConfig.flow, this.repoPath);
+    this.listenFlowEvent(flowController);
+    flowController.start();
+
+    this.buildReport.initStatus();
+    !this.options.isStandlone && this.repoObserver.stopObserve();
   }
 
   listenFlowEvent(flowController) {
@@ -123,7 +132,7 @@ export default class Project {
       this.buildReport.set('isSuccess', false);
     });
 
-    flowController.eventEmitter.on('flowUnitMessageUpdate', (flowName, fragment) => {
+    flowController.eventEmitter.on('FLOW_UNIT_MESSAGE_UPDATE', (flowName, fragment) => {
       gloablEmmiterInstance.emit('PROJECT_UNIT_FRAGMENT_UPDATE', {
         name: this.projectConfig.name,
         flowName,
@@ -140,20 +149,13 @@ export default class Project {
 
     flowController.eventEmitter.on('FLOW_FINISH', () => {
       this.buildReport.set('isRunning', false);
-      this.repoObserver.startObserve();
+      this.state.isWaitting = false;
       !this.options.isStandlone && this.saveBuildReport();
+      this.eventEmitter.emit('BUILD_FINISH');
       gloablEmmiterInstance.emit('buildReportUpdate', this.getInfomartion());
-    });
-  }
 
-  start() {
-    logger.debug('project starting', this.repoName);
-    if (this.buildReport.get('isRunning')) {
-      logger.debug('project starting break becasue it is isRunning', this.repoName);
-      return;
-    }
-    this.buildReport.initStatus();
-    !this.options.isStandlone && this.repoObserver.stopObserve();
+      this.repoObserver.startObserve();
+    });
   }
 
   // TODO 只能在这里监听，不能在其他地方监听，其他地方需要的话在这里调用
@@ -163,7 +165,6 @@ export default class Project {
     this.repoObserver.eventEmitter.on('OBSERVE_NEW_COMMIT', commitId => {
       logger.info('receive observable new commit in project', this.repoName);
       this.updateProjectConfig();
-      // this.flowController.updateProjectConfig(this.projectConfig);
       this.addToTaskManager();
     });
   }
