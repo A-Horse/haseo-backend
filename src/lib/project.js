@@ -28,7 +28,6 @@ export default class Project {
       this.eventEmitter,
       this.projectStatus
     );
-    this.goBattlefield();
   }
 
   async saveBuildReport() {
