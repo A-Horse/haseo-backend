@@ -1,5 +1,5 @@
 import { exec } from 'child_process';
-import systemConfig from '../systemConfig';
+import configure from '../configure';
 import path from 'path';
 import fs from 'fs';
 import logger from '../util/logger';
@@ -32,7 +32,7 @@ export default class Observer {
   }
 
   startObserve() {
-    this.timer = setInterval(this.poll.bind(this), systemConfig.repoObserverInterval);
+    this.timer = setInterval(this.poll.bind(this), configure.DEFAULT_PULL_INTERVAL);
   }
 
   stopObserve() {
