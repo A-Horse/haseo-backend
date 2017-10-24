@@ -6,6 +6,7 @@ export default class FlowController {
   projectConfig = null;
 
   constructor(projectConfig, eventEmitter, projectStatus) {
+    // TODO 这又弄个 configure 对象干屌
     this.updateProjectConfig(projectConfig);
     this.eventEmitter = eventEmitter;
     this.projectStatus = projectStatus;
@@ -16,7 +17,7 @@ export default class FlowController {
   }
 
   start() {
-    if (this.projectStatus.getStatus('isRunning')) {
+    if (this.projectStatus.get('isRunning')) {
       return;
     }
     this.eventEmitter.emit('flowStart');
@@ -36,7 +37,7 @@ export default class FlowController {
     const flow = R.take(1, flows)[0];
 
     const [flowName, flowCommand] = R.flatten([R.keys(flow), R.values(flow)]);
-    logger.info('run flow:', flowName, flowCommand);
+    logger.info(`run flow: ${flowName} ${flowCommand}`);
     const repoPath = this.projectConfig.repoPath;
 
     this.eventEmitter.emit('flowUnitStart', flowName);

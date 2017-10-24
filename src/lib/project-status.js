@@ -16,19 +16,23 @@ export default class ProjectStatus {
       flowsOutput: [],
       successedFlow: [],
       newCommitDate: null,
-      flowStartDate: null
+      startDate: null
     };
   }
 
-  setStatus(name, value) {
+  getStatus() {
+    return this.status;
+  }
+
+  set(name, value) {
     this.status[name] = value;
   }
 
-  getStatus(name) {
+  get(name) {
     return this.status[name];
   }
 
-  getStatusObject() {
+  getObject() {
     return this.status;
   }
 
