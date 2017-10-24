@@ -22,7 +22,7 @@ export default class Observer {
 
   setupEventListen() {
     this.eventEmitter.on('flowFinish', () => {
-      logger.debug('start git pull observer', this.repoPath);
+      logger.info(`start git pull observer ${this.repoPath}`);
       this.startObserve();
     });
   }
@@ -61,15 +61,14 @@ export default class Observer {
     });
 
     cprocess.on('close', code => {
-      logger.info('polling shell ouput', this.repoPath, code, output);
+      logger.info(`polling shell ouput ${this.repoPath} ${code} ${output}`);
       if (!!code) {
-        logger.error('polling shell ouput error', this.repoPath, code, output);
-        clearInterval(this.timer);
+        logger.error(`polling shell ouput error ${this.repoPath} ${code} ${output}`);
         this.eventEmitter.emit('repoObserverFail', output);
       } else {
-        logger.info('polling shell output has new commit', this.repoPath);
         const commitIdPath = path.join(repoPath, '.commit_id');
         if (fs.existsSync(commitIdPath)) {
+          logger.info(`polling shell output has new commit ${this.repoPath}`);
           this.eventEmitter.emit('newCommit', fs.readFileSync(commitIdPath));
           clearInterval(this.timer);
         }
