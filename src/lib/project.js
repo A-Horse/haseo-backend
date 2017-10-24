@@ -26,11 +26,6 @@ export default class Project {
     }
 
     this.setupObserveEventListen();
-    this.flowController = new FlowController(
-      this.projectConfig,
-      this.eventEmitter,
-      this.buildReport
-    );
 
     this.addToTaskManager();
   }
@@ -159,7 +154,6 @@ export default class Project {
     }
     this.buildReport.initStatus();
     !this.options.isStandlone && this.repoObserver.stopObserve();
-    this.flowController.start();
   }
 
   // TODO 只能在这里监听，不能在其他地方监听，其他地方需要的话在这里调用
