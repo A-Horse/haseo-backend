@@ -19,7 +19,7 @@ export default class Project {
     this.options = options;
     this.projectConfig = this.getProjectConfig();
     this.eventEmitter = new EventEmitter();
-    this.projectStatus = new ProjectStatus();
+    this.buildReport = new ProjectStatus();
 
     if (!this.options.isStandlone) {
       this.repoObserver = new Observer(this.repoPath, this.eventEmitter);
@@ -29,7 +29,7 @@ export default class Project {
     this.flowController = new FlowController(
       this.projectConfig,
       this.eventEmitter,
-      this.projectStatus
+      this.buildReport
     );
 
     this.addToTaskManager();
@@ -39,8 +39,8 @@ export default class Project {
     try {
       await knex('project_build_report').insert({
         project_name: this.projectConfig.name,
-        start_date: this.projectStatus.get('startDate'),
-        status_serialization: JSON.stringify(this.projectStatus.getStatus())
+        start_date: this.buildReport.get('startDate'),
+        status_serialization: JSON.stringify(this.buildReport.getStatus())
       });
       logger.info(`project build report save successful ${this.projectConfig.name}`);
     } catch (error) {
@@ -66,7 +66,7 @@ export default class Project {
       repoName: this.repoName,
       name: this.projectConfig.name,
       flows: this.projectConfig.flow,
-      status: this.projectStatus.getObject()
+      status: this.buildReport.getObject()
     };
   }
 
@@ -101,31 +101,31 @@ export default class Project {
     const flowController = FlowController.init(this.projectConfig.flow, this.repoPath);
     this.listenFlowEvent(flowController);
 
-    gloablEmmiterInstance.emit('projectStatusUpdate', this.getInfomartion());
+    gloablEmmiterInstance.emit('buildReportUpdate', this.getInfomartion());
     TaskEventEmitter.emit('add', this.projectConfig.name, flowController);
   }
 
   listenFlowEvent(flowController) {
     flowController.eventEmitter.on('flowUnitStart', flowName => {
-      this.projectStatus.set('currentFlowName', flowName);
-      gloablEmmiterInstance.emit('projectStatusUpdate', this.getInfomartion());
+      this.buildReport.set('currentFlowName', flowName);
+      gloablEmmiterInstance.emit('buildReportUpdate', this.getInfomartion());
     });
 
     flowController.eventEmitter.on('FLOW_UNIT_SUCCESS', flowName => {
-      this.projectStatus.pushSuccessedFlow(flowName);
-      gloablEmmiterInstance.emit('projectStatusUpdate', this.getInfomartion());
+      this.buildReport.pushSuccessedFlow(flowName);
+      gloablEmmiterInstance.emit('buildReportUpdate', this.getInfomartion());
     });
 
     flowController.eventEmitter.on('FLOW_UNIT_FAILURE', flowName => {
-      this.projectStatus.set('flowErrorName', flowName);
+      this.buildReport.set('flowErrorName', flowName);
     });
 
     flowController.eventEmitter.on('FLOW_SUCCESS', () => {
-      this.projectStatus.set('isSuccess', true);
+      this.buildReport.set('isSuccess', true);
     });
 
     flowController.eventEmitter.on('FLOW_FAILURE', () => {
-      this.projectStatus.set('isSuccess', false);
+      this.buildReport.set('isSuccess', false);
     });
 
     flowController.eventEmitter.on('flowUnitMessageUpdate', (flowName, fragment) => {
@@ -134,30 +134,30 @@ export default class Project {
         flowName,
         fragment
       });
-      this.projectStatus.pushFlowOutput(flowName, fragment);
+      this.buildReport.pushFlowOutput(flowName, fragment);
     });
 
     flowController.eventEmitter.on('FLOW_START', () => {
-      this.projectStatus.set('isRunning', true);
-      this.projectStatus.set('startDate', new Date());
-      gloablEmmiterInstance.emit('projectStatusUpdate', this.getInfomartion());
+      this.buildReport.set('isRunning', true);
+      this.buildReport.set('startDate', new Date());
+      gloablEmmiterInstance.emit('buildReportUpdate', this.getInfomartion());
     });
 
     flowController.eventEmitter.on('FLOW_FINISH', () => {
-      this.projectStatus.set('isRunning', false);
+      this.buildReport.set('isRunning', false);
       this.repoObserver.startObserve();
       !this.options.isStandlone && this.saveBuildReport();
-      gloablEmmiterInstance.emit('projectStatusUpdate', this.getInfomartion());
+      gloablEmmiterInstance.emit('buildReportUpdate', this.getInfomartion());
     });
   }
 
   start() {
     logger.debug('project starting', this.repoName);
-    if (this.projectStatus.get('isRunning')) {
+    if (this.buildReport.get('isRunning')) {
       logger.debug('project starting break becasue it is isRunning', this.repoName);
       return;
     }
-    this.projectStatus.initStatus();
+    this.buildReport.initStatus();
     !this.options.isStandlone && this.repoObserver.stopObserve();
     this.flowController.start();
   }

@@ -10,11 +10,11 @@ export default class FlowController {
     return new FlowController(flows, repoPath);
   }
 
-  // constructor(projectConfig, eventEmitter, projectStatus) {
+  // constructor(projectConfig, eventEmitter, buildReport) {
   //   // TODO 这又弄个 configure 对象干屌
   //   this.updateProjectConfig(projectConfig);
   //   this.eventEmitter = eventEmitter;
-  //   this.projectStatus = projectStatus;
+  //   this.buildReport = buildReport;
   // }
 
   constructor(flows, repoPath) {
@@ -64,7 +64,7 @@ export default class FlowController {
     const flow = R.take(1, flows)[0];
 
     const [flowName, flowCommand] = R.flatten([R.keys(flow), R.values(flow)]);
-    logger.info(`run flow: ${flowName} ${flowCommand}`);
+    logger.info(`run flow: ${flowName} ${flowCommand} ${this.repoPath}`);
 
     const repoPath = this.repoPath;
 

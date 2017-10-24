@@ -26,7 +26,7 @@ export default function setupWS(server, daemonCtrl) {
     });
   });
 
-  GlobalEmmiterInstance.on('projectStatusUpdate', data => {
+  GlobalEmmiterInstance.on('buildReportUpdate', data => {
     wss.clients.forEach(client => {
       client.send(
         JSON.stringify({
