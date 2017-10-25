@@ -1,6 +1,11 @@
+import 'babel-polyfill';
+
 import fs from 'fs';
 import colors from 'colors';
 import Project from './lib/project';
+
+import logger from './util/logger';
+logger.transports[0].level = 'error';
 
 const argv = require('optimist').argv;
 

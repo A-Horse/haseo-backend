@@ -23,9 +23,8 @@ export default class Project {
 
     if (!this.options.isStandlone) {
       this.repoObserver = new Observer(this.repoPath);
+      this.setupObserveEventListen();
     }
-
-    this.setupObserveEventListen();
 
     this.addToTaskManager();
   }
@@ -101,7 +100,9 @@ export default class Project {
   start() {
     logger.debug('project starting', this.repoName);
 
-    const flowController = FlowController.init(this.projectConfig.flow, this.repoPath);
+    const flowController = FlowController.init(this.projectConfig.flow, this.repoPath, {
+      stdout: this.options.isStandlone
+    });
     this.listenFlowEvent(flowController);
     flowController.start();
 
@@ -148,13 +149,14 @@ export default class Project {
     });
 
     flowController.eventEmitter.on('FLOW_FINISH', () => {
+      // TODO report 和状态分开
       this.buildReport.set('isRunning', false);
       this.state.isWaitting = false;
-      !this.options.isStandlone && this.saveBuildReport();
       this.eventEmitter.emit('BUILD_FINISH');
       gloablEmmiterInstance.emit('buildReportUpdate', this.getInfomartion());
 
-      this.repoObserver.startObserve();
+      !this.options.isStandlone && this.saveBuildReport();
+      !this.options.isStandlone && this.repoObserver.startObserve();
     });
   }
 

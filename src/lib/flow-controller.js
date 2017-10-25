@@ -6,18 +6,16 @@ import logger from '../util/logger';
 export default class FlowController {
   projectConfig = null;
 
-  static init(flows, repoPath) {
-    return new FlowController(flows, repoPath);
+  static init(flows, repoPath, options = {}) {
+    return new FlowController(flows, repoPath, options);
   }
 
-  constructor(flows, repoPath) {
+  constructor(flows, repoPath, options) {
     this.flows = flows;
     this.repoPath = repoPath;
+    this.options = options;
     this.eventEmitter = new EventEmitter();
   }
-  // updateProjectConfig(projectConfig) {
-  //   this.projectConfig = projectConfig;
-  // }
 
   start() {
     this.eventEmitter.emit('FLOW_START');
@@ -72,6 +70,7 @@ export default class FlowController {
         text
       });
       logger.info(text);
+      this.options.stdout && process.stdout.write(text);
     });
 
     cprocess.stderr.on('data', data => {
@@ -84,6 +83,7 @@ export default class FlowController {
         text
       });
       logger.info(text);
+      this.options.stdout && process.stdout.write(text);
     });
 
     cprocess.on('close', code => {
