@@ -143,14 +143,14 @@ export default class Project {
     });
 
     flowController.eventEmitter.on('FLOW_START', () => {
-      this.buildReport.set('isRunning', true);
+      this.state.isRunning = true;
       this.buildReport.set('startDate', new Date());
       gloablEmmiterInstance.emit('buildReportUpdate', this.getInfomartion());
     });
 
     flowController.eventEmitter.on('FLOW_FINISH', () => {
       // TODO report 和状态分开
-      this.buildReport.set('isRunning', false);
+      this.state.isRunning = false;
       this.state.isWaitting = false;
       this.eventEmitter.emit('BUILD_FINISH');
       gloablEmmiterInstance.emit('buildReportUpdate', this.getInfomartion());

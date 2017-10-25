@@ -7,7 +7,6 @@ export default class ProjectStatus {
 
   initStatus() {
     this.status = {
-      isRunning: false,
       isPulling: false,
       isSuccess: false,
       currentFlowName: null,
