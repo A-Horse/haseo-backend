@@ -4,8 +4,8 @@ import logger from '../util/logger';
 import R from 'ramda';
 
 import systemConfig from '../systemConfig';
+import configure from '../configure';
 import Project from './project';
-import { ConfigureFileName } from '../constants';
 
 export default class ProjectManager {
   constructor() {
@@ -23,7 +23,7 @@ export default class ProjectManager {
     return fs
       .readdirSync(this.storePath, 'utf-8')
       .filter(p => fs.lstatSync(path.join(this.storePath, p)).isDirectory())
-      .filter(p => fs.existsSync(path.join(this.storePath, p, ConfigureFileName)))
+      .filter(p => fs.existsSync(path.join(this.storePath, p, configure.CONFIGURE_FILE_NAME)))
       .map(repoName => new Project(path.join(this.storePath, repoName), repoName));
   }
 
