@@ -20,6 +20,7 @@ function main() {
   const project = new Project('.', 'Project', {
     isStandlone: true
   });
+
   project.start();
 }
 

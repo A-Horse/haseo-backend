@@ -1,13 +1,13 @@
 import { EventEmitter } from 'events';
+import YAML from 'yamljs';
 import path from 'path';
 import logger from '../util/logger';
 import Observer from './repo-observer';
+import ProjectDbHelper from './project-db-helper';
 import FlowController from './flow-controller';
-import YAML from 'yamljs';
 import ProjectReport from './project-build-report';
 import { TaskEventEmitter } from './task-manager';
 import gloablEmmiterInstance from './global-emmiter';
-import knex from '../service/knex';
 
 export default class Project {
   projectConfig = {};
@@ -26,33 +26,9 @@ export default class Project {
       this.setupObserveEventListen();
     }
 
+    this.projectDbHelper = new ProjectDbHelper(this);
+
     this.addToTaskManager();
-  }
-
-  async saveBuildReport() {
-    try {
-      await knex('project_build_report').insert({
-        project_name: this.projectConfig.name,
-        start_date: this.buildReport.get('startDate'),
-        status_serialization: JSON.stringify(this.buildReport.getStatus())
-      });
-      logger.info(`project build report save successful ${this.projectConfig.name}`);
-    } catch (error) {
-      logger.error('project build report save error', error);
-    }
-  }
-
-  async getLastBuildReport() {
-    try {
-      const report = await knex('project_build_report')
-        .select('*')
-        .where('project_name', '=', this.projectConfig.name)
-        .orderBy('start_date', 'desc')
-        .limit(1);
-      logger.info(`get project ${this.projectConfig.name} last build report success ${report}`);
-    } catch (error) {
-      logger.error('', error);
-    }
   }
 
   getInfomartion() {
@@ -100,13 +76,13 @@ export default class Project {
   start() {
     logger.debug('project starting', this.repoName);
 
+    this.buildReport.initStatus();
     const flowController = FlowController.init(this.projectConfig.flow, this.repoPath, {
       stdout: this.options.isStandlone
     });
     this.listenFlowEvent(flowController);
     flowController.start();
 
-    this.buildReport.initStatus();
     !this.options.isStandlone && this.repoObserver.stopObserve();
   }
 
@@ -155,7 +131,7 @@ export default class Project {
       this.eventEmitter.emit('BUILD_FINISH');
       gloablEmmiterInstance.emit('buildReportUpdate', this.getInfomartion());
 
-      !this.options.isStandlone && this.saveBuildReport();
+      !this.options.isStandlone && this.projectDbHelper.saveBuildReport(this);
       !this.options.isStandlone && this.repoObserver.startObserve();
     });
   }

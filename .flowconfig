@@ -1,0 +1,11 @@
+[ignore]
+.*/REPOS/*.
+.*/node_modules/bcryptjs/src/bower.json
+
+[include]
+
+[libs]
+
+[lints]
+
+[options]
