@@ -2,7 +2,7 @@ import express from 'express';
 import R from 'ramda';
 import { validate } from '../router-middle/validate';
 import knex from '../service/knex';
-import { createUser, authUser } from '../service/auth';
+import { createUser, authUser, signJwt } from '../service/auth';
 
 const UserRouter = express.Router();
 
@@ -23,10 +23,19 @@ UserRouter.post(
         username: username.trim(),
         password: password.trim()
       };
-      const authedUser = authUser(cred);
-      return res.json(authedUser);
+      const authedUser = await authUser(cred);
+      const jwtToken = signJwt(authedUser);
+      return res.header({ jwt: jwtToken }).json(R.omit('password', authedUser));
     } catch (error) {
-      next(error);
+      switch (error.message) {
+        case 'UserNotFound':
+        case 'PasswordNotMatch':
+          res.status(401).send();
+          break;
+        default:
+          next(error);
+          break;
+      }
     }
   }
 );

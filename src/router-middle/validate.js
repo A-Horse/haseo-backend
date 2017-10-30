@@ -14,9 +14,9 @@ function lenMore(len) {
   return val => val.length > len;
 }
 
-validate.required = required;
-validate.lenLess = lenLess;
-validate.lenMore = lenMore;
+validator.required = required;
+validator.lenLess = lenLess;
+validator.lenMore = lenMore;
 
 export function validate(validatedRule) {
   return (req, res, next) => {

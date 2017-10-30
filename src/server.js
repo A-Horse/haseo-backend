@@ -11,6 +11,8 @@ import UserRouter from './router/user';
 export function setupServer(ciDaemonCtrl: CiDaemon) {
   const app = express();
 
+  app.use(require('body-parser').json());
+
   app.use('/api/alive', function(req, res) {
     res.send({ msg: 'alive' });
   });

@@ -1,21 +1,43 @@
 // @flow
 import knex from './knex';
 import bcrypt from 'bcryptjs';
+import configure from '../configure';
+import jwt from 'jsonwebtoken';
+
+export function signJwt(data) {
+  console.log(new Date().getTime() / 1000 + configure.JWT_EXP_MIN * 60 * 60);
+  return jwt.sign(
+    {
+      data,
+      exp: Math.floor(Date.now() / 1000) + configure.JWT_EXP_HOURS * 60 * 60
+    },
+    configure.SERCET_KEY
+  );
+}
+
+export function verityJwt(data) {
+  return jwt.verify(data, configure.SERCET_KEY);
+}
 
 function hashPassword(password: string) {
-  const salt = bcrypt.genSaltSync(10);
-  const hash = bcrypt.hashSync(password, salt);
-  return hash;
+  return bcrypt.hashSync(password, 10);
 }
 
 export async function createUser(user: any, isAdmin: ?boolean) {
   const { username, password } = user;
   const hash = hashPassword(password);
-  return await knex('user').insert({ username, password: hash, is_admin: isAdmin });
+  return await knex('user').insert({
+    username,
+    password: hash,
+    is_admin: isAdmin,
+    created_date: new Date()
+  });
 }
 
 export async function authUser(cred: { username: string, password: string }) {
-  const user = await knex('user').where({ username: cred.username })[0];
+  const user = (await knex('user')
+    .select('*')
+    .where({ username: cred.username }))[0];
   if (!user) {
     throw Error('UserNotFound');
   }
@@ -30,7 +52,7 @@ export async function createAdmin() {
   await createUser(
     {
       username: 'admin',
-      password: hashPassword(defaultPassword)
+      password: defaultPassword
     },
     true
   );
@@ -39,6 +61,6 @@ export async function createAdmin() {
 export async function checkHasAdmin() {
   const results = await knex('user')
     .where('username', '=', 'admin')
-    .andWhere('isAdmin', '=', '1');
+    .andWhere('is_admin', '=', '1');
   return !!results.length;
 }

@@ -1,7 +1,8 @@
-import knex from './service/knex';
-import { checkHasAdmin } from './service/auth';
+import { checkHasAdmin, createAdmin } from './service/auth';
 
-if (!checkHasAdmin()) {
-  console.log('admin');
-  createAdmin();
-}
+(async () => {
+  const hasAdmin = await checkHasAdmin();
+  if (!hasAdmin) {
+    await createAdmin();
+  }
+})();
