@@ -6,12 +6,12 @@ export default class ProjectDbHelper {
     this.project = project;
   }
 
-  async saveBuildReport(p) {
+  async saveBuildReport() {
     try {
       await knex('project_build_report').insert({
         project_name: this.project.projectConfig.name,
         start_date: this.project.buildReport.get('startDate'),
-        status_serialization: JSON.stringify(this.project.buildReport.getStatus())
+        status_serialization: JSON.stringify(this.project.buildReport.getReport())
       });
       logger.info(`project build report save successful ${this.project.projectConfig.name}`);
     } catch (error) {
@@ -32,6 +32,10 @@ export default class ProjectDbHelper {
     } catch (error) {
       logger.error('get last project build report', error);
     }
+  }
+
+  async assignBuildReport() {
+    const lastBuildReport = (await this.getLastBuildReport()).status_serialization;
   }
 
   async getReports(limit) {

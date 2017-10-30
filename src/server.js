@@ -2,7 +2,7 @@
 import express from 'express';
 import http from 'http';
 import CiDaemon from './ci';
-import setupWS from './ws';
+import setupWS from './socket/index';
 
 import './init-setup';
 

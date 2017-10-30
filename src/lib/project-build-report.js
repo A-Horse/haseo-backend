@@ -18,7 +18,7 @@ export default class ProjectStatus {
     };
   }
 
-  getStatus() {
+  getReport() {
     return this.status;
   }
 
@@ -28,10 +28,6 @@ export default class ProjectStatus {
 
   get(name) {
     return this.status[name];
-  }
-
-  getObject() {
-    return this.status;
   }
 
   appendOutput(string) {

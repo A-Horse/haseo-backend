@@ -28,7 +28,8 @@ export default class Project {
 
     this.projectDbHelper = new ProjectDbHelper(this);
 
-    this.addToTaskManager();
+    // this.addToTaskManager();
+    this.projectDbHelper.h;
   }
 
   getInfomartion() {
@@ -36,7 +37,7 @@ export default class Project {
       repoName: this.repoName,
       name: this.projectConfig.name,
       flows: this.projectConfig.flow,
-      status: this.buildReport.getObject()
+      status: this.buildReport.getReport()
     };
   }
 

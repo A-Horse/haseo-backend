@@ -5,7 +5,6 @@ import configure from '../configure';
 import jwt from 'jsonwebtoken';
 
 export function signJwt(data) {
-  console.log(new Date().getTime() / 1000 + configure.JWT_EXP_MIN * 60 * 60);
   return jwt.sign(
     {
       data,
