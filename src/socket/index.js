@@ -9,9 +9,7 @@ export default function setupWS(server, daemonCtrl) {
   wss.on('connection', function connection(ws, req) {
     let isAuth = false;
     let user;
-    const state = {
-      listenPrjectUpdateMap: {}
-    };
+
     ws.state = {
       listenPrjectUpdateMap: {}
     };
@@ -38,7 +36,7 @@ export default function setupWS(server, daemonCtrl) {
       }
     });
 
-    ws.on('message', revent => {
+    ws.on('message', async revent => {
       const event = JSON.parse(revent);
       const [actionName, status] = R.compose(R.map(R.join('_')), R.splitAt(-1), R.split('_'))(
         event.type
@@ -55,17 +53,24 @@ export default function setupWS(server, daemonCtrl) {
 
       switch (event.type) {
         case 'WS_GET_PROJECTS_REQUEST':
-          ws.send(
-            JSON.stringify({
-              type: 'WS_GET_PROJECTS_SUCCESS',
-              playload: daemonCtrl.projectManager.getAllProjectInfomation()
-            })
+          ws.sendJSON({
+            type: 'WS_GET_PROJECTS_SUCCESS',
+            playload: daemonCtrl.projectManager.getAllProjectInfomation()
+          });
+          break;
+
+        case 'WS_GET_PROJECT_DETAIL_REQUEST':
+          const projectDetail = await daemonCtrl.projectManager.getProjectDetailByName(
+            event.playload.name
           );
+          ws.sendJSON({
+            type: 'WS_GET_PROJECT_DETAIL_SUCCESS',
+            playload: projectDetail
+          });
           break;
 
         case 'WS_LISTEN_PROJECTS_UPDATE_REQUEST':
           ws.state.listenPrjectsUpdate = true;
-          // state.listenPrjectsUpdate = true;
           break;
 
         case 'WS_START_PROJECT_FLOW_REQUEST':

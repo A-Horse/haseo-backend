@@ -18,6 +18,10 @@ export default class ProjectManager {
     this.projects = this.readProjectConfigs();
   }
 
+  findProjectByName(projectName) {
+    return R.find(project => project.getInfomartion().name === projectName)(this.projects);
+  }
+
   readProjectConfigs() {
     logger.debug('project manager readProjectConfigs');
     return fs
@@ -29,9 +33,14 @@ export default class ProjectManager {
 
   startProject(projectName) {
     logger.debug('startProject', projectName);
-    const project = R.find(project => project.getInfomartion().name === projectName)(this.projects);
+    const project = this.findProjectByName(projectName);
     project.updateProjectConfig();
     project.addToTaskManager();
+  }
+
+  async getProjectDetailByName(projectName) {
+    const project = this.findProjectByName(projectName);
+    return await project.getDetail();
   }
 
   getAllProjectInfomation() {

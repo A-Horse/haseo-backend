@@ -42,6 +42,17 @@ export default class Project {
     };
   }
 
+  async getDetail() {
+    return {
+      repoName: this.repoName,
+      name: this.projectConfig.name,
+      flows: this.projectConfig.flow,
+      status: this.state,
+      report: this.buildReport.getReport(),
+      buildReportHistory: await this.projectDbHelper.getReportHistory(10)
+    };
+  }
+
   getReport(reportId) {}
 
   pullFromRemote() {

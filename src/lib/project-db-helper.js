@@ -1,3 +1,4 @@
+import R from 'ramda';
 import knex from '../service/knex';
 import logger from '../util/logger';
 
@@ -45,6 +46,12 @@ export default class ProjectDbHelper {
     } catch (error) {
       console.error(error);
     }
+  }
+
+  async getReportHistory(limit) {
+    return (await this.getReports(limit)).map(report => {
+      return R.omit(['flowsOutput'], JSON.parse(report.status_serialization));
+    });
   }
 
   async getReports(limit) {
