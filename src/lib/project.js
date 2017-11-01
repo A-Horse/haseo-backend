@@ -11,7 +11,7 @@ import gloablEmmiterInstance from './global-emmiter';
 
 export default class Project {
   projectConfig = {};
-  state = {};
+  state = { isRunning: false, isWaitting: false, currentFlowName: null };
 
   constructor(repoPath, repoName, options = {}) {
     this.repoPath = repoPath;
@@ -28,8 +28,8 @@ export default class Project {
 
     this.projectDbHelper = new ProjectDbHelper(this);
 
-    // this.addToTaskManager();
-    this.projectDbHelper.h;
+    this.addToTaskManager();
+    // this.projectDbHelper.assignBuildReport();
   }
 
   getInfomartion() {
@@ -37,9 +37,12 @@ export default class Project {
       repoName: this.repoName,
       name: this.projectConfig.name,
       flows: this.projectConfig.flow,
-      status: this.buildReport.getReport()
+      report: this.buildReport.getReportBuildState(),
+      status: this.state
     };
   }
+
+  getReport(reportId) {}
 
   pullFromRemote() {
     this.repoObserver.poll();
@@ -77,7 +80,7 @@ export default class Project {
   start() {
     logger.debug('project starting', this.repoName);
 
-    this.buildReport.initStatus();
+    this.buildReport.init();
     const flowController = FlowController.init(this.projectConfig.flow, this.repoPath, {
       stdout: this.options.isStandlone
     });
@@ -88,26 +91,16 @@ export default class Project {
   }
 
   listenFlowEvent(flowController) {
+    flowController.eventEmitter.on('FLOW_START', () => {
+      this.state.isRunning = true;
+      this.buildReport.set('startDate', new Date().getTime());
+      gloablEmmiterInstance.emit('buildReportUpdate', this.getInfomartion());
+    });
+
     flowController.eventEmitter.on('FLOW_UNIT_START', flowName => {
-      this.buildReport.set('currentFlowName', flowName);
+      this.state.currentFlowName = flowName;
+
       gloablEmmiterInstance.emit('buildReportUpdate', this.getInfomartion());
-    });
-
-    flowController.eventEmitter.on('FLOW_UNIT_SUCCESS', flowName => {
-      this.buildReport.pushSuccessedFlow(flowName);
-      gloablEmmiterInstance.emit('buildReportUpdate', this.getInfomartion());
-    });
-
-    flowController.eventEmitter.on('FLOW_UNIT_FAILURE', flowName => {
-      this.buildReport.set('flowErrorName', flowName);
-    });
-
-    flowController.eventEmitter.on('FLOW_SUCCESS', () => {
-      this.buildReport.set('isSuccess', true);
-    });
-
-    flowController.eventEmitter.on('FLOW_FAILURE', () => {
-      this.buildReport.set('isSuccess', false);
     });
 
     flowController.eventEmitter.on('FLOW_UNIT_MESSAGE_UPDATE', (flowName, fragment) => {
@@ -119,12 +112,24 @@ export default class Project {
       this.buildReport.pushFlowOutput(flowName, fragment);
     });
 
-    flowController.eventEmitter.on('FLOW_START', () => {
-      this.state.isRunning = true;
-      this.buildReport.set('startDate', new Date());
+    flowController.eventEmitter.on('FLOW_UNIT_SUCCESS', flowName => {
+      // this.buildReport.pushSuccessedFlow(flowName);
       gloablEmmiterInstance.emit('buildReportUpdate', this.getInfomartion());
     });
 
+    flowController.eventEmitter.on('FLOW_UNIT_FAILURE', flowName => {
+      this.buildReport.set('flowErrorName', flowName);
+    });
+
+    flowController.eventEmitter.on('FLOW_UNIT_FINISH', flowName => {});
+
+    flowController.eventEmitter.on('FLOW_SUCCESS', () => {
+      this.buildReport.set('isSuccess', true);
+    });
+
+    flowController.eventEmitter.on('FLOW_FAILURE', () => {
+      this.buildReport.set('isSuccess', false);
+    });
     flowController.eventEmitter.on('FLOW_FINISH', () => {
       // TODO report 和状态分开
       this.state.isRunning = false;

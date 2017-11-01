@@ -2,47 +2,55 @@ import R from 'ramda';
 
 export default class ProjectStatus {
   constructor() {
-    this.initStatus();
+    this.init();
   }
 
-  initStatus() {
-    this.status = {
-      isPulling: false,
+  init() {
+    this.report = {
+      // isPulling: false, // TODO state
       isSuccess: false,
-      currentFlowName: null,
+      // currentFlowName: null,
       flowErrorName: null,
       flowsOutput: [],
-      successedFlow: [],
+      // successedFlow: [],
       newCommitDate: null,
       startDate: null
     };
   }
 
+  replaceReport(report) {
+    this.report = report;
+  }
+
   getReport() {
-    return this.status;
+    return this.report;
+  }
+
+  getReportBuildState() {
+    return R.omit(['flowOutput'], this.report);
   }
 
   set(name, value) {
-    this.status[name] = value;
+    this.report[name] = value;
   }
 
   get(name) {
-    return this.status[name];
+    return this.report[name];
   }
 
   appendOutput(string) {
-    this.status.output += string;
+    this.report.output += string;
   }
 
   pushFlowOutput(flowName, flowOutput) {
-    if ((R.last(this.status.flowsOutput) || {}).flowName !== flowName) {
-      this.status.flowsOutput.push({ flowName: flowName, output: [flowOutput] });
+    if ((R.last(this.report.flowsOutput) || {}).flowName !== flowName) {
+      this.report.flowsOutput.push({ flowName: flowName, output: [flowOutput] });
     } else {
-      R.last(this.status.flowsOutput).output.push(flowOutput);
+      R.last(this.report.flowsOutput).output.push(flowOutput);
     }
   }
 
-  pushSuccessedFlow(flowName) {
-    this.status.successedFlow.push(flowName);
-  }
+  // pushSuccessedFlow(flowName) {
+  //   this.report.successedFlow.push(flowName);
+  // }
 }

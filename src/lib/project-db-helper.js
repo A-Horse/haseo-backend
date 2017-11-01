@@ -35,7 +35,16 @@ export default class ProjectDbHelper {
   }
 
   async assignBuildReport() {
-    const lastBuildReport = (await this.getLastBuildReport()).status_serialization;
+    try {
+      const report = (await this.getLastBuildReport())[0];
+      if (!report) {
+        return;
+      }
+      const lastBuildReport = JSON.parse(report.status_serialization);
+      this.project.buildReport.replaceReport(lastBuildReport);
+    } catch (error) {
+      console.error(error);
+    }
   }
 
   async getReports(limit) {

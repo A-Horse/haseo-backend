@@ -18,6 +18,10 @@ export default class Observer {
     this.startObserve();
   }
 
+  getState() {
+    return this.state;
+  }
+
   updateRepoPath(repoPath) {
     this.repoPath = repoPath;
   }
