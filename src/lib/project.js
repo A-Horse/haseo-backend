@@ -73,7 +73,7 @@ export default class Project {
 
     this.state.isWaitting = true;
 
-    gloablEmmiterInstance.emit('buildReportUpdate', this.getInfomartion());
+    gloablEmmiterInstance.emit('PROJECT_BUILD_INFORMATION_UPDATE', this.getInfomartion());
     TaskEventEmitter.emit('add', this);
   }
 
@@ -93,14 +93,16 @@ export default class Project {
   listenFlowEvent(flowController) {
     flowController.eventEmitter.on('FLOW_START', () => {
       this.state.isRunning = true;
+      this.state.isWaitting = false;
       this.buildReport.set('startDate', new Date().getTime());
-      gloablEmmiterInstance.emit('buildReportUpdate', this.getInfomartion());
+
+      gloablEmmiterInstance.emit('PROJECT_BUILD_INFORMATION_UPDATE', this.getInfomartion());
     });
 
     flowController.eventEmitter.on('FLOW_UNIT_START', flowName => {
       this.state.currentFlowName = flowName;
 
-      gloablEmmiterInstance.emit('buildReportUpdate', this.getInfomartion());
+      gloablEmmiterInstance.emit('PROJECT_BUILD_INFORMATION_UPDATE', this.getInfomartion());
     });
 
     flowController.eventEmitter.on('FLOW_UNIT_MESSAGE_UPDATE', (flowName, fragment) => {
@@ -114,7 +116,7 @@ export default class Project {
 
     flowController.eventEmitter.on('FLOW_UNIT_SUCCESS', flowName => {
       // this.buildReport.pushSuccessedFlow(flowName);
-      gloablEmmiterInstance.emit('buildReportUpdate', this.getInfomartion());
+      gloablEmmiterInstance.emit('PROJECT_BUILD_INFORMATION_UPDATE', this.getInfomartion());
     });
 
     flowController.eventEmitter.on('FLOW_UNIT_FAILURE', flowName => {
@@ -133,9 +135,8 @@ export default class Project {
     flowController.eventEmitter.on('FLOW_FINISH', () => {
       // TODO report 和状态分开
       this.state.isRunning = false;
-      this.state.isWaitting = false;
       this.eventEmitter.emit('BUILD_FINISH');
-      gloablEmmiterInstance.emit('buildReportUpdate', this.getInfomartion());
+      gloablEmmiterInstance.emit('PROJECT_BUILD_INFORMATION_UPDATE', this.getInfomartion());
 
       !this.options.isStandlone && this.projectDbHelper.saveBuildReport(this);
       !this.options.isStandlone && this.repoObserver.startObserve();

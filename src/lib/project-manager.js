@@ -35,6 +35,6 @@ export default class ProjectManager {
   }
 
   getAllProjectInfomation() {
-    return this.projects.map(project => project.geoInfomartion());
+    return this.projects.map(project => project.getInfomartion());
   }
 }

@@ -9,6 +9,12 @@ export default function setupWS(server, daemonCtrl) {
   wss.on('connection', function connection(ws, req) {
     let isAuth = false;
     let user;
+    const state = {
+      listenPrjectUpdateMap: {}
+    };
+    ws.state = {
+      listenPrjectUpdateMap: {}
+    };
 
     ws.sendJSON = function(data) {
       return ws.send(JSON.stringify(data));
@@ -20,7 +26,15 @@ export default function setupWS(server, daemonCtrl) {
         try {
           user = verityJwt(event.playload).data;
           isAuth = true;
-        } catch (error) {}
+
+          ws.sendJSON({
+            type: 'WS_AUTH_SUCCESS'
+          });
+        } catch (error) {
+          ws.sendJSON({
+            type: 'WS_AUTH_FAILURE'
+          });
+        }
       }
     });
 
@@ -48,6 +62,12 @@ export default function setupWS(server, daemonCtrl) {
             })
           );
           break;
+
+        case 'WS_LISTEN_PROJECTS_UPDATE_REQUEST':
+          ws.state.listenPrjectsUpdate = true;
+          // state.listenPrjectsUpdate = true;
+          break;
+
         case 'WS_START_PROJECT_FLOW_REQUEST':
           daemonCtrl.projectManager.startProject(event.playload.name);
           break;
@@ -61,25 +81,27 @@ export default function setupWS(server, daemonCtrl) {
     });
   });
 
-  GlobalEmmiterInstance.on('buildReportUpdate', data => {
+  GlobalEmmiterInstance.on('PROJECT_BUILD_INFORMATION_UPDATE', data => {
     wss.clients.forEach(client => {
-      client.send(
-        JSON.stringify({
-          type: 'WS_PROJECT_UPDATE_SUCCESS',
-          playload: data
-        })
-      );
+      if (!client.state.listenPrjectsUpdate) {
+        return;
+      }
+      client.sendJSON({
+        type: 'WS_PROJECT_UPDATE_SUCCESS',
+        playload: data
+      });
     });
   });
 
   GlobalEmmiterInstance.on('PROJECT_UNIT_FRAGMENT_UPDATE', data => {
     wss.clients.forEach(client => {
-      client.send(
-        JSON.stringify({
-          type: 'WS_PROJECT_UNIT_FRAGMENT_UPDATE_SUCCESS',
-          playload: data
-        })
-      );
+      if (!client.state.listenPrjectUpdateMap[data.name]) {
+        return;
+      }
+      client.sendJSON({
+        type: 'WS_PROJECT_UNIT_FRAGMENT_UPDATE_SUCCESS',
+        playload: data
+      });
     });
   });
 }

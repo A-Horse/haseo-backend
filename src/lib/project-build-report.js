@@ -27,7 +27,7 @@ export default class ProjectStatus {
   }
 
   getReportBuildState() {
-    return R.omit(['flowOutput'], this.report);
+    return R.omit(['flowsOutput'], this.report);
   }
 
   set(name, value) {
