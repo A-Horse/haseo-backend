@@ -12,7 +12,7 @@ export default class ProjectDbHelper {
       await knex('project_build_report').insert({
         project_name: this.project.projectConfig.name,
         start_date: this.project.buildReport.get('startDate'),
-        status_serialization: JSON.stringify(this.project.buildReport.getReport())
+        report_serialization: JSON.stringify(this.project.buildReport.getReport())
       });
       logger.info(`project build report save successful ${this.project.projectConfig.name}`);
     } catch (error) {
@@ -50,7 +50,7 @@ export default class ProjectDbHelper {
 
   async getReportHistory(limit) {
     return (await this.getReports(limit)).map(report => {
-      return R.omit(['flowsOutput'], JSON.parse(report.status_serialization));
+      return R.omit(['flowsOutput'], report);
     });
   }
 
@@ -62,7 +62,12 @@ export default class ProjectDbHelper {
         .where('project_name', '=', project.projectConfig.name)
         .orderBy('start_date', 'desc')
         .limit(limit);
-      return reports;
+      return reports.map(report => {
+        return {
+          ...R.omit(['report_serialization'], report),
+          ...JSON.parse(report.report_serialization)
+        };
+      });
     } catch (error) {
       logger.error(`get project report list error ${error}`);
     }
