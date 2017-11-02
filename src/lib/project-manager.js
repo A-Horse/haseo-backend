@@ -43,6 +43,11 @@ export default class ProjectManager {
     return await project.getDetail();
   }
 
+  async getProjectReport(projectName, reportId) {
+    const project = this.findProjectByName(projectName);
+    return await project.getReport(reportId);
+  }
+
   getAllProjectInfomation() {
     return this.projects.map(project => project.getInfomartion());
   }
