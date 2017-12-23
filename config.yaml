@@ -1,4 +1,4 @@
-SERCET_KEY: '我爱陈名'
+SERCET_KEY: 'haseo-sercet-key'
 JWT_EXP_HOURS: 300
 
 DEFAULT_PULL_INTERVAL: 10000
