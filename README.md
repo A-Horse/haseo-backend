@@ -1,2 +1,4 @@
 # Haseo
 > backend repo
+
+## License
