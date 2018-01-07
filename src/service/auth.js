@@ -47,11 +47,10 @@ export async function authUser(cred: { username: string, password: string }) {
 }
 
 export async function createAdmin() {
-  const defaultPassword = 'admin';
   await createUser(
     {
       username: 'admin',
-      password: defaultPassword
+      password: configure.DEFAULT_ADMIN_PASSWORD
     },
     true
   );
