@@ -8,10 +8,11 @@
     "tocompile": "node_modules/.bin/babel -d ./dist",
     "compile": "node_modules/.bin/babel -d ./dist ./src",
     "watch-compile": "watchman-make -p 'src/**/*.js' --make='npm run tocompile' -s 2 -t='./src'",
+    "start": "babel-node src/main.js",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "pm2 start src/main.js --interpreter ./node_modules/.bin/babel-node --name=\"haseo-server\"",
-    "stop": "pm2 stop haseo-server",
-    "restart": "pm2 restart haseo-server"
+    "prod-start": "pm2 start src/main.js --interpreter ./node_modules/.bin/babel-node --name=\"haseo-server\"",
+    "prod-stop": "pm2 stop haseo-server",
+    "prod-restart": "pm2 restart haseo-server"
   },
   "bin": {
     "haseo": "bin/haseo"
