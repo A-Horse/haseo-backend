@@ -2,3 +2,4 @@
 > backend repo
 
 ## License
+MIT
