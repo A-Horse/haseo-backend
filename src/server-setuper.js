@@ -1,14 +1,13 @@
 // @flow
 import express from 'express';
 import http from 'http';
-import CiDaemon from './ci';
 import setupWS from './socket/index';
 
 import './init-setup';
 
 import UserRouter from './router/user';
 
-export function setupServer(ciDaemonCtrl: CiDaemon) {
+export function setupServer(ciDaemonCtrl) {
   const app = express();
 
   app.use(require('body-parser').json());

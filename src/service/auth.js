@@ -18,11 +18,11 @@ export function verityJwt(data) {
   return jwt.verify(data, configure.SERCET_KEY);
 }
 
-function hashPassword(password: string) {
+function hashPassword(password) {
   return bcrypt.hashSync(password, 10);
 }
 
-export async function createUser(user: any, isAdmin: ?boolean) {
+export async function createUser(user, isAdmin) {
   const { username, password } = user;
   const hash = hashPassword(password);
   return await knex('user').insert({
@@ -33,7 +33,7 @@ export async function createUser(user: any, isAdmin: ?boolean) {
   });
 }
 
-export async function authUser(cred: { username: string, password: string }) {
+export async function authUser(cred) {
   const user = (await knex('user')
     .select('*')
     .where({ username: cred.username }))[0];

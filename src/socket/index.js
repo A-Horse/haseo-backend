@@ -22,13 +22,15 @@ export default function setupWS(server, daemonCtrl) {
       const event = JSON.parse(revent);
       if (event.type === 'WS_AUTH_REQUEST') {
         try {
-          user = verityJwt(event.playload).data;
+          console.log(event);
+          user = verityJwt(event.payload).data;
           isAuth = true;
 
           ws.sendJSON({
             type: 'WS_AUTH_SUCCESS'
           });
         } catch (error) {
+          console.error(error);
           ws.sendJSON({
             type: 'WS_AUTH_FAILURE'
           });
@@ -46,7 +48,7 @@ export default function setupWS(server, daemonCtrl) {
         ws.sendJSON({
           type: actionName + '_FAILURE',
           error: true,
-          playload: 'UNAUTH'
+          payload: 'UNAUTH'
         });
         return;
       }
@@ -55,17 +57,17 @@ export default function setupWS(server, daemonCtrl) {
         case 'WS_GET_PROJECTS_REQUEST':
           ws.sendJSON({
             type: 'WS_GET_PROJECTS_SUCCESS',
-            playload: daemonCtrl.projectManager.getAllProjectInfomation()
+            payload: daemonCtrl.projectManager.getAllProjectInfomation()
           });
           break;
 
         case 'WS_GET_PROJECT_DETAIL_REQUEST':
           const projectDetail = await daemonCtrl.projectManager.getProjectDetailByName(
-            event.playload.name
+            event.payload.name
           );
           ws.sendJSON({
             type: 'WS_GET_PROJECT_DETAIL_SUCCESS',
-            playload: projectDetail
+            payload: projectDetail
           });
           break;
 
@@ -74,7 +76,7 @@ export default function setupWS(server, daemonCtrl) {
           break;
 
         case 'WS_START_PROJECT_FLOW_REQUEST':
-          daemonCtrl.projectManager.startProject(event.playload.name);
+          daemonCtrl.projectManager.startProject(event.payload.name);
           break;
 
         case 'WS_AUTH_REQUEST':
@@ -93,7 +95,7 @@ export default function setupWS(server, daemonCtrl) {
       }
       client.sendJSON({
         type: 'WS_PROJECT_UPDATE_SUCCESS',
-        playload: data
+        payload: data
       });
     });
   });
@@ -105,7 +107,7 @@ export default function setupWS(server, daemonCtrl) {
       }
       client.sendJSON({
         type: 'WS_PROJECT_UNIT_FRAGMENT_UPDATE_SUCCESS',
-        playload: data
+        payload: data
       });
     });
   });

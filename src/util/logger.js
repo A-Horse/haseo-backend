@@ -2,6 +2,7 @@ import { createLogger, format, transports } from 'winston';
 const { combine, timestamp, printf } = format;
 
 const argv = require('optimist').argv;
+console.log(argv);
 const consoleLogLevel = argv.logLevel || 'verbose';
 
 const formatLog = printf(info => {

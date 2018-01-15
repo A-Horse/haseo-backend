@@ -1,5 +1,5 @@
 import { CIDaemon } from './ci';
-import { setupServer } from './server';
+import { setupServer } from './server-setuper';
 
 const daemon = new CIDaemon();
 setupServer(daemon);
