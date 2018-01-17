@@ -1,21 +1,20 @@
-// @flow
+import * as jwt from 'jsonwebtoken';
+import * as bcrypt from 'bcryptjs';
 import knex from './knex';
-import bcrypt from 'bcryptjs';
 import configure from '../configure';
-import jwt from 'jsonwebtoken';
 
 export function signJwt(data) {
   return jwt.sign(
     {
       data,
-      exp: Math.floor(Date.now() / 1000) + configure.JWT_EXP_HOURS * 60 * 60
+      exp: Math.floor(Date.now() / 1000) + configure['JWT_EXP_HOURS'] * 60 * 60
     },
-    configure.SERCET_KEY
+    configure['SERCET_KEY']
   );
 }
 
 export function verityJwt(data) {
-  return jwt.verify(data, configure.SERCET_KEY);
+  return jwt.verify(data, configure['SERCET_KEY']);
 }
 
 function hashPassword(password) {
@@ -50,7 +49,7 @@ export async function createAdmin() {
   await createUser(
     {
       username: 'admin',
-      password: configure.DEFAULT_ADMIN_PASSWORD
+      password: configure['DEFAULT_ADMIN_PASSWORD']
     },
     true
   );

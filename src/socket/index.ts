@@ -22,7 +22,6 @@ export default function setupWS(server, ciCtrlDaemon) {
       const event = JSON.parse(revent);
       if (event.type === 'WS_AUTH_REQUEST') {
         try {
-          console.log(event);
           user = verityJwt(event.payload).data;
           isAuth = true;
 
