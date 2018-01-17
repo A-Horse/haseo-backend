@@ -4,7 +4,7 @@ import logger from '../util/logger';
 import R from 'ramda';
 
 import systemConfig from '../systemConfig';
-import * as configure from '../configure';
+import configure from '../configure';
 import Project from './project';
 
 export default class ProjectManager {

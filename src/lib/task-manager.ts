@@ -1,6 +1,6 @@
+import * as R from 'ramda';
 import { EventEmitter } from 'events';
 import logger from '../util/logger';
-import R from 'ramda';
 
 export const TaskEventEmitter = new EventEmitter();
 

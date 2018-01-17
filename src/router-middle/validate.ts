@@ -1,6 +1,6 @@
-import validator from 'validator';
-import R from 'ramda';
-import _ from 'lodash';
+import * as validator from 'validator';
+import * as R from 'ramda';
+import * as _ from 'lodash';
 
 function required() {
   return val => !!(val + '');

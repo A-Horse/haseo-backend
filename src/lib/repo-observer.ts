@@ -1,11 +1,14 @@
-import fs from 'fs';
+import * as fs from 'fs';
+import * as path from 'path';
 import { exec } from 'child_process';
 import { EventEmitter } from 'events';
 import configure from '../configure';
-import path from 'path';
 import logger from '../util/logger';
 
 export default class Observer {
+  repoPath: string;
+  timer: any;
+  eventEmitter: EventEmitter;
   state = {
     isPulling: false
   };
@@ -27,7 +30,7 @@ export default class Observer {
   }
 
   startObserve() {
-    this.timer = setInterval(this.poll.bind(this), configure.DEFAULT_PULL_INTERVAL);
+    this.timer = setInterval(this.poll.bind(this), configure['DEFAULT_PULL_INTERVAL']);
   }
 
   stopObserve() {

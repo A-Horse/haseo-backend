@@ -1,4 +1,4 @@
-import express from 'express';
+import * as express from 'express';
 import R from 'ramda';
 import { validate } from '../router-middle/validate';
 import knex from '../service/knex';

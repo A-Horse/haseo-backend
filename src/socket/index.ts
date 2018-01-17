@@ -1,5 +1,5 @@
-import R from 'ramda';
-import WebSocket from 'ws';
+import * as R from 'ramda';
+import * as WebSocket from 'ws';
 import GlobalEmmiterInstance from '../lib/global-emmiter';
 import { verityJwt } from '../service/auth';
 

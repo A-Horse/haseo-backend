@@ -1,4 +1,4 @@
-import path from 'path';
+import * as path from 'path';
 
 const systemConfig = {
   repoStoragePath: path.join(__dirname, '../REPOS'),

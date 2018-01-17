@@ -1,10 +1,14 @@
+import * as R from 'ramda';
 import { exec } from 'child_process';
 import { EventEmitter } from 'events';
-import R from 'ramda';
 import logger from '../util/logger';
 
 export default class FlowController {
   projectConfig = null;
+  flows: any[];
+  repoPath: string;
+  options: any;
+  eventEmitter: EventEmitter;
 
   static init(flows, repoPath, options = {}) {
     return new FlowController(flows, repoPath, options);

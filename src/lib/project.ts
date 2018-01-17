@@ -1,6 +1,7 @@
+import * as path from 'path';
+import * as YAML from 'yamljs';
 import { EventEmitter } from 'events';
-import YAML from 'yamljs';
-import path from 'path';
+
 import logger from '../util/logger';
 import Observer from './repo-observer';
 import ProjectDbHelper from './project-db-helper';
@@ -10,7 +11,15 @@ import { TaskEventEmitter } from './task-manager';
 import gloablEmmiterInstance from './global-emmiter';
 
 export default class Project {
-  projectConfig = {};
+  repoPath: string;
+  repoName: string;
+  options: any;
+  eventEmitter: EventEmitter;
+  buildReport: ProjectReport;
+  repoObserver: Observer;
+  projectDbHelper: ProjectDbHelper;
+
+  projectConfig: any = {};
   state = { isRunning: false, isWaitting: false, currentFlowName: null };
 
   constructor(repoPath, repoName, options = {}) {
@@ -149,7 +158,7 @@ export default class Project {
       this.eventEmitter.emit('BUILD_FINISH');
       gloablEmmiterInstance.emit('PROJECT_BUILD_INFORMATION_UPDATE', this.getInfomartion());
 
-      !this.options.isStandlone && this.projectDbHelper.saveBuildReport(this);
+      !this.options.isStandlone && this.projectDbHelper.saveBuildReport();
       !this.options.isStandlone && this.repoObserver.startObserve();
     });
   }

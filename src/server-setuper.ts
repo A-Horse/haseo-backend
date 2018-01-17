@@ -1,6 +1,5 @@
-// @flow
-import express from 'express';
-import http from 'http';
+import * as express from 'express';
+import * as http from 'http';
 import setupWS from './socket/index';
 
 import './init-setup';
