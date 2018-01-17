@@ -3,7 +3,7 @@ import WebSocket from 'ws';
 import GlobalEmmiterInstance from '../lib/global-emmiter';
 import { verityJwt } from '../service/auth';
 
-export default function setupWS(server, daemonCtrl) {
+export default function setupWS(server, ciCtrlDaemon) {
   const wss = new WebSocket.Server({ server, path: '/ws' });
 
   wss.on('connection', function connection(ws, req) {
@@ -57,12 +57,12 @@ export default function setupWS(server, daemonCtrl) {
         case 'WS_GET_PROJECTS_REQUEST':
           ws.sendJSON({
             type: 'WS_GET_PROJECTS_SUCCESS',
-            payload: daemonCtrl.projectManager.getAllProjectInfomation()
+            payload: ciCtrlDaemon.projectManager.getAllProjectInfomation()
           });
           break;
 
         case 'WS_GET_PROJECT_DETAIL_REQUEST':
-          const projectDetail = await daemonCtrl.projectManager.getProjectDetailByName(
+          const projectDetail = await ciCtrlDaemon.projectManager.getProjectDetailByName(
             event.payload.name
           );
           ws.sendJSON({
@@ -76,7 +76,7 @@ export default function setupWS(server, daemonCtrl) {
           break;
 
         case 'WS_START_PROJECT_FLOW_REQUEST':
-          daemonCtrl.projectManager.startProject(event.payload.name);
+          ciCtrlDaemon.projectManager.startProject(event.payload.name);
           break;
 
         case 'WS_AUTH_REQUEST':
