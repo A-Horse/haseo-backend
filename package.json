@@ -35,6 +35,8 @@
     "flow-bin": "^0.57.3"
   },
   "dependencies": {
+    "@types/express": "^4.11.0",
+    "@types/node": "^9.3.0",
     "babel-preset-flow": "^6.23.0",
     "babel-preset-stage-1": "^6.24.1",
     "bcryptjs": "^2.4.3",

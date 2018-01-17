@@ -1,0 +1,10 @@
+{
+  "compilerOptions": {
+    "outDir": "./built",
+    "allowJs": true,
+    "target": "es5",
+    "types" : ["node", "express"],
+    "lib": [ "es2017" ]
+  },
+  "include": ["./src/**/*"]
+}
