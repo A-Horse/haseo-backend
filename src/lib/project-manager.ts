@@ -1,13 +1,16 @@
-import fs from 'fs';
-import path from 'path';
+import * as fs from 'fs';
+import * as path from 'path';
 import logger from '../util/logger';
 import R from 'ramda';
 
 import systemConfig from '../systemConfig';
-import configure from '../configure';
+import * as configure from '../configure';
 import Project from './project';
 
 export default class ProjectManager {
+  storePath: string;
+  projects: any[];
+
   constructor() {
     this.storePath = systemConfig.repoStoragePath;
     this.init();
@@ -26,9 +29,9 @@ export default class ProjectManager {
     logger.debug('project manager readProjectConfigs');
     return fs
       .readdirSync(this.storePath, 'utf-8')
-      .filter(p => fs.lstatSync(path.join(this.storePath, p)).isDirectory())
-      .filter(p => fs.existsSync(path.join(this.storePath, p, configure.CONFIGURE_FILE_NAME)))
-      .map(repoName => new Project(path.join(this.storePath, repoName), repoName));
+      .filter(p => fs.lstatSync(path.join(this.storePath, p.toString())).isDirectory())
+      .filter(p => fs.existsSync(path.join(this.storePath, p.toString(), configure['CONFIGURE_FILE_NAME'])))
+      .map(repoName => new Project(path.join(this.storePath, repoName.toString()), repoName));
   }
 
   startProject(projectName) {
