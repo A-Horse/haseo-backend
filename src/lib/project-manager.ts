@@ -1,6 +1,6 @@
 import * as fs from 'fs';
 import * as path from 'path';
-import logger from '../util/logger';
+import { pipelineLogger } from '../util/logger';
 import R from 'ramda';
 
 import systemConfig from '../systemConfig';
@@ -16,37 +16,39 @@ export default class ProjectManager {
     this.init();
   }
 
-  init() {
-    logger.debug('project manager init');
+  private init() {
+    pipelineLogger.debug('project manager init');
     this.projects = this.readProjectConfigs();
   }
 
-  findProjectByName(projectName) {
+  public findProjectByName(projectName) {
     return R.find(project => project.getInfomartion().name === projectName)(this.projects);
   }
 
   readProjectConfigs() {
-    logger.debug('project manager readProjectConfigs');
+    pipelineLogger.debug('project manager readProjectConfigs');
     return fs
       .readdirSync(this.storePath, 'utf-8')
       .filter(p => fs.lstatSync(path.join(this.storePath, p.toString())).isDirectory())
-      .filter(p => fs.existsSync(path.join(this.storePath, p.toString(), configure['CONFIGURE_FILE_NAME'])))
+      .filter(p =>
+        fs.existsSync(path.join(this.storePath, p.toString(), configure['CONFIGURE_FILE_NAME']))
+      )
       .map(repoName => new Project(path.join(this.storePath, repoName.toString()), repoName));
   }
 
-  startProject(projectName) {
-    logger.debug('startProject', projectName);
+  public startProject(projectName) {
+    pipelineLogger.debug('startProject', projectName);
     const project = this.findProjectByName(projectName);
     project.updateProjectConfig();
     project.addToTaskManager();
   }
 
-  async getProjectDetailByName(projectName) {
+  public async getProjectDetailByName(projectName) {
     const project = this.findProjectByName(projectName);
     return await project.getDetail();
   }
 
-  async getProjectReport(projectName, reportId) {
+  public async getProjectReport(projectName, reportId) {
     const project = this.findProjectByName(projectName);
     return await project.getReport(reportId);
   }

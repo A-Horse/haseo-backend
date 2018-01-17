@@ -14,4 +14,14 @@ const logger = new createLogger({
   transports: [new transports.Console({ level: consoleLogLevel })]
 });
 
+export const pipelineLogger = new createLogger({
+  format: combine(timestamp(), formatLog),
+  transports: [new transports.Console({ level: consoleLogLevel })]
+});
+
+export const expressLogger = new createLogger({
+  format: combine(timestamp(), formatLog),
+  transports: [new transports.Console({ level: consoleLogLevel })]
+});
+
 export default logger;

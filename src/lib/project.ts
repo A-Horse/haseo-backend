@@ -18,7 +18,6 @@ export default class Project {
   buildReport: ProjectReport;
   repoObserver: Observer;
   projectDbHelper: ProjectDbHelper;
-
   projectConfig: any = {};
   state = { isRunning: false, isWaitting: false, currentFlowName: null };
 
@@ -51,13 +50,13 @@ export default class Project {
     };
   }
 
-  async getDetail() {
+  public async getDetail() {
     return {
       repoName: this.repoName,
       name: this.projectConfig.name,
       flows: this.projectConfig.flow,
       status: this.state,
-      report: this.buildReport.getReport(),
+      currentReport: this.buildReport.getReport(),
       buildReportHistory: await this.projectDbHelper.getReportHistory(10)
     };
   }

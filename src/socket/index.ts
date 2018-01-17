@@ -81,6 +81,10 @@ export default function setupWS(server, ciCtrlDaemon) {
         case 'WS_AUTH_REQUEST':
           break;
 
+        case 'WS_GET_PROJECT_REPORT_REQUEST':
+          ciCtrlDaemon.projectManage.getProjectReport(event.payload.name, event.payload.reportId);
+          break;
+
         default:
           break;
       }
