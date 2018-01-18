@@ -1,7 +1,7 @@
 import * as fs from 'fs';
 import * as path from 'path';
+import * as R from 'ramda';
 import { pipelineLogger } from '../util/logger';
-import R from 'ramda';
 
 import systemConfig from '../systemConfig';
 import configure from '../configure';
@@ -50,6 +50,7 @@ export default class ProjectManager {
 
   public async getProjectReport(projectName, reportId) {
     const project = this.findProjectByName(projectName);
+    if (!project) return Promise.resolve(null);
     return await project.getReport(reportId);
   }
 

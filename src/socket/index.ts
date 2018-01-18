@@ -1,7 +1,7 @@
 import * as R from 'ramda';
 import * as WebSocket from 'ws';
-import GlobalEmmiterInstance from '../lib/global-emmiter';
 import { verityJwt } from '../service/auth';
+import GlobalEmmiterInstance from '../lib/global-emmiter';
 
 export default function setupWS(server, ciCtrlDaemon) {
   const wss = new WebSocket.Server({ server, path: '/ws' });
@@ -52,41 +52,51 @@ export default function setupWS(server, ciCtrlDaemon) {
         return;
       }
 
-      switch (event.type) {
-        case 'WS_GET_PROJECTS_REQUEST':
+      try {
+        switch (event.type) {
+          case 'WS_GET_PROJECTS_REQUEST':
+            ws.sendJSON({
+              type: 'WS_GET_PROJECTS_SUCCESS',
+              payload: ciCtrlDaemon.projectManager.getAllProjectInfomation()
+            });
+            break;
+
+          case 'WS_GET_PROJECT_DETAIL_REQUEST':
+            const projectDetail = await ciCtrlDaemon.projectManager.getProjectDetailByName(
+              event.payload.name
+            );
+            ws.sendJSON({
+              type: 'WS_GET_PROJECT_DETAIL_SUCCESS',
+              payload: projectDetail
+            });
+            break;
+
+          case 'WS_LISTEN_PROJECTS_UPDATE_REQUEST':
+            ws.state.listenPrjectsUpdate = true;
+            break;
+
+          case 'WS_START_PROJECT_FLOW_REQUEST':
+            ciCtrlDaemon.projectManager.startProject(event.payload.name);
+            break;
+
+          case 'WS_AUTH_REQUEST':
+            break;
+
+          case 'WS_GET_PROJECT_REPORT_REQUEST':
           ws.sendJSON({
-            type: 'WS_GET_PROJECTS_SUCCESS',
-            payload: ciCtrlDaemon.projectManager.getAllProjectInfomation()
-          });
-          break;
+              type: 'WS_GET_PROJECT_REPORT_SUCCESS',
+              payload: await ciCtrlDaemon.projectManager.getProjectReport(
+                event.payload.name,
+                event.payload.reportId
+              )
+            });
+            break;
 
-        case 'WS_GET_PROJECT_DETAIL_REQUEST':
-          const projectDetail = await ciCtrlDaemon.projectManager.getProjectDetailByName(
-            event.payload.name
-          );
-          ws.sendJSON({
-            type: 'WS_GET_PROJECT_DETAIL_SUCCESS',
-            payload: projectDetail
-          });
-          break;
-
-        case 'WS_LISTEN_PROJECTS_UPDATE_REQUEST':
-          ws.state.listenPrjectsUpdate = true;
-          break;
-
-        case 'WS_START_PROJECT_FLOW_REQUEST':
-          ciCtrlDaemon.projectManager.startProject(event.payload.name);
-          break;
-
-        case 'WS_AUTH_REQUEST':
-          break;
-
-        case 'WS_GET_PROJECT_REPORT_REQUEST':
-          ciCtrlDaemon.projectManage.getProjectReport(event.payload.name, event.payload.reportId);
-          break;
-
-        default:
-          break;
+          default:
+            break;
+        }
+      } catch (error) {
+        console.error(error);
       }
     });
   });

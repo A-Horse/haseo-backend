@@ -1,8 +1,9 @@
-import R from 'ramda';
+import * as R from 'ramda';
 import knex from '../service/knex';
 import logger from '../util/logger';
 
 export default class ProjectDbHelper {
+  project: any;
   constructor(project) {
     this.project = project;
   }
@@ -54,6 +55,14 @@ export default class ProjectDbHelper {
     });
   }
 
+  public async getReport(reportId: string) {
+    return (await knex('project_build_report')
+      .select('*')
+      .where('project_name', '=', this.project.projectConfig.name)
+      .andWhere('id', '=', reportId)
+            .map(this.parseReportRowToReport))[0]
+  }
+
   async getReports(limit) {
     const project = this.project;
     try {
@@ -62,14 +71,17 @@ export default class ProjectDbHelper {
         .where('project_name', '=', project.projectConfig.name)
         .orderBy('start_date', 'desc')
         .limit(limit);
-      return reports.map(report => {
-        return {
-          ...R.omit(['report_serialization'], report),
-          ...JSON.parse(report.report_serialization)
-        };
-      });
+      return reports.map(this.parseReportRowToReport);
     } catch (error) {
       logger.error(`get project report list error ${error}`);
     }
+  }
+
+  private parseReportRowToReport(reportRow) {
+    return {
+      ...JSON.parse(reportRow.report_serialization),
+      id: reportRow.id,
+      projectName: reportRow.project_name
+    };
   }
 }

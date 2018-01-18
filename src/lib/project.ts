@@ -1,5 +1,6 @@
 import * as path from 'path';
 import * as YAML from 'yamljs';
+import * as R from 'ramda';
 import { EventEmitter } from 'events';
 
 import logger from '../util/logger';
@@ -28,13 +29,13 @@ export default class Project {
     this.projectConfig = this.getProjectConfig();
     this.eventEmitter = new EventEmitter();
     this.buildReport = new ProjectReport();
+    this.projectDbHelper = new ProjectDbHelper(this);
 
     if (!this.options.isStandlone) {
       this.repoObserver = new Observer(this.repoPath);
       this.setupObserveEventListen();
     }
 
-    this.projectDbHelper = new ProjectDbHelper(this);
 
     this.addToTaskManager();
     // this.projectDbHelper.assignBuildReport();
@@ -45,23 +46,21 @@ export default class Project {
       repoName: this.repoName,
       name: this.projectConfig.name,
       flows: this.projectConfig.flow,
-      report: this.buildReport.getReportBuildState(),
-      status: this.state
+      status: this.state,
+      currentReport: this.buildReport.getReportBuildState(),
     };
   }
 
   public async getDetail() {
     return {
-      repoName: this.repoName,
-      name: this.projectConfig.name,
-      flows: this.projectConfig.flow,
-      status: this.state,
-      currentReport: this.buildReport.getReport(),
+      ...this.getInfomartion(),
       buildReportHistory: await this.projectDbHelper.getReportHistory(10)
-    };
+    }
   }
 
-  getReport(reportId) {}
+  public async getReport(reportId) {
+    return await this.projectDbHelper.getReport(reportId);
+  }
 
   pullFromRemote() {
     this.repoObserver.poll();
