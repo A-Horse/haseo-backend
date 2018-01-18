@@ -1,6 +1,6 @@
 import * as R from 'ramda';
 import knex from '../../service/knex';
-import logger from '../../util/logger';
+import { pipelineLogger } from '../../util/logger';
 
 export default class ProjectDbHelper {
   project: any;
@@ -15,9 +15,11 @@ export default class ProjectDbHelper {
         start_date: this.project.buildReport.get('startDate'),
         report_serialization: JSON.stringify(this.project.buildReport.getReport())
       });
-      logger.info(`project build report save successful ${this.project.projectConfig.name}`);
+      pipelineLogger.info(
+        `project build report save successful ${this.project.projectConfig.name}`
+      );
     } catch (error) {
-      logger.error(`project build report save error, ${error}`);
+      pipelineLogger.error(`project build report save error, ${error}`);
     }
   }
 
@@ -29,10 +31,12 @@ export default class ProjectDbHelper {
         .where('project_name', '=', project.projectConfig.name)
         .orderBy('start_date', 'desc')
         .limit(1);
-      logger.info(`get project ${project.projectConfig.name} last build report success ${report}`);
+      pipelineLogger.info(
+        `get project ${project.projectConfig.name} last build report success ${report}`
+      );
       return report;
     } catch (error) {
-      logger.error('get last project build report', error);
+      pipelineLogger.error('get last project build report', error);
     }
   }
 
@@ -60,7 +64,7 @@ export default class ProjectDbHelper {
       .select('*')
       .where('project_name', '=', this.project.projectConfig.name)
       .andWhere('id', '=', reportId)
-            .map(this.parseReportRowToReport))[0]
+      .map(this.parseReportRowToReport))[0];
   }
 
   async getReports(limit) {
@@ -73,7 +77,7 @@ export default class ProjectDbHelper {
         .limit(limit);
       return reports.map(this.parseReportRowToReport);
     } catch (error) {
-      logger.error(`get project report list error ${error}`);
+      pipelineLogger.error(`get project report list error ${error}`);
     }
   }
 
