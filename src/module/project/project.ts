@@ -3,7 +3,7 @@ import * as YAML from 'yamljs';
 import * as R from 'ramda';
 import { EventEmitter } from 'events';
 
-import logger from '../util/logger';
+import logger from '../../util/logger';
 import Observer from './repo-observer';
 import ProjectDbHelper from './project-db-helper';
 import FlowController from './flow-controller';

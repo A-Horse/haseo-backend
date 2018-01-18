@@ -2,8 +2,8 @@ import * as fs from 'fs';
 import * as path from 'path';
 import { exec } from 'child_process';
 import { EventEmitter } from 'events';
-import configure from '../configure';
-import logger from '../util/logger';
+import configure from '../../configure';
+import logger from '../../util/logger';
 
 export default class Observer {
   repoPath: string;

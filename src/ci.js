@@ -1,5 +1,5 @@
-import ProjectManager from './lib/project-manager';
-import TaskManager from './lib/task-manager';
+import ProjectManager from './module/project/project-manager';
+import TaskManager from './module/project/task-manager';
 
 export class CIDaemon {
   constructor() {

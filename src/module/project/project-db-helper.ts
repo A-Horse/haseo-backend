@@ -1,6 +1,6 @@
 import * as R from 'ramda';
-import knex from '../service/knex';
-import logger from '../util/logger';
+import knex from '../../service/knex';
+import logger from '../../util/logger';
 
 export default class ProjectDbHelper {
   project: any;

@@ -1,7 +1,7 @@
 import * as R from 'ramda';
 import * as WebSocket from 'ws';
 import { verityJwt } from '../service/auth';
-import GlobalEmmiterInstance from '../lib/global-emmiter';
+import GlobalEmmiterInstance from '../module/project/global-emmiter';
 
 export default function setupWS(server, ciCtrlDaemon) {
   const wss = new WebSocket.Server({ server, path: '/ws' });

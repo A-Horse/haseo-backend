@@ -1,10 +1,10 @@
 import * as fs from 'fs';
 import * as path from 'path';
 import * as R from 'ramda';
-import { pipelineLogger } from '../util/logger';
+import { pipelineLogger } from '../../util/logger';
 
-import systemConfig from '../systemConfig';
-import configure from '../configure';
+import systemConfig from '../../systemConfig';
+import configure from '../../configure';
 import Project from './project';
 
 export default class ProjectManager {
