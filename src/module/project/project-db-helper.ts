@@ -1,9 +1,11 @@
 import * as R from 'ramda';
 import knex from '../../service/knex';
 import { pipelineLogger } from '../../util/logger';
+import Project from './project';
 
 export default class ProjectDbHelper {
-  project: any;
+  project: Project;
+
   constructor(project) {
     this.project = project;
   }
@@ -23,35 +25,44 @@ export default class ProjectDbHelper {
     }
   }
 
-  public async getLastBuildReport() {
+  public async getLastBuildReport(): Promise<ProjectBuildReportRow> {
     const project = this.project;
     try {
-      const report = await knex('project_build_report')
+      const reportRows: ProjectBuildReportRow[] = await knex('project_build_report')
         .select('*')
         .where('project_name', '=', project.projectConfig.name)
         .orderBy('start_date', 'desc')
         .limit(1);
+
       pipelineLogger.info(
-        `get project ${project.projectConfig.name} last build report success ${report}`
+        `get project ${project.projectConfig.name} last build report success ${reportRows}`
       );
-      return report;
+
+      return reportRows.length ? reportRows[0] : null;
     } catch (error) {
       pipelineLogger.error('get last project build report', error);
+      throw error;
     }
   }
 
-  async assignBuildReport() {
-    try {
-      const report = (await this.getLastBuildReport())[0];
-      if (!report) {
-        return;
-      }
-      const lastBuildReport = JSON.parse(report.status_serialization);
-      this.project.buildReport.replaceReport(lastBuildReport);
-    } catch (error) {
-      console.error(error);
-    }
+  public async getLastBuildReportData(): Promise<ProjectBuildReportData | null> {
+    const report =await this.getLastBuildReport();
+    if (!report) return null;
+    return JSON.parse(report.report_serialization);
   }
+
+  // public async assignBuildReport() {
+  //   try {
+  //     const report = (await this.getLastBuildReport())[0];
+  //     if (!report) {
+  //       return;
+  //     }
+  //     const lastBuildReport = JSON.parse(report.status_serialization);
+  //     this.project.buildReport.replaceReport(lastBuildReport);
+  //   } catch (error) {
+  //     console.error(error);
+  //   }
+  // }
 
   async getReportHistory(limit) {
     return (await this.getReports(limit)).map(report => {
@@ -81,7 +92,7 @@ export default class ProjectDbHelper {
     }
   }
 
-  private parseReportRowToReport(reportRow) {
+  private parseReportRowToReport(reportRow): ProjectBuildReport {
     return {
       ...JSON.parse(reportRow.report_serialization),
       id: reportRow.id,

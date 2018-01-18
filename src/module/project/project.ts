@@ -31,24 +31,24 @@ export default class Project {
     this.buildReport = new ProjectReport();
     this.projectDbHelper = new ProjectDbHelper(this);
 
-    if (!this.options.isStandlone) {
+    // TODO delete isStandlone
+    if (!this.options.isStandlone && !this.options.watch) {
       this.repoObserver = new Observer(this.repoPath);
       this.setupObserveEventListen();
     }
 
-
-    this.addToTaskManager();
-    // this.projectDbHelper.assignBuildReport();
+    // this.addToTaskManager(); 程序启动自动跑一次
+    this.assignLatestBuildReport();
   }
 
-  getInfomartion() {
+  public getInfomartion() {
     return {
       repoName: this.repoName,
       name: this.projectConfig.name,
       flows: this.projectConfig.flow,
       status: this.state,
       currentReport: this.buildReport.getReportBuildState(),
-    };
+    }
   }
 
   public async getDetail() {
@@ -61,6 +61,14 @@ export default class Project {
   public async getReport(reportId): Promise<ProjectBuildReport> {
     return await this.projectDbHelper.getReport(reportId);
   }
+  
+  private async assignLatestBuildReport(): Promise<void> {
+    const reportData: ProjectBuildReportData = await this.projectDbHelper.getLastBuildReportData();
+    if (reportData) {
+      this.buildReport.replaceReport(reportData);
+    }
+  }
+
 
   pullFromRemote() {
     this.repoObserver.poll();
@@ -98,7 +106,7 @@ export default class Project {
   start() {
     logger.debug('project starting', this.repoName);
 
-    this.buildReport.init();
+    this.buildReport.initReportData();
     const flowController = FlowController.init(this.projectConfig.flow, this.repoPath, {
       stdout: this.options.isStandlone
     });

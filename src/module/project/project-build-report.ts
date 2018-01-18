@@ -1,28 +1,27 @@
 import * as R from 'ramda';
 
 export default class ProjectStatus {
+  report: ProjectBuildReportData;
+ 
   constructor() {
-    this.init();
+    this.initReportData();
   }
 
-  init() {
+  public initReportData(): void {
     this.report = {
-      // isPulling: false, // TODO state
       isSuccess: false,
-      // currentFlowName: null,
       flowErrorName: null,
       flowsOutput: [],
-      // successedFlow: [],
       newCommitDate: null,
       startDate: null
     };
   }
 
-  replaceReport(report) {
+  replaceReport(report: ProjectBuildReportData) {
     this.report = report;
   }
 
-  getReport() {
+  public getReport(): ProjectBuildReportData {
     return this.report;
   }
 
@@ -30,16 +29,12 @@ export default class ProjectStatus {
     return R.omit(['flowsOutput'], this.report);
   }
 
-  set(name, value) {
+  set(name: string, value): void {
     this.report[name] = value;
   }
 
-  get(name) {
+  get(name): any {
     return this.report[name];
-  }
-
-  appendOutput(string) {
-    this.report.output += string;
   }
 
   pushFlowOutput(flowName, flowOutput) {
@@ -49,8 +44,4 @@ export default class ProjectStatus {
       R.last(this.report.flowsOutput).output.push(flowOutput);
     }
   }
-
-  // pushSuccessedFlow(flowName) {
-  //   this.report.successedFlow.push(flowName);
-  // }
 }
