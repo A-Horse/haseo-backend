@@ -58,7 +58,7 @@ export default class Project {
     }
   }
 
-  public async getReport(reportId) {
+  public async getReport(reportId): Promise<ProjectBuildReport> {
     return await this.projectDbHelper.getReport(reportId);
   }
 

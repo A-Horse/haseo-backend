@@ -8,7 +8,7 @@ export default class ProjectDbHelper {
     this.project = project;
   }
 
-  async saveBuildReport() {
+  public async saveBuildReport(): Promise<void> {
     try {
       await knex('project_build_report').insert({
         project_name: this.project.projectConfig.name,
@@ -21,7 +21,7 @@ export default class ProjectDbHelper {
     }
   }
 
-  async getLastBuildReport() {
+  public async getLastBuildReport() {
     const project = this.project;
     try {
       const report = await knex('project_build_report')
