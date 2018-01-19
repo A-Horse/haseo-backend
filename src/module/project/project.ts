@@ -22,7 +22,13 @@ export default class Project {
   projectConfig: any = {};
   state = { isRunning: false, isWaitting: false, currentFlowName: null };
 
-  constructor(repoPath, repoName, options = {}) {
+  constructor(
+    repoPath,
+    repoName,
+    options: {
+      watch?: boolean;
+    } = {}
+  ) {
     this.repoPath = repoPath;
     this.repoName = repoName;
     this.options = options;
@@ -31,8 +37,7 @@ export default class Project {
     this.buildReport = new ProjectReport();
     this.projectDbHelper = new ProjectDbHelper(this);
 
-    // TODO delete isStandlone
-    if (!this.options.isStandlone && !this.options.watch) {
+    if (!this.options.watch) {
       this.repoObserver = new Observer(this.repoPath);
       this.setupObserveEventListen();
     }
@@ -47,21 +52,21 @@ export default class Project {
       name: this.projectConfig.name,
       flows: this.projectConfig.flow,
       status: this.state,
-      currentReport: this.buildReport.getReportBuildState(),
-    }
+      currentReport: this.buildReport.getReportBuildState()
+    };
   }
 
   public async getDetail() {
     return {
       ...this.getInfomartion(),
       buildReportHistory: await this.projectDbHelper.getReportHistory(10)
-    }
+    };
   }
 
   public async getReport(reportId): Promise<ProjectBuildReport> {
     return await this.projectDbHelper.getReport(reportId);
   }
-  
+
   private async assignLatestBuildReport(): Promise<void> {
     const reportData: ProjectBuildReportData = await this.projectDbHelper.getLastBuildReportData();
     if (reportData) {
@@ -69,16 +74,11 @@ export default class Project {
     }
   }
 
-
-  pullFromRemote() {
-    this.repoObserver.poll();
-  }
-
   getProjectConfig() {
     logger.info(`project get project configure ${this.repoName}`);
     const heseoConfigFilePath = path.join(this.repoPath, 'haseo.yaml');
     return {
-      repoPath: this.repoPath,
+      repoPath: this.repoPath, // TODO 应该去掉
       ...YAML.load(heseoConfigFilePath)
     };
   }
@@ -88,7 +88,7 @@ export default class Project {
     this.projectConfig = this.getProjectConfig();
   }
 
-  addToTaskManager() {
+  addToTaskManager(): void {
     logger.info(`projet addToTaskManagering ${this.repoName}`);
 
     if (this.state.isWaitting) {
@@ -103,17 +103,18 @@ export default class Project {
     TaskEventEmitter.emit('add', this);
   }
 
-  start() {
+  public start(): void {
     logger.debug('project starting', this.repoName);
 
     this.buildReport.initReportData();
     const flowController = FlowController.init(this.projectConfig.flow, this.repoPath, {
-      stdout: this.options.isStandlone
+      stdout: this.options.watch
     });
     this.listenFlowEvent(flowController);
     flowController.start();
 
-    !this.options.isStandlone && this.repoObserver.stopObserve();
+    // TODO
+    !this.options.watch && this.repoObserver.stopObserve();
   }
 
   listenFlowEvent(flowController) {

@@ -1,14 +1,20 @@
 import * as R from 'ramda';
 import * as WebSocket from 'ws';
 import { verityJwt } from '../service/auth';
+import { Subject } from 'rxjs/Subject';
+import { dispatchMessageStream } from '../ws-subscription/index';
 import GlobalEmmiterInstance from '../module/project/global-emmiter';
 
 export default function setupWS(server, ciCtrlDaemon) {
   const wss = new WebSocket.Server({ server, path: '/ws' });
+  console.log(__dirname);
 
-  wss.on('connection', function connection(ws, req) {
+  wss.on('connection', function connection(ws: WebSocket, req) {
     let isAuth = false;
     let user;
+
+    const message$: Subject<SocketMessage> = new Subject();
+    dispatchMessageStream(message$, ws);
 
     ws.state = {
       listenPrjectUpdateMap: {}
@@ -18,8 +24,16 @@ export default function setupWS(server, ciCtrlDaemon) {
       return ws.send(JSON.stringify(data));
     };
 
-    ws.on('message', revent => {
-      const event = JSON.parse(revent);
+    ws.on('close', () => {
+      console.log('ooohihih');
+      message$.complete();
+    });
+
+    ws.on('message', (revent: string) => {
+      const event: SocketMessage = JSON.parse(revent);
+
+      message$.next(event);
+
       if (event.type === 'WS_AUTH_REQUEST') {
         try {
           user = verityJwt(event.payload).data;
@@ -37,7 +51,7 @@ export default function setupWS(server, ciCtrlDaemon) {
       }
     });
 
-    ws.on('message', async revent => {
+    ws.on('message', async (revent: string) => {
       const event = JSON.parse(revent);
       const [actionName, status] = R.compose(R.map(R.join('_')), R.splitAt(-1), R.split('_'))(
         event.type
@@ -83,7 +97,7 @@ export default function setupWS(server, ciCtrlDaemon) {
             break;
 
           case 'WS_GET_PROJECT_REPORT_REQUEST':
-          ws.sendJSON({
+            ws.sendJSON({
               type: 'WS_GET_PROJECT_REPORT_SUCCESS',
               payload: await ciCtrlDaemon.projectManager.getProjectReport(
                 event.payload.name,
@@ -102,7 +116,7 @@ export default function setupWS(server, ciCtrlDaemon) {
   });
 
   GlobalEmmiterInstance.on('PROJECT_BUILD_INFORMATION_UPDATE', data => {
-    wss.clients.forEach(client => {
+    wss.clients.forEach((client: HWebSocket) => {
       if (!client.state.listenPrjectsUpdate) {
         return;
       }
@@ -114,7 +128,7 @@ export default function setupWS(server, ciCtrlDaemon) {
   });
 
   GlobalEmmiterInstance.on('PROJECT_UNIT_FRAGMENT_UPDATE', data => {
-    wss.clients.forEach(client => {
+    wss.clients.forEach((client: HWebSocket) => {
       if (!client.state.listenPrjectUpdateMap[data.name]) {
         return;
       }
