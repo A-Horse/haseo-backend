@@ -2,30 +2,31 @@ import * as R from 'ramda';
 import * as WebSocket from 'ws';
 import { verityJwt } from '../service/auth';
 import { Subject } from 'rxjs/Subject';
-import { dispatchMessageStream } from '../ws-subscription/index';
+import { setupWebsocket } from '../ws-subscription/index';
 import GlobalEmmiterInstance from '../module/project/global-emmiter';
+import { WebSocketHelper } from './websocket-helper';
 
 export default function setupWS(server, ciCtrlDaemon) {
-  const wss = new WebSocket.Server({ server, path: '/ws' });
-  console.log(__dirname);
+  const wss: WebSocket.Server = new WebSocket.Server({ server, path: '/ws' });
 
   wss.on('connection', function connection(ws: WebSocket, req) {
+    const message$: Subject<SocketMessage> = new Subject();
+    const wsh: WebSocketHelper = new WebSocketHelper(ws);
+    setupWebsocket(message$, wsh, ciCtrlDaemon);
+
     let isAuth = false;
     let user;
 
-    const message$: Subject<SocketMessage> = new Subject();
-    dispatchMessageStream(message$, ws);
 
-    ws.state = {
-      listenPrjectUpdateMap: {}
-    };
+    // ws.state = {
+    //   listenPrjectUpdateMap: {}
+    // };
 
-    ws.sendJSON = function(data) {
-      return ws.send(JSON.stringify(data));
-    };
+    // ws.sendJSON = function(data) {
+    //   return ws.send(JSON.stringify(data));
+    // };
 
     ws.on('close', () => {
-      console.log('ooohihih');
       message$.complete();
     });
 
