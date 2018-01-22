@@ -24,13 +24,15 @@ export default function setupWS(server, ciCtrlDaemon) {
       message$.complete();
     });
 
-    ws.on('message', async (revent: string) => {
+    ws.on('message', (revent: string) => {
       const message: SocketMessage = JSON.parse(revent);
       const [actionName, status] = R.compose(R.map(R.join('_')), R.splitAt(-1), R.split('_'))(
         message.type
       );
 
+      console.log(actionName, status);
       if (!wsh.state.isAuth) {
+        console.log(2.5);
         wsh.sendJSON({
           type: 'AUTH_FAILURE',
           error: true,
@@ -39,6 +41,7 @@ export default function setupWS(server, ciCtrlDaemon) {
         return;
       }
 
+      console.log(3);
       message$.next(message);
     });
   });

@@ -4,7 +4,6 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "prepublish": "npm run compile",
     "test": "jest",
     "prod-start": "pm2 start src/main.js --interpreter ./node_modules/.bin/babel-node --name=\"haseo-server\"",
     "prod-stop": "pm2 stop haseo-server",
@@ -42,6 +41,7 @@
     "optimist": "^0.6.1",
     "ramda": "^0.24.1",
     "rxjs": "^5.5.6",
+    "source-map-support": "^0.5.2",
     "sqlite3": "^3.1.13",
     "validator": "^9.1.1",
     "winston": "^3.0.0-rc1",
