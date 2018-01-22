@@ -15,7 +15,10 @@ export default function setupWS(server, ciCtrlDaemon) {
     const wsh: WebSocketHelper = new WebSocketHelper(ws);
     ws.wsh = wsh;
 
+    console.log(1);
     setupWebsocketSubscriber(message$, wsh, ciCtrlDaemon);
+
+    console.log(2);
 
     ws.on('close', () => {
       message$.complete();
