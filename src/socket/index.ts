@@ -15,10 +15,7 @@ export default function setupWS(server, ciCtrlDaemon) {
     const wsh: WebSocketHelper = new WebSocketHelper(ws);
     ws.wsh = wsh;
 
-    console.log(1);
     setupWebsocketSubscriber(message$, wsh, ciCtrlDaemon);
-
-    console.log(2);
 
     ws.on('close', () => {
       message$.complete();
@@ -30,18 +27,15 @@ export default function setupWS(server, ciCtrlDaemon) {
         message.type
       );
 
-      console.log(actionName, status);
-      if (!wsh.state.isAuth) {
-        console.log(2.5);
-        wsh.sendJSON({
-          type: 'AUTH_FAILURE',
-          error: true,
-          payload: 'UNAUTH'
-        });
-        return;
-      }
+      // if (!wsh.state.isAuth) {
+      //   wsh.sendJSON({
+      //     type: 'WS_AUTH_FAILURE',
+      //     error: true,
+      //     payload: 'UNAUTH'
+      //   });
+      //   return;
+      // }
 
-      console.log(3);
       message$.next(message);
     });
   });
