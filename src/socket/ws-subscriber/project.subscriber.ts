@@ -1,6 +1,6 @@
 import './of-type.operator';
 import { Subject } from 'rxjs/Subject';
-import { CIDaemon } from 'src/ci';
+import { CIDaemon } from 'src/ci-daemon';
 import { WebSocketHelper } from 'src/socket/websocket-helper';
 
 export const WS_GET_PROJECTS_REQUEST = (

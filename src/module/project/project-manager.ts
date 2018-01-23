@@ -3,7 +3,7 @@ import * as path from 'path';
 import * as R from 'ramda';
 import { pipelineLogger } from '../../util/logger';
 
-import systemConfig from '../../systemConfig';
+// import systemConfig from '../../systemConfig';
 import configure from '../../configure';
 import Project from './project';
 
@@ -12,7 +12,7 @@ export default class ProjectManager {
   projects: any[];
 
   constructor() {
-    this.storePath = systemConfig.repoStoragePath;
+    this.storePath = path.join(__dirname, '../../../', configure['REPO_STORAGE_PATH'])
     this.init();
   }
 

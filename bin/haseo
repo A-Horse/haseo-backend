@@ -1,2 +1,2 @@
 #! /usr/bin/env node
-require('../dist/haseo-cli') 
+require('../bulit/cli/index') 

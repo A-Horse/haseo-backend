@@ -2,7 +2,7 @@ import * as fs from 'fs';
 import * as path from 'path';
 import * as R from 'ramda';
 import { WebSocketHelper } from 'src/socket/websocket-helper';
-import { CIDaemon } from 'src/ci';
+import { CIDaemon } from 'src/ci-daemon';
 import { setupMessageInterceptor } from './message-interceptor';
 
 export function setupWebsocketSubscriber(

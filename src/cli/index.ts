@@ -1,10 +1,10 @@
 import 'babel-polyfill';
 
-import fs from 'fs';
+import * as fs from 'fs';
 import colors from 'colors';
-import Project from './lib/project';
 
-import logger from './util/logger';
+import logger from '../util/logger';
+import Project from '..//module/project/project';
 logger.transports[0].level = 'error';
 
 const argv = require('optimist').argv;
@@ -18,7 +18,7 @@ function main() {
   }
 
   const project = new Project('.', 'Project', {
-    isStandlone: true
+    watch: false
   });
 
   project.start();
