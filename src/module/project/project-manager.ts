@@ -2,8 +2,6 @@ import * as fs from 'fs';
 import * as path from 'path';
 import * as R from 'ramda';
 import { pipelineLogger } from '../../util/logger';
-
-// import systemConfig from '../../systemConfig';
 import configure from '../../configure';
 import Project from './project';
 
@@ -21,7 +19,7 @@ export default class ProjectManager {
     this.projects = this.readProjectConfigs();
   }
 
-  public findProjectByName(projectName) {
+  public findProjectByName(projectName: string): Project {
     return R.find(project => project.getInfomartion().name === projectName)(this.projects);
   }
 
@@ -43,9 +41,9 @@ export default class ProjectManager {
     project.addToTaskManager();
   }
 
-  public async getProjectDetailByName(projectName) {
-    const project = this.findProjectByName(projectName);
-    return await project.getDetail();
+  public async getProjectInfomationByName(projectName): Promise<ProjectInfomation> {
+    const project: Project = this.findProjectByName(projectName);
+    return await project.getInfomartion();
   }
 
   public async getProjectReport(projectName, reportId) {
@@ -54,7 +52,7 @@ export default class ProjectManager {
     return await project.getReport(reportId);
   }
 
-  getAllProjectInfomation() {
+  public getAllProjectInfomation() {
     return this.projects.map(project => project.getInfomartion());
   }
 }

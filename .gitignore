@@ -5,7 +5,6 @@ yarn-error.log
 TAGS
 
 built/
-dist/
 
 /db.sqlite3
 jest_0/

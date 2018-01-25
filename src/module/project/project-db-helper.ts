@@ -46,7 +46,7 @@ export default class ProjectDbHelper {
   }
 
   public async getLastBuildReportData(): Promise<ProjectBuildReportData | null> {
-    const report =await this.getLastBuildReport();
+    const report = await this.getLastBuildReport();
     if (!report) return null;
     return JSON.parse(report.report_serialization);
   }
@@ -64,8 +64,8 @@ export default class ProjectDbHelper {
   //   }
   // }
 
-  async getReportHistory(limit) {
-    return (await this.getReports(limit)).map(report => {
+  public async getReportHistoryWithoutOutput(offset: number, limit: number): Promise<any[]> {
+    return (await this.getReports(offset, limit)).map(report => {
       return R.omit(['flowsOutput'], report);
     });
   }
@@ -78,13 +78,14 @@ export default class ProjectDbHelper {
       .map(this.parseReportRowToReport))[0];
   }
 
-  async getReports(limit) {
+  async getReports(offset: number, limit: number) {
     const project = this.project;
     try {
       const reports = await knex('project_build_report')
         .select('*')
         .where('project_name', '=', project.projectConfig.name)
         .orderBy('start_date', 'desc')
+        .offset(offset)
         .limit(limit);
       return reports.map(this.parseReportRowToReport);
     } catch (error) {

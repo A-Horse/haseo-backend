@@ -23,8 +23,8 @@ export default class Project {
   state = { isRunning: false, isWaitting: false, currentFlowName: null };
 
   constructor(
-    repoPath,
-    repoName,
+    repoPath: string,
+    repoName: string,
     options: {
       watch?: boolean;
     } = {}
@@ -48,19 +48,23 @@ export default class Project {
 
   public getInfomartion() {
     return {
-      repoName: this.repoName,
+      // repoName: this.repoName,
       name: this.projectConfig.name,
       flows: this.projectConfig.flow,
       status: this.state,
-      currentReport: this.buildReport.getReportBuildState()
+      report: this.buildReport.getReportBuildState()
     };
   }
 
-  public async getDetail() {
-    return {
-      ...this.getInfomartion(),
-      buildReportHistory: await this.projectDbHelper.getReportHistory(10)
-    };
+  // public async getDetail() {
+  //   return {
+  //     ...this.getInfomartion(),
+  //     buildReportHistory: await this.projectDbHelper.getReportHistory(10)
+  //   };
+  // }
+
+  public async getReportHistory(offset: number, limit: number): Promise<any[]> {
+    return await this.projectDbHelper.getReportHistoryWithoutOutput(offset, limit);
   }
 
   public async getReport(reportId): Promise<ProjectBuildReport> {

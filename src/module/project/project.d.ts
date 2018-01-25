@@ -17,3 +17,10 @@ declare interface ProjectBuildReportRow {
   start_date: string | number;
   report_serialization: string;
 }
+
+declare interface ProjectInfomation {
+  name: string;
+  flows: any[];
+  status: any;
+  report: ProjectBuildReport;
+}
