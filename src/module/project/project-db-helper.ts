@@ -51,19 +51,6 @@ export default class ProjectDbHelper {
     return JSON.parse(report.report_serialization);
   }
 
-  // public async assignBuildReport() {
-  //   try {
-  //     const report = (await this.getLastBuildReport())[0];
-  //     if (!report) {
-  //       return;
-  //     }
-  //     const lastBuildReport = JSON.parse(report.status_serialization);
-  //     this.project.buildReport.replaceReport(lastBuildReport);
-  //   } catch (error) {
-  //     console.error(error);
-  //   }
-  // }
-
   public async getReportHistoryWithoutOutput(offset: number, limit: number): Promise<any[]> {
     return (await this.getReports(offset, limit)).map(report => {
       return R.omit(['flowsOutput'], report);

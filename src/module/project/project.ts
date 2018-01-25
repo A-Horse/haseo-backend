@@ -12,27 +12,25 @@ import { TaskEventEmitter } from './task-manager';
 import gloablEmmiterInstance from './global-emmiter';
 
 export default class Project {
-  repoPath: string;
-  repoName: string;
-  options: any;
-  eventEmitter: EventEmitter;
-  buildReport: ProjectReport;
-  repoObserver: Observer;
-  projectDbHelper: ProjectDbHelper;
-  projectConfig: any = {};
-  state = { isRunning: false, isWaitting: false, currentFlowName: null };
+  public buildReport: ProjectReport;
+  public repoObserver: Observer;
+  public projectDbHelper: ProjectDbHelper;
+  public projectConfig: any = {}; // TODO projectConfig 改名吧，放的是 project haseo.yaml 的信息
+
+  private options: any;
+  private eventEmitter: EventEmitter;
+  private state = { isRunning: false, isWaitting: false, currentFlowName: null };
+
 
   constructor(
-    repoPath: string,
-    repoName: string,
+    private repoPath: string,
+    private repoName: string,
     options: {
       watch?: boolean;
     } = {}
   ) {
-    this.repoPath = repoPath;
-    this.repoName = repoName;
     this.options = options;
-    this.projectConfig = this.getProjectConfig();
+    this.projectConfig = this.getProjectSetting();
     this.eventEmitter = new EventEmitter();
     this.buildReport = new ProjectReport();
     this.projectDbHelper = new ProjectDbHelper(this);
@@ -78,8 +76,7 @@ export default class Project {
     }
   }
 
-  getProjectConfig() {
-    logger.info(`project get project configure ${this.repoName}`);
+  private getProjectSetting() {
     const heseoConfigFilePath = path.join(this.repoPath, 'haseo.yaml');
     return {
       repoPath: this.repoPath, // TODO 应该去掉
@@ -89,7 +86,7 @@ export default class Project {
 
   updateProjectConfig() {
     logger.info(`project update project configure ${this.repoName}`);
-    this.projectConfig = this.getProjectConfig();
+    this.projectConfig = this.getProjectSetting();
   }
 
   addToTaskManager(): void {

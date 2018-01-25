@@ -21,6 +21,7 @@ export default function setupWS(server, ciCtrlDaemon) {
       message$.complete();
     });
 
+    // NOTE: 这里由服务器发出去的消息也会触发事件，其实是不需要的，可以优化
     ws.on('message', (revent: string) => {
       const message: SocketMessage = JSON.parse(revent);
       message$.next(message);
