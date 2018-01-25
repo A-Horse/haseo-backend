@@ -39,11 +39,11 @@ export const WS_GET_PROJECT_REPORT_HISTORY_REQUEST = (
   message$.ofType('WS_GET_PROJECT_REPORT_HISTORY_REQUEST').subscribe(async (message: SocketMessage) => {
     const payload: { name: string, offset: number, limit: number  } = message.payload;
     const project: Project = await ciCtrlDaemon.projectManager.findProjectByName(payload.name);
-    
+    const reportHistory = await project.getReportHistory(payload.offset, payload.limit);
 
       wsh.sendJSON({
       type: 'WS_GET_PROJECT_REPORT_HISTORY_REQUEST',
-      payload: projectDetail
+        payload: reportHistory
     });
   });
 

@@ -10,7 +10,7 @@ export default class ProjectManager {
   projects: any[];
 
   constructor() {
-    this.storePath = path.join(__dirname, '../../../', configure['REPO_STORAGE_PATH'])
+    this.storePath = path.join(__dirname, '../../../', configure['REPO_STORAGE_PATH']);
     this.init();
   }
 
@@ -27,11 +27,10 @@ export default class ProjectManager {
     pipelineLogger.debug('project manager readProjectConfigs');
     return fs
       .readdirSync(this.storePath, 'utf-8')
-      .filter(p => fs.lstatSync(path.join(this.storePath, p.toString())).isDirectory())
-      .filter(p =>
-        fs.existsSync(path.join(this.storePath, p.toString(), configure['CONFIGURE_FILE_NAME']))
-      )
-      .map(repoName => new Project(path.join(this.storePath, repoName.toString()), repoName));
+      .map(repoName => repoName.toString())
+      .filter(p => fs.lstatSync(path.join(this.storePath, p)).isDirectory())
+      .filter(p => fs.existsSync(path.join(this.storePath, p, configure['CONFIGURE_FILE_NAME'])))
+      .map(repoName => new Project(path.join(this.storePath, repoName), repoName));
   }
 
   public startProject(projectName) {

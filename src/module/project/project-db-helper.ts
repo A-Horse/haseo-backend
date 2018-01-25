@@ -70,12 +70,13 @@ export default class ProjectDbHelper {
     });
   }
 
-  public async getReport(reportId: string) {
-    return (await knex('project_build_report')
+  public async getReport(reportId: string): Promise<any> {
+    const reportRows = await knex('project_build_report')
       .select('*')
       .where('project_name', '=', this.project.projectConfig.name)
       .andWhere('id', '=', reportId)
-      .map(this.parseReportRowToReport))[0];
+      .map(this.parseReportRowToReport);
+    return reportRows.length ? reportRows[0] : null;
   }
 
   async getReports(offset: number, limit: number) {
