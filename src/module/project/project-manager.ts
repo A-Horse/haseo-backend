@@ -1,30 +1,18 @@
 import * as fs from 'fs';
 import * as path from 'path';
 import * as R from 'ramda';
-import { pipelineLogger } from '../../util/logger';
 import configure from '../../configure';
 import Project from './project';
 
 export default class ProjectManager {
-  storePath: string;
-  projects: any[];
+  storePath: string = path.join(__dirname, '../../../', configure['REPO_STORAGE_PATH']);
+  projects: Project[];
 
   constructor() {
-    this.storePath = path.join(__dirname, '../../../', configure['REPO_STORAGE_PATH']);
-    this.init();
+    this.projects = this.getProjectFromDirConfigs();
   }
 
-  private init() {
-    pipelineLogger.debug('project manager init');
-    this.projects = this.readProjectConfigs();
-  }
-
-  public findProjectByName(projectName: string): Project {
-    return R.find(project => project.getInfomartion().name === projectName)(this.projects);
-  }
-
-  readProjectConfigs() {
-    pipelineLogger.debug('project manager readProjectConfigs');
+  private getProjectFromDirConfigs(): Project[] {
     return fs
       .readdirSync(this.storePath, 'utf-8')
       .map(repoName => repoName.toString())
@@ -33,8 +21,11 @@ export default class ProjectManager {
       .map(repoName => new Project(path.join(this.storePath, repoName), repoName));
   }
 
+  public findProjectByName(projectName: string): Project {
+    return R.find(project => project.getInfomartion().name === projectName)(this.projects);
+  }
+
   public startProject(projectName) {
-    pipelineLogger.debug('startProject', projectName);
     const project = this.findProjectByName(projectName);
     project.updateProjectConfig();
     project.addToTaskManager();

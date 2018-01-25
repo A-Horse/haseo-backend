@@ -23,19 +23,6 @@ export default function setupWS(server, ciCtrlDaemon) {
 
     ws.on('message', (revent: string) => {
       const message: SocketMessage = JSON.parse(revent);
-      const [actionName, status] = R.compose(R.map(R.join('_')), R.splitAt(-1), R.split('_'))(
-        message.type
-      );
-
-      // if (!wsh.state.isAuth) {
-      //   wsh.sendJSON({
-      //     type: 'WS_AUTH_FAILURE',
-      //     error: true,
-      //     payload: 'UNAUTH'
-      //   });
-      //   return;
-      // }
-
       message$.next(message);
     });
   });

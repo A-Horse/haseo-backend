@@ -24,7 +24,9 @@ export const WS_GET_PROJECT_INFOMATION_REQUEST = (
 ) =>
   message$.ofType('WS_GET_PROJECT_INFOMATION_REQUEST').subscribe(async (message: SocketMessage) => {
     const payload: { name: string } = message.payload;
-    const projectDetail = await ciCtrlDaemon.projectManager.getProjectInfomationByName(payload.name);
+    const projectDetail = await ciCtrlDaemon.projectManager.getProjectInfomationByName(
+      payload.name
+    );
     wsh.sendJSON({
       type: 'WS_GET_PROJECT_INFOMATION_SUCCESS',
       payload: projectDetail
@@ -36,17 +38,27 @@ export const WS_GET_PROJECT_REPORT_HISTORY_REQUEST = (
   wsh: WebSocketHelper,
   ciCtrlDaemon: CIDaemon
 ) =>
-  message$.ofType('WS_GET_PROJECT_REPORT_HISTORY_REQUEST').subscribe(async (message: SocketMessage) => {
-    const payload: { name: string, offset: number, limit: number  } = message.payload;
-    const project: Project = await ciCtrlDaemon.projectManager.findProjectByName(payload.name);
-    const reportHistory = await project.getReportHistory(payload.offset, payload.limit);
+  message$
+    .ofType('WS_GET_PROJECT_REPORT_HISTORY_REQUEST')
+    .subscribe(async (message: SocketMessage) => {
+      const payload: { name: string; offset: number; limit: number } = message.payload;
+      console.log(payload);
+      const project: Project = ciCtrlDaemon.projectManager.findProjectByName(payload.name);
+      if (!project) {
+        wsh.sendJSON({
+          type: 'WS_GET_PROJECT_REPORT_HISTORY_FAILURE',
+          error: true,
+          payload: `NOT ${payload.name} project.`
+        });
+        return;
+      }
+      const reportHistory = await project.getReportHistory(payload.offset, payload.limit);
 
       wsh.sendJSON({
-      type: 'WS_GET_PROJECT_REPORT_HISTORY_REQUEST',
+        type: 'WS_GET_PROJECT_REPORT_HISTORY_SUCCESS',
         payload: reportHistory
+      });
     });
-  });
-
 
 export const WS_LISTEN_PROJECTS_UPDATE_REQUEST = (
   message$: Subject<SocketMessage>,
