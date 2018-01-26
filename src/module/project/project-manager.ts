@@ -12,15 +12,6 @@ export default class ProjectManager {
     this.projects = this.getProjectFromDirConfigs();
   }
 
-  private getProjectFromDirConfigs(): Project[] {
-    return fs
-      .readdirSync(this.storePath, 'utf-8')
-      .map(repoName => repoName.toString())
-      .filter(p => fs.lstatSync(path.join(this.storePath, p)).isDirectory())
-      .filter(p => fs.existsSync(path.join(this.storePath, p, configure['CONFIGURE_FILE_NAME'])))
-      .map(repoName => new Project(path.join(this.storePath, repoName), repoName));
-  }
-
   public findProjectByName(projectName: string): Project {
     return R.find(project => project.getInfomartion().name === projectName)(this.projects);
   }
@@ -44,5 +35,14 @@ export default class ProjectManager {
 
   public getAllProjectInfomation() {
     return this.projects.map(project => project.getInfomartion());
+  }
+
+  private getProjectFromDirConfigs(): Project[] {
+    return fs
+      .readdirSync(this.storePath, 'utf-8')
+      .map(repoName => repoName.toString())
+      .filter(p => fs.lstatSync(path.join(this.storePath, p)).isDirectory())
+      .filter(p => fs.existsSync(path.join(this.storePath, p, configure['CONFIGURE_FILE_NAME'])))
+      .map(repoName => new Project(path.join(this.storePath, repoName), repoName));
   }
 }

@@ -21,7 +21,6 @@ export default class Project {
   private eventEmitter: EventEmitter;
   private state = { isRunning: false, isWaitting: false, currentFlowName: null };
 
-
   constructor(
     private repoPath: string,
     private repoName: string,
@@ -118,7 +117,7 @@ export default class Project {
     !this.options.watch && this.repoObserver.stopObserve();
   }
 
-  listenFlowEvent(flowController) {
+  private listenFlowEvent(flowController) {
     flowController.eventEmitter.on('FLOW_START', () => {
       this.state.isRunning = true;
       this.state.isWaitting = false;
@@ -172,7 +171,7 @@ export default class Project {
   }
 
   // TODO 只能在这里监听，不能在其他地方监听，其他地方需要的话在这里调用
-  setupObserveEventListen() {
+  private setupObserveEventListen() {
     this.repoObserver.eventEmitter.on('OBSERVE_ERROR', () => {});
 
     this.repoObserver.eventEmitter.on('OBSERVE_NEW_COMMIT', commitId => {

@@ -1,8 +1,8 @@
 import * as R from 'ramda';
 
 export default class ProjectStatus {
-  report: ProjectBuildReportData;
- 
+  private report: ProjectBuildReportData;
+
   constructor() {
     this.initReportData();
   }
@@ -17,7 +17,7 @@ export default class ProjectStatus {
     };
   }
 
-  replaceReport(report: ProjectBuildReportData) {
+  public replaceReport(report: ProjectBuildReportData) {
     this.report = report;
   }
 
@@ -25,19 +25,19 @@ export default class ProjectStatus {
     return this.report;
   }
 
-  getReportBuildState() {
+  public getReportBuildState() {
     return R.omit(['flowsOutput'], this.report);
   }
 
-  set(name: string, value): void {
+  public set(name: string, value): void {
     this.report[name] = value;
   }
 
-  get(name): any {
+  public get(name): any {
     return this.report[name];
   }
 
-  pushFlowOutput(flowName, flowOutput) {
+  public pushFlowOutput(flowName, flowOutput) {
     if ((R.last(this.report.flowsOutput) || {}).flowName !== flowName) {
       this.report.flowsOutput.push({ flowName: flowName, output: [flowOutput] });
     } else {
