@@ -82,21 +82,6 @@ export default class Project {
     !this.options.watch && this.repoObserver.stopObserve();
   }
 
-  private async assignLatestBuildReport(): Promise<void> {
-    const reportData: ProjectBuildReportData = await this.projectDbHelper.getLastBuildReportData();
-    if (reportData) {
-      this.buildReport.replaceReport(reportData);
-    }
-  }
-
-  private getProjectSetting() {
-    const heseoConfigFilePath = path.join(this.repoPath, 'haseo.yaml');
-    return {
-      repoPath: this.repoPath, // TODO 应该去掉
-      ...YAML.load(heseoConfigFilePath)
-    };
-  }
-
   public updateProjectConfig() {
     logger.info(`project update project configure ${this.repoName}`);
     this.projectConfig = this.getProjectSetting();
@@ -116,6 +101,21 @@ export default class Project {
 
     gloablEmmiterInstance.emit('PROJECT_BUILD_INFORMATION_UPDATE', this.getInfomartion());
     TaskEventEmitter.emit('add', this);
+  }
+
+  private async assignLatestBuildReport(): Promise<void> {
+    const reportData: ProjectBuildReportData = await this.projectDbHelper.getLastBuildReportData();
+    if (reportData) {
+      this.buildReport.replaceReport(reportData);
+    }
+  }
+
+  private getProjectSetting() {
+    const heseoConfigFilePath = path.join(this.repoPath, 'haseo.yaml');
+    return {
+      repoPath: this.repoPath, // TODO 应该去掉
+      ...YAML.load(heseoConfigFilePath)
+    };
   }
 
   private listenFlowEvent(flowController) {
