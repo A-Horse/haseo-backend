@@ -4,7 +4,7 @@ import { pipelineLogger } from '../../util/logger';
 import Project from './project';
 
 export default class ProjectDbHelper {
-  project: Project;
+  private project: Project;
 
   constructor(project) {
     this.project = project;

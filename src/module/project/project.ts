@@ -68,6 +68,20 @@ export default class Project {
     return await this.projectDbHelper.getReport(reportId);
   }
 
+  public start(): void {
+    logger.debug('project starting', this.repoName);
+
+    this.buildReport.initReportData();
+    const flowController = FlowController.init(this.projectConfig.flow, this.repoPath, {
+      stdout: this.options.watch
+    });
+    this.listenFlowEvent(flowController);
+    flowController.start();
+
+    // TODO
+    !this.options.watch && this.repoObserver.stopObserve();
+  }
+
   private async assignLatestBuildReport(): Promise<void> {
     const reportData: ProjectBuildReportData = await this.projectDbHelper.getLastBuildReportData();
     if (reportData) {
@@ -83,12 +97,13 @@ export default class Project {
     };
   }
 
-  updateProjectConfig() {
+  public updateProjectConfig() {
     logger.info(`project update project configure ${this.repoName}`);
     this.projectConfig = this.getProjectSetting();
   }
 
-  addToTaskManager(): void {
+  // TODO 这里应该由外面加进去
+  public addToTaskManager(): void {
     logger.info(`projet addToTaskManagering ${this.repoName}`);
 
     if (this.state.isWaitting) {
@@ -101,20 +116,6 @@ export default class Project {
 
     gloablEmmiterInstance.emit('PROJECT_BUILD_INFORMATION_UPDATE', this.getInfomartion());
     TaskEventEmitter.emit('add', this);
-  }
-
-  public start(): void {
-    logger.debug('project starting', this.repoName);
-
-    this.buildReport.initReportData();
-    const flowController = FlowController.init(this.projectConfig.flow, this.repoPath, {
-      stdout: this.options.watch
-    });
-    this.listenFlowEvent(flowController);
-    flowController.start();
-
-    // TODO
-    !this.options.watch && this.repoObserver.stopObserve();
   }
 
   private listenFlowEvent(flowController) {
@@ -165,8 +166,8 @@ export default class Project {
       this.eventEmitter.emit('BUILD_FINISH');
       gloablEmmiterInstance.emit('PROJECT_BUILD_INFORMATION_UPDATE', this.getInfomartion());
 
-      !this.options.isStandlone && this.projectDbHelper.saveBuildReport();
-      !this.options.isStandlone && this.repoObserver.startObserve();
+      this.projectDbHelper.saveBuildReport();
+      this.repoObserver.startObserve();
     });
   }
 

@@ -3,9 +3,10 @@ import { exec } from 'child_process';
 import { EventEmitter } from 'events';
 import logger from '../../util/logger';
 
+// TODO 应该改名为 builController
 export default class FlowController {
   projectConfig = null;
-  flows: any[];
+  private flows: any[];
   repoPath: string;
   options: any;
   eventEmitter: EventEmitter;
@@ -21,12 +22,12 @@ export default class FlowController {
     this.eventEmitter = new EventEmitter();
   }
 
-  start() {
+  public start() {
     this.eventEmitter.emit('FLOW_START');
     this.next(this.flows);
   }
 
-  kill() {
+  public kill() {
     this.eventEmitter.removeAllListeners();
     this.eventEmitter = null;
   }
@@ -46,7 +47,7 @@ export default class FlowController {
     this.finish();
   }
 
-  next(flows) {
+  private next(flows) {
     if (!flows.length) {
       return this.success();
     }
@@ -73,8 +74,9 @@ export default class FlowController {
         type: 'stdout',
         text
       });
-      logger.info(text);
-      this.options.stdout && process.stdout.write(text);
+      if (this.options.stdout) {
+        process.stdout.write(text);
+      }
     });
 
     cprocess.stderr.on('data', data => {
