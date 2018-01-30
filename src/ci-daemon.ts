@@ -1,9 +1,9 @@
-import ProjectManager from './module/project/project-manager';
+import ProjectManager from './module/manager/project-manager';
 import TaskManager from './module/project/task-manager';
 
 export class CIDaemon {
-  taskManager: TaskManager = new TaskManager();
-  projectManager: ProjectManager = new ProjectManager();
+  public taskManager: TaskManager = new TaskManager();
+  public projectManager: ProjectManager = new ProjectManager();
 
   constructor() {}
 

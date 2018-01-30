@@ -23,13 +23,12 @@ export default class Project {
 
   constructor(
     private repoPath: string,
-    private repoName: string,
-    options: {
-      watch?: boolean;
-    } = {}
-  ) {
-    this.options = options;
-    this.projectConfig = this.getProjectSetting();
+    private repoName: string // options: {
+  ) //   watch?: boolean;
+  // } = {}
+  {
+    // this.options = options;
+    this.projectConfig = this.readProjectSetting();
     this.eventEmitter = new EventEmitter();
     this.buildReport = new ProjectReport();
     this.projectDbHelper = new ProjectDbHelper(this);
@@ -51,6 +50,10 @@ export default class Project {
       status: this.state,
       report: this.buildReport.getReportBuildState()
     };
+  }
+
+  public getProjectSetting(): any {
+    return this.projectConfig;
   }
 
   // public async getDetail() {
@@ -84,7 +87,7 @@ export default class Project {
 
   public updateProjectConfig() {
     logger.info(`project update project configure ${this.repoName}`);
-    this.projectConfig = this.getProjectSetting();
+    this.projectConfig = this.readProjectSetting();
   }
 
   // TODO 这里应该由外面加进去
@@ -110,7 +113,7 @@ export default class Project {
     }
   }
 
-  private getProjectSetting() {
+  private readProjectSetting() {
     const heseoConfigFilePath = path.join(this.repoPath, 'haseo.yaml');
     return {
       repoPath: this.repoPath, // TODO 应该去掉
