@@ -3,13 +3,16 @@ import Observer from 'src/module/observer/observer';
 import { Subject } from 'rxjs/Subject';
 
 export class ObserverManager {
-  private;
-  private shouldRunProject$ = new Subject();
+  public shouldRunProject$ = new Subject<Project>();
+  private observers: Observer[];
 
-  public watchProjectByGit(projects: Project[]) {
-    this.findProjectShouldObserve(projects).forEach((project: Project) => {
-      const observer = new ObserverGit(project);
-      observer.start().sub;
+  public watchProjects(projects: Project[]) {
+    this.observers = this.findProjectShouldObserve(projects).map((project: Project): Observer => {
+      return new Observer(project);
+    });
+
+    this.observers.forEach(observer => {
+      observer.start().subscribe(project => {});
     });
   }
 
