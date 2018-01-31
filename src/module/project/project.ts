@@ -4,7 +4,7 @@ import * as R from 'ramda';
 import { EventEmitter } from 'events';
 
 import logger from '../../util/logger';
-import Observer from './repo-observer';
+// import Observer from './repo-observer';
 import ProjectDbHelper from './project-db-helper';
 import FlowController from './flow-controller';
 import ProjectReport from './project-build-report';
@@ -22,11 +22,9 @@ export default class Project {
   private state = { isRunning: false, isWaitting: false, currentFlowName: null };
 
   constructor(
-    private repoPath: string,
-    private repoName: string // options: {
-  ) //   watch?: boolean;
-  // } = {}
-  {
+    public repoPath: string,
+    public repoName: string // options: { //   watch?: boolean; // } = {}
+  ) {
     // this.options = options;
     this.projectConfig = this.readProjectSetting();
     this.eventEmitter = new EventEmitter();
@@ -34,7 +32,7 @@ export default class Project {
     this.projectDbHelper = new ProjectDbHelper(this);
 
     if (!this.options.watch) {
-      this.repoObserver = new Observer(this.repoPath);
+      // this.repoObserver = new Observer(this.repoPath);
       this.setupObserveEventListen();
     }
 
