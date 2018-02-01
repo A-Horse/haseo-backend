@@ -39,7 +39,7 @@ export default class ProjectStatus {
 
   public pushFlowOutput(flowName, flowOutput) {
     if ((R.last(this.report.flowsOutput) || {}).flowName !== flowName) {
-      this.report.flowsOutput.push({ flowName: flowName, output: [flowOutput] });
+      this.report.flowsOutput.push({ flowName, output: [flowOutput] });
     } else {
       R.last(this.report.flowsOutput).output.push(flowOutput);
     }

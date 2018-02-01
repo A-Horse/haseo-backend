@@ -11,7 +11,8 @@
     "ordered-imports": false,
     "no-string-literal": false,
     "no-unused-expression": true,
-    "no-unused-variable": true
+    "no-unused-variable": true,
+    "no-unused-imports": true
   },
   "rulesDirectory": []
 }
