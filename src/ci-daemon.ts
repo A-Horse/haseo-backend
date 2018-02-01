@@ -1,17 +1,24 @@
 import ProjectManager from './module/project/project-manager';
-import TaskManager from './module/project/task-manager';
-import { ObserverManager } from 'src/module/observer/observer-manager';
+import TaskManager from './module/task/task-manager';
+import { ObserverManager } from './module/observer/observer-manager';
+import { ProjectWithPullResult } from './module/observer/observer.module';
 
 export class CIDaemon {
-  public taskManager: TaskManager = new TaskManager();
-  public projectManager: ProjectManager = new ProjectManager();
-  private observerManager: ObserverManager = new ObserverManager();
-
-  constructor() {}
+  public taskManager: TaskManager;
+  public projectManager: ProjectManager;
+  private observerManager: ObserverManager;
 
   public startup(): void {
-    this.observerManager.watchProjectByGit(this.projectManager.getProjects());
-  }
+    this.taskManager = new TaskManager();
+    this.projectManager = new ProjectManager();
+    this.observerManager = new ObserverManager();
 
-  restart() {}
+    this.observerManager.watchProjects(this.projectManager.getProjects());
+
+    this.observerManager
+      .getShouldRUnProjectStream()
+      .subscribe((projectWithPullResult: ProjectWithPullResult) => {
+        this.taskManager.addToQueue(projectWithPullResult);
+      });
+  }
 }

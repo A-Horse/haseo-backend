@@ -5,7 +5,7 @@ import { Subject } from 'rxjs/Subject';
 import { ProjectWithPullResult } from 'src/module/observer/observer.module';
 
 export class ObserverManager {
-  private shouldRunProject$ = new Subject<Project>();
+  private shouldRunProjectWithPullResult$ = new Subject<ProjectWithPullResult>();
   private observers: Observer[];
 
   public watchProjects(projects: Project[]) {
@@ -21,14 +21,14 @@ export class ObserverManager {
     }, this.observers);
   }
 
-  public getShouldRUnProjectStream(): Subject<Project> {
-    return this.shouldRunProject$;
+  public getShouldRUnProjectStream(): Subject<ProjectWithPullResult> {
+    return this.shouldRunProjectWithPullResult$;
   }
 
   private startObservers(observers: Observer[]): void {
     observers.forEach(observer => {
       observer.pollToPullRepo().subscribe((projectWithPullResult: ProjectWithPullResult) => {
-        this.shouldRunProject$.next(projectWithPullResult.project);
+        this.shouldRunProjectWithPullResult$.next(projectWithPullResult);
       });
     });
   }
