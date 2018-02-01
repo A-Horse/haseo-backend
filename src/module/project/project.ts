@@ -12,6 +12,7 @@ import { TaskEventEmitter } from './task-manager';
 import gloablEmmiterInstance from './global-emmiter';
 
 export default class Project {
+  public name: string;
   public buildReport: ProjectReport;
   public repoObserver: Observer;
   public projectDbHelper: ProjectDbHelper;
@@ -26,7 +27,8 @@ export default class Project {
     public repoName: string // options: { //   watch?: boolean; // } = {}
   ) {
     // this.options = options;
-    this.projectConfig = this.readProjectSetting();
+    this.readProjectSetting();
+
     this.eventEmitter = new EventEmitter();
     this.buildReport = new ProjectReport();
     this.projectDbHelper = new ProjectDbHelper(this);
@@ -85,7 +87,7 @@ export default class Project {
 
   public updateProjectConfig() {
     logger.info(`project update project configure ${this.repoName}`);
-    this.projectConfig = this.readProjectSetting();
+    this.readProjectSetting();
   }
 
   // TODO 这里应该由外面加进去
@@ -113,10 +115,11 @@ export default class Project {
 
   private readProjectSetting() {
     const heseoConfigFilePath = path.join(this.repoPath, 'haseo.yaml');
-    return {
+    this.projectConfig = {
       repoPath: this.repoPath, // TODO 应该去掉
       ...YAML.load(heseoConfigFilePath)
     };
+    this.name = this.projectConfig.name;
   }
 
   private listenFlowEvent(flowController) {

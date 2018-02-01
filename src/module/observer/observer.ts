@@ -12,15 +12,6 @@ import { RepoPuller } from 'src/module/observer/repo-puller';
 import { ProjectWithPullResult, PullResult } from 'src/module/observer/observer.module';
 
 export default class Observer {
-  repoPath: string;
-  timer: any;
-  eventEmitter: EventEmitter;
-  state = {
-    isPulling: false
-  };
-  complete$ = new Rx.Subject();
-  commit$ = new Rx.Subject();
-
   constructor(private project: Project) {}
 
   public pollToPullRepo(): Observable<ProjectWithPullResult> {
@@ -29,6 +20,10 @@ export default class Observer {
     return pullDelay$
       .repeat()
       .map((pullResult: PullResult) => ({ pullResult, project: this.project }));
+  }
+
+  public getObserveProject(): Project {
+    return this.project;
   }
 
   private createPullObservable(): Observable<PullResult> {

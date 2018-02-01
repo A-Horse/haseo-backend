@@ -47,6 +47,10 @@
   version "9.3.0"
   resolved "https://registry.yarnpkg.com/@types/node/-/node-9.3.0.tgz#3a129cda7c4e5df2409702626892cb4b96546dd5"
 
+"@types/ramda@^0.25.16":
+  version "0.25.16"
+  resolved "https://registry.yarnpkg.com/@types/ramda/-/ramda-0.25.16.tgz#1d4eeb78d3247d1ceef971b458dd8469646cd1b4"
+
 "@types/serve-static@*":
   version "1.13.1"
   resolved "https://registry.yarnpkg.com/@types/serve-static/-/serve-static-1.13.1.tgz#1d2801fa635d274cd97d4ec07e26b21b44127492"

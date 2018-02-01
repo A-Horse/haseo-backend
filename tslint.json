@@ -6,10 +6,12 @@
   "rules": {
     "prettier": [true, { "singleQuote": true, "printWidth": 100 }],
     "arrow-return-shorthand": true,
+    "interface-name": [true, "never-prefix"],
     "object-literal-sort-keys": false,
     "ordered-imports": false,
     "no-string-literal": false,
-    "interface-name": [true, "never-prefix"]
+    "no-unused-expression": true,
+    "no-unused-variable": true
   },
   "rulesDirectory": []
 }
