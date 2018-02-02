@@ -2,6 +2,7 @@ import * as R from 'ramda';
 import { TaskQueue } from './task-queue';
 import { ProjectWithPullResult } from 'src/module/observer/observer.module';
 import Project from 'src/module/project/project';
+import FlowController from 'src/module/project/flow-controller';
 
 export default class TaskManager {
   private queue = new TaskQueue();
@@ -34,5 +35,6 @@ export default class TaskManager {
 
   private runProjectFlow(projectWithPullResult: ProjectWithPullResult) {
     const project: Project = projectWithPullResult.project;
+    new FlowController();
   }
 }

@@ -14,7 +14,7 @@ import gloablEmmiterInstance from './global-emmiter';
 export default class Project {
   public name: string;
   public buildReport: ProjectReport;
-  public repoObserver: Observer;
+  // public repoObserver: Observer;
   public projectDbHelper: ProjectDbHelper;
   public projectConfig: any = {}; // TODO projectConfig 改名吧，放的是 project haseo.yaml 的信息
 

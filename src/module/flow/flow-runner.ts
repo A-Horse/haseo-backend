@@ -11,9 +11,10 @@ export class FlowRunner {
   private failure$ = new Rx.Subject<void>();
   private output: OutputUnit[] = [];
 
-  constructor(private flow: object, private option: { repoPath: string; stdout?: boolean }) {}
+  constructor(private flow: object, private option: { repoPath: string; std?: boolean }) {}
 
-  public run(flow: object) {
+  public run() {
+    const flow = this.flow;
     const [flowName, flowCommand] = R.flatten([R.keys(flow), R.values(flow)]);
 
     const repoPath = this.option.repoPath;
@@ -50,7 +51,7 @@ export class FlowRunner {
     const outputText = this.removeDirtyAscii(data.toString());
     const outputUnit = { type, data: outputText };
     this.unitouput$.next(outputUnit);
-    if (this.option.stdout) {
+    if (this.option.std) {
       process.stdout.write(outputText);
     }
     this.output.push(outputUnit);
