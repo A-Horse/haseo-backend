@@ -1,67 +1,31 @@
 import * as path from 'path';
 import * as YAML from 'yamljs';
 import * as R from 'ramda';
-import { EventEmitter } from 'events';
-
-import logger from '../../util/logger';
-// import Observer from './repo-observer';
-import ProjectDbHelper from './project-db-helper';
-import FlowController from './flow-controller';
-import ProjectReport from './project-build-report';
-// import { TaskEventEmitter } from './task-manager';
 import gloablEmmiterInstance from './global-emmiter';
+import { ProjectSetting } from 'src/module/project/project.module';
 
-export default class Project {
+export class Project {
   public name: string;
-  public buildReport: ProjectReport;
-  // public repoObserver: Observer;
-  public projectDbHelper: ProjectDbHelper;
-  public setting: { name: string; flow: object[] };
+  private setting: ProjectSetting;
 
-  private options: any;
-  private eventEmitter: EventEmitter;
-  private state = { isRunning: false, isWaitting: false, currentFlowName: null };
+  // private options: any;
+  // private eventEmitter: EventEmitter;
+  // private state = { isRunning: false, isWaitting: false, currentFlowName: null };
 
-  constructor(
-    public repoPath: string,
-    public repoName: string // options: { //   watch?: boolean; // } = {}
-  ) {
-    // this.options = options;
+  constructor(public repoPath: string, public repoName: string) {
     this.readProjectSetting();
-
-    // this.eventEmitter = new EventEmitter();
-    this.buildReport = new ProjectReport();
-    this.projectDbHelper = new ProjectDbHelper(this);
-
-    if (!this.options.watch) {
-      // this.repoObserver = new Observer(this.repoPath);
-      this.setupObserveEventListen();
-    }
-
-    // this.addToTaskManager(); 程序启动自动跑一次
-    this.assignLatestBuildReport();
   }
 
   public getInfomartion() {
     return {
-      // repoName: this.repoName,
       name: this.setting.name,
-      flows: this.setting.flow,
-      status: this.state,
-      report: this.buildReport.getReportBuildState()
+      flows: this.setting.flow
     };
   }
 
-  public getProjectSetting(): any {
+  public getProjectSetting(): ProjectSetting {
     return this.setting;
   }
-
-  // public async getDetail() {
-  //   return {
-  //     ...this.getInfomartion(),
-  //     buildReportHistory: await this.projectDbHelper.getReportHistory(10)
-  //   };
-  // }
 
   public async getReportHistory(offset: number, limit: number): Promise<any[]> {
     return await this.projectDbHelper.getReportHistoryWithoutOutput(offset, limit);
@@ -172,14 +136,14 @@ export default class Project {
     });
   }
 
-  // TODO 只能在这里监听，不能在其他地方监听，其他地方需要的话在这里调用
-  private setupObserveEventListen() {
-    this.repoObserver.eventEmitter.on('OBSERVE_ERROR', () => {});
+  // // TODO 只能在这里监听，不能在其他地方监听，其他地方需要的话在这里调用
+  // private setupObserveEventListen() {
+  //   this.repoObserver.eventEmitter.on('OBSERVE_ERROR', () => {});
 
-    this.repoObserver.eventEmitter.on('OBSERVE_NEW_COMMIT', commitId => {
-      logger.info('receive observable new commit in project', this.repoName);
-      this.updateProjectConfig();
-      this.addToTaskManager();
-    });
-  }
+  //   this.repoObserver.eventEmitter.on('OBSERVE_NEW_COMMIT', commitId => {
+  //     logger.info('receive observable new commit in project', this.repoName);
+  //     this.updateProjectConfig();
+  //     this.addToTaskManager();
+  //   });
+  // }
 }

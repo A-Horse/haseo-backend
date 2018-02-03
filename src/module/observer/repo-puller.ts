@@ -1,11 +1,9 @@
 import * as fs from 'fs';
 import * as path from 'path';
 import * as Rx from 'rxjs';
-import { exec, ChildProcess } from 'child_process';
-import { EventEmitter } from 'events';
 import configure from '../../configure';
-import logger from '../../util/logger';
-import Project from 'src/module/project/project';
+import { exec, ChildProcess } from 'child_process';
+import { Project } from 'src/module/project/project';
 import { Subject } from 'rxjs/Subject';
 import { Observable } from 'rxjs/Observable';
 import { PullResult } from './observer.module';

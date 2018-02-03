@@ -2,11 +2,11 @@ import * as fs from 'fs';
 import * as path from 'path';
 import * as Rx from 'rxjs';
 import configure from '../../configure';
-import Project from 'src/module/project/project';
+import { Project } from 'src/module/project/project';
 import { RepoPuller } from 'src/module/observer/repo-puller';
 import { ProjectWithPullResult, PullResult } from 'src/module/observer/observer.module';
 
-export default class Observer {
+export class Observer {
   private polling: boolean = false;
   constructor(private project: Project) {}
 

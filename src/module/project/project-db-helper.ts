@@ -1,7 +1,7 @@
 import * as R from 'ramda';
 import knex from '../../service/knex';
 import { pipelineLogger } from '../../util/logger';
-import Project from './project';
+// import Project from './project';
 
 export default class ProjectDbHelper {
   private project: Project;
@@ -10,17 +10,17 @@ export default class ProjectDbHelper {
     this.project = project;
   }
 
-  public async saveBuildReport(): Promise<void> {
-    try {
-      await knex('project_build_report').insert({
-        project_name: this.project.projectConfig.name,
-        start_date: this.project.buildReport.get('startDate'),
-        report_serialization: JSON.stringify(this.project.buildReport.getReport())
-      });
-    } catch (error) {
-      pipelineLogger.error(`project build report save error, ${error}`);
-    }
-  }
+  // public async saveBuildReport(): Promise<void> {
+  //   try {
+  //     await knex('project_build_report').insert({
+  //       project_name: this.project.projectConfig.name,
+  //       start_date: this.project.buildReport.get('startDate'),
+  //       report_serialization: JSON.stringify(this.project.buildReport.getReport())
+  //     });
+  //   } catch (error) {
+  //     pipelineLogger.error(`project build report save error, ${error}`);
+  //   }
+  // }
 
   public async getLastBuildReport(): Promise<ProjectBuildReportRow> {
     const project = this.project;

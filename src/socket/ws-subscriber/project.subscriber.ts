@@ -1,58 +1,37 @@
-import { Subject } from 'rxjs/Subject';
+import * as Rx from 'rxjs';
 import { CIDaemon } from 'src/ci-daemon';
 import { WebSocketHelper } from 'src/socket/websocket-helper';
-
+import { Project } from 'src/module/project/project';
 import './of-type.operator';
-import Project from 'src/module/project/project';
+import { insureProjectExist } from 'src/socket/subscriber-middle';
 
 export const WS_GET_PROJECTS_REQUEST = (
-  message$: Subject<SocketMessage>,
+  message$: Rx.Subject<SocketMessage>,
   wsh: WebSocketHelper,
-  ciCtrlDaemon: CIDaemon
+  daemon: CIDaemon
 ) =>
-  message$.ofType('WS_GET_PROJECTS_REQUEST').subscribe((message: SocketMessage) => {
+  message$.ofType('WS_GET_PROJECTS_REQUEST').subscribe((message: SocketMessage): void => {
     wsh.sendJSON({
       type: 'WS_GET_PROJECTS_SUCCESS',
-      payload: ciCtrlDaemon.projectManager.getAllProjectInfomation()
-    });
-  });
-
-export const WS_GET_PROJECT_INFOMATION_REQUEST = (
-  message$: Subject<SocketMessage>,
-  wsh: WebSocketHelper,
-  ciCtrlDaemon: CIDaemon
-) =>
-  message$.ofType('WS_GET_PROJECT_INFOMATION_REQUEST').subscribe(async (message: SocketMessage) => {
-    const payload: { name: string } = message.payload;
-    const projectDetail = await ciCtrlDaemon.projectManager.getProjectInfomationByName(
-      payload.name
-    );
-    wsh.sendJSON({
-      type: 'WS_GET_PROJECT_INFOMATION_SUCCESS',
-      payload: projectDetail
+      payload: daemon.getProjects().map((project: Project) => project.getInfomartion())
     });
   });
 
 export const WS_GET_PROJECT_REPORT_HISTORY_REQUEST = (
-  message$: Subject<SocketMessage>,
+  message$: Rx.Subject<SocketMessage>,
   wsh: WebSocketHelper,
-  ciCtrlDaemon: CIDaemon
+  daemon: CIDaemon
 ) =>
   message$
     .ofType('WS_GET_PROJECT_REPORT_HISTORY_REQUEST')
-    .subscribe(async (message: SocketMessage) => {
+    .filter(
+      insureProjectExist(wsh, daemon, {
+        errorType: 'WS_GET_PROJECT_REPORT_HISTORY_FAILURE'
+      })
+    )
+    .subscribe(async (message: SocketMessage): Promise<void> => {
       const payload: { name: string; offset: number; limit: number } = message.payload;
-      console.log(payload);
-      const project: Project = ciCtrlDaemon.projectManager.findProjectByName(payload.name);
-      if (!project) {
-        wsh.sendJSON({
-          type: 'WS_GET_PROJECT_REPORT_HISTORY_FAILURE',
-          error: true,
-          payload: `NOT ${payload.name} project.`
-        });
-        return;
-      }
-      const reportHistory = await project.getReportHistory(payload.offset, payload.limit);
+      const reportHistory = await deamon.getReportHistory(payload.offset, payload.limit);
 
       wsh.sendJSON({
         type: 'WS_GET_PROJECT_REPORT_HISTORY_SUCCESS',
@@ -61,33 +40,33 @@ export const WS_GET_PROJECT_REPORT_HISTORY_REQUEST = (
     });
 
 export const WS_LISTEN_PROJECTS_UPDATE_REQUEST = (
-  message$: Subject<SocketMessage>,
+  message$: Rx.Subject<SocketMessage>,
   wsh: WebSocketHelper,
-  ciCtrlDaemon: CIDaemon
+  daemon: CIDaemon
 ) =>
   message$.ofType('WS_LISTEN_PROJECTS_UPDATE_REQUEST').subscribe(async (message: SocketMessage) => {
     wsh.state.listenPrjectsUpdate = true;
   });
 
 export const WS_START_PROJECT_FLOW_REQUEST = (
-  message$: Subject<SocketMessage>,
+  message$: Rx.Subject<SocketMessage>,
   wsh: WebSocketHelper,
-  ciCtrlDaemon: CIDaemon
+  daemon: CIDaemon
 ) =>
   message$.ofType('WS_START_PROJECT_FLOW_REQUEST').subscribe(async (message: SocketMessage) => {
-    ciCtrlDaemon.projectManager.startProject(message.payload.name);
+    daemon.projectManager.startProject(message.payload.name);
   });
 
 export const WS_GET_PROJECT_REPORT_REQUEST = (
-  message$: Subject<SocketMessage>,
+  message$: Rx.Subject<SocketMessage>,
   wsh: WebSocketHelper,
-  ciCtrlDaemon: CIDaemon
+  daemon: CIDaemon
 ) =>
   message$.ofType('WS_GET_PROJECT_REPORT_REQUEST').subscribe(async (message: SocketMessage) => {
     const payload: { name: string; reportId: string } = message.payload;
     wsh.sendJSON({
       type: 'WS_GET_PROJECT_REPORT_SUCCESS',
-      payload: await ciCtrlDaemon.projectManager.getProjectReport(
+      payload: await daemon.projectManager.getProjectReport(
         message.payload.name,
         message.payload.reportId
       )

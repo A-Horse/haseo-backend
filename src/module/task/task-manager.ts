@@ -7,7 +7,7 @@ import { FlowController } from 'src/module/flow/flow-controller';
 import { OutputUnit } from 'src/module/flow/flow.module';
 import { TaskRunner } from 'src/module/task/task-runner';
 
-export default class TaskManager {
+export class TaskManager {
   private queue: TaskQueue = new TaskQueue();
   private looping = false;
   private running = false;
@@ -24,11 +24,10 @@ export default class TaskManager {
 
   public addToQueue(projectWithPullResult: ProjectWithPullResult): void {
     this.queue.push(projectWithPullResult);
-
     this.runQueueTask();
   }
 
-  // TODO single thread here
+  // single thread here
   private async runQueueTask(): Promise<void> {
     if (!this.running || this.looping) {
       return Promise.resolve();

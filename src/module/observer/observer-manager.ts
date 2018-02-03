@@ -1,5 +1,5 @@
 import * as R from 'ramda';
-import Project from 'src/module/project/project';
+import { Project } from 'src/module/project/project';
 import Observer from 'src/module/observer/observer';
 import { Subject } from 'rxjs/Subject';
 import { ProjectWithPullResult } from 'src/module/observer/observer.module';

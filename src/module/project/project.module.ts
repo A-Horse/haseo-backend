@@ -1,1 +1,4 @@
-export interface ProjectSetting {}
+export interface ProjectSetting {
+  name: string;
+  flow: object[];
+}
