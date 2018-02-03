@@ -8,7 +8,7 @@ import logger from '../../util/logger';
 import ProjectDbHelper from './project-db-helper';
 import FlowController from './flow-controller';
 import ProjectReport from './project-build-report';
-import { TaskEventEmitter } from './task-manager';
+// import { TaskEventEmitter } from './task-manager';
 import gloablEmmiterInstance from './global-emmiter';
 
 export default class Project {
@@ -16,7 +16,7 @@ export default class Project {
   public buildReport: ProjectReport;
   // public repoObserver: Observer;
   public projectDbHelper: ProjectDbHelper;
-  public projectConfig: any = {}; // TODO projectConfig 改名吧，放的是 project haseo.yaml 的信息
+  public setting: { name: string; flow: object[] };
 
   private options: any;
   private eventEmitter: EventEmitter;
@@ -45,15 +45,15 @@ export default class Project {
   public getInfomartion() {
     return {
       // repoName: this.repoName,
-      name: this.projectConfig.name,
-      flows: this.projectConfig.flow,
+      name: this.setting.name,
+      flows: this.setting.flow,
       status: this.state,
       report: this.buildReport.getReportBuildState()
     };
   }
 
   public getProjectSetting(): any {
-    return this.projectConfig;
+    return this.setting;
   }
 
   // public async getDetail() {
@@ -75,7 +75,7 @@ export default class Project {
     logger.debug('project starting', this.repoName);
 
     this.buildReport.initReportData();
-    const flowController = FlowController.init(this.projectConfig.flow, this.repoPath, {
+    const flowController = FlowController.init(this.setting.flow, this.repoPath, {
       stdout: this.options.watch
     });
     this.listenFlowEvent(flowController);
@@ -113,13 +113,10 @@ export default class Project {
     }
   }
 
-  private readProjectSetting() {
+  private readProjectSetting(): void {
     const heseoConfigFilePath = path.join(this.repoPath, 'haseo.yaml');
-    this.projectConfig = {
-      repoPath: this.repoPath, // TODO 应该去掉
-      ...YAML.load(heseoConfigFilePath)
-    };
-    this.name = this.projectConfig.name;
+    this.setting = YAML.load(heseoConfigFilePath);
+    this.name = this.setting.name;
   }
 
   private listenFlowEvent(flowController) {
@@ -139,7 +136,7 @@ export default class Project {
 
     flowController.eventEmitter.on('FLOW_UNIT_MESSAGE_UPDATE', (flowName, fragment) => {
       gloablEmmiterInstance.emit('PROJECT_UNIT_FRAGMENT_UPDATE', {
-        name: this.projectConfig.name,
+        name: this.setting.name,
         flowName,
         fragment
       });

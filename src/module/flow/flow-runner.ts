@@ -5,10 +5,10 @@ import { EventEmitter } from 'events';
 import { OutputUnit } from './flow.module';
 
 export class FlowRunner {
+  public success$ = new Rx.Subject<OutputUnit[]>();
+  public failure$ = new Rx.Subject<OutputUnit[]>();
   private cprocess: ChildProcess;
   private unitouput$ = new Rx.Subject<OutputUnit>();
-  private success$ = new Rx.Subject<void>();
-  private failure$ = new Rx.Subject<void>();
   private output: OutputUnit[] = [];
 
   constructor(private flow: object, private option: { repoPath: string; std?: boolean }) {}
@@ -33,9 +33,9 @@ export class FlowRunner {
 
     this.cprocess.on('close', code => {
       if (!!code) {
-        this.failure$.next();
+        this.failure$.next(this.output);
       } else {
-        this.success$.next();
+        this.success$.next(this.output);
       }
     });
   }

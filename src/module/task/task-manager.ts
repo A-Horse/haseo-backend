@@ -1,12 +1,16 @@
 import * as R from 'ramda';
+import * as Rx from 'rxjs';
 import { TaskQueue } from './task-queue';
 import { ProjectWithPullResult } from 'src/module/observer/observer.module';
 import Project from 'src/module/project/project';
-import FlowController from 'src/module/project/flow-controller';
+import { FlowController } from 'src/module/flow/flow-controller';
+import { OutputUnit } from 'src/module/flow/flow.module';
 
 export default class TaskManager {
   private queue = new TaskQueue();
   private looping = false;
+
+  constructor(private taskEvent$: Rx.Subject<{ type: string; payload: any }>) {}
 
   public addToQueue(projectWithPullResult: ProjectWithPullResult) {
     this.queue.push(projectWithPullResult);
@@ -35,6 +39,22 @@ export default class TaskManager {
 
   private runProjectFlow(projectWithPullResult: ProjectWithPullResult) {
     const project: Project = projectWithPullResult.project;
-    new FlowController();
+    const flowController = new FlowController(project.setting.flow, {
+      repoPath: project.repoPath,
+      taskEvent$: this.taskEvent$
+    });
+
+    flowController.flowResult$.subscribe(
+      (flowOutput: { status: 'SUCCESS' | 'FAILURE'; flow: object; result: OutputUnit[] }) => {
+        this.taskEvent$.next({
+          type: 'RPOJECT_FLOW_UPDATE',
+          payload: {
+            projectName: project.name
+          }
+        });
+      },
+      () => {},
+      () => {}
+    );
   }
 }
