@@ -1,1 +1,5 @@
-export class Report {}
+export class Report {
+  constructor() {}
+
+  public init() {}
+}

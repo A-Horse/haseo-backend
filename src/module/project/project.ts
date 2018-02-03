@@ -29,7 +29,7 @@ export default class Project {
     // this.options = options;
     this.readProjectSetting();
 
-    this.eventEmitter = new EventEmitter();
+    // this.eventEmitter = new EventEmitter();
     this.buildReport = new ProjectReport();
     this.projectDbHelper = new ProjectDbHelper(this);
 

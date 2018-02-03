@@ -5,56 +5,43 @@ import { ProjectWithPullResult } from 'src/module/observer/observer.module';
 import Project from 'src/module/project/project';
 import { FlowController } from 'src/module/flow/flow-controller';
 import { OutputUnit } from 'src/module/flow/flow.module';
+import { TaskRunner } from 'src/module/task/task-runner';
 
 export default class TaskManager {
-  private queue = new TaskQueue();
+  private queue: TaskQueue = new TaskQueue();
   private looping = false;
+  private running = false;
 
   constructor(private taskEvent$: Rx.Subject<{ type: string; payload: any }>) {}
 
-  public addToQueue(projectWithPullResult: ProjectWithPullResult) {
-    this.queue.push(projectWithPullResult);
-    if (!this.looping) {
-      this.loop();
-    }
+  public start(): void {
+    this.running = true;
   }
 
-  // TODO 这里设计成了单线程的了，以后改掉
-  private loop() {
+  public stop(): void {
+    // flag running false and clean running process
+  }
+
+  public addToQueue(projectWithPullResult: ProjectWithPullResult): void {
+    this.queue.push(projectWithPullResult);
+
+    this.runQueueTask();
+  }
+
+  // TODO single thread here
+  private async runQueueTask(): Promise<void> {
+    if (!this.running || this.looping) {
+      return Promise.resolve();
+    }
     if (!this.queue.length) {
       this.looping = false;
-      return;
+      return Promise.resolve();
     }
     this.looping = true;
-    const projectWithPullResult = this.queue.shift();
-
-    this.runProjectFlow(projectWithPullResult);
-
-    // projectWithPullResult.project.eventEmitter.once('BUILD_FINISH', () => {
-    //   this.queue = this.queue.slice(1);
-    //   this.loop();
-    // });
-    // project.start();
-  }
-
-  private runProjectFlow(projectWithPullResult: ProjectWithPullResult) {
-    const project: Project = projectWithPullResult.project;
-    const flowController = new FlowController(project.setting.flow, {
-      repoPath: project.repoPath,
-      taskEvent$: this.taskEvent$
+    const projectWithPullResult: ProjectWithPullResult = this.queue.shift();
+    const taskRunner: TaskRunner = new TaskRunner(projectWithPullResult);
+    (await taskRunner.run(this.taskEvent$)).subscribe(() => {
+      this.runQueueTask();
     });
-
-    flowController.flowResult$.subscribe(
-      (flowOutput: { status: 'SUCCESS' | 'FAILURE'; flow: object; result: OutputUnit[] }) => {
-        this.taskEvent$.next({
-          type: 'RPOJECT_FLOW_UPDATE',
-          payload: {
-            projectName: project.name
-          }
-        });
-      },
-      () => {},
-      () => {}
-    );
   }
 }

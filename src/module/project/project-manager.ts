@@ -17,7 +17,9 @@ export default class ProjectManager {
   }
 
   public findProjectByName(projectName: string): Project {
-    return R.find(project => project.getInfomartion().name === projectName)(this.projects);
+    return R.find((project: Project) => project.getInfomartion().name === projectName)(
+      this.projects
+    );
   }
 
   public startProject(projectName) {

@@ -1,21 +1,17 @@
 import * as R from 'ramda';
 import * as Rx from 'rxjs';
 import { FlowRunner } from './flow-runner';
-import { OutputUnit } from './flow.module';
+import { OutputUnit, FlowResult } from './flow.module';
 import { Subject } from 'rxjs/Subject';
 
 export class FlowController {
-  public flowResult$ = new Rx.Subject<{
-    status: 'SUCCESS' | 'FAILURE';
-    flow: object;
-    result: OutputUnit[];
-  }>();
-  public result = [];
+  public flowResult$ = new Rx.Subject<FlowResult>();
+  public result: FlowResult[] = [];
   public status: 'INITIAL' | 'RUNING' | 'SUCCESS' | 'FAILURE' = 'INITIAL';
 
   constructor(
     private flows: object[],
-    private options: {
+    private option: {
       repoPath: string;
       taskEvent$: Subject<{ type: string; payload: any }>;
       std?: boolean;
@@ -23,6 +19,10 @@ export class FlowController {
   ) {
     this.flowResult$.subscribe(
       (flowResult: { status: 'SUCCESS' | 'FAILURE'; flow: object; result: OutputUnit[] }) => {
+        this.option.taskEvent$.next({
+          type: 'PROJECT_FLOW_FINISH',
+          payload: flowResult
+        });
         this.result.push(flowResult);
       }
     );
@@ -33,6 +33,8 @@ export class FlowController {
     this.runFlows(this.flows);
   }
 
+  public clean(): void {}
+
   private runFlows(flows: object[]): void {
     if (!flows.length) {
       this.finish('SUCCESS');
@@ -40,7 +42,7 @@ export class FlowController {
     }
     const [flow, restFlows] = R.splitAt(1, flows);
 
-    const flowRunner = new FlowRunner(flow, this.options);
+    const flowRunner = new FlowRunner(flow, this.option);
     flowRunner.run();
     flowRunner.success$.subscribe((flowResult: OutputUnit[]) => {
       this.flowResult$.next({

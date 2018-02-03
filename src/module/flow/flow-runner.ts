@@ -11,7 +11,17 @@ export class FlowRunner {
   private unitouput$ = new Rx.Subject<OutputUnit>();
   private output: OutputUnit[] = [];
 
-  constructor(private flow: object, private option: { repoPath: string; std?: boolean }) {}
+  constructor(
+    private flow: object,
+    private option: {
+      repoPath: string;
+      taskEvent$: Rx.Subject<{
+        type: string;
+        payload: any;
+      }>;
+      std?: boolean;
+    }
+  ) {}
 
   public run() {
     const flow = this.flow;

@@ -17,9 +17,6 @@ export default class ProjectDbHelper {
         start_date: this.project.buildReport.get('startDate'),
         report_serialization: JSON.stringify(this.project.buildReport.getReport())
       });
-      pipelineLogger.info(
-        `project build report save successful ${this.project.projectConfig.name}`
-      );
     } catch (error) {
       pipelineLogger.error(`project build report save error, ${error}`);
     }
