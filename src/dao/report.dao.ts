@@ -36,3 +36,13 @@ export async function saveProjectRunReport(
       status: payload.status
     });
 }
+
+export async function getLastBuildReport(projectName: string): Promise<ProjectBuildReportRow> {
+  const reportRows: ProjectBuildReportRow[] = await knex(projectRunReportTableName)
+    .select('*')
+    .where('project_name', '=', projectName)
+    .orderBy('start_date', 'desc')
+    .limit(1);
+
+  return reportRows.length ? reportRows[0] : null;
+}

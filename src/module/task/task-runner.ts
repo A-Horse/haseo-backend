@@ -19,7 +19,7 @@ export class TaskRunner {
     });
 
     flowController.start();
-    const projectRunReportInitalColumn: { id: number } = await initProjectRunReport({
+    const projectRunReportInitalRow: { id: number } = await initProjectRunReport({
       projectName: project.name,
       startDate: new Date().getDate(),
       commitHash: this.projectWithPullResult.pullResult.commitHash,
@@ -27,7 +27,7 @@ export class TaskRunner {
     });
 
     flowController.flowResult$.subscribe(null, null, async () => {
-      await saveProjectRunReport(projectRunReportInitalColumn.id, {
+      await saveProjectRunReport(projectRunReportInitalRow.id, {
         result: flowController.result,
         status: flowController.status
       });

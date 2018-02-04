@@ -11,11 +11,13 @@ declare interface ProjectBuildReport extends ProjectBuildReportData {
   projectName: string;
 }
 
-declare interface ProjectBuildReportRow {
+declare interface ProjectRunReportRow {
   id: number;
   project_name: string;
-  start_date: string | number;
-  report_serialization: string;
+  start_date: string;
+  commit_hash: string;
+  repo_pull_output: string;
+  result: string;
 }
 
 declare interface ProjectInfomation {
