@@ -2,10 +2,10 @@ import * as R from 'ramda';
 import { Project } from 'src/module/project/project';
 import Observer from 'src/module/observer/observer';
 import { Subject } from 'rxjs/Subject';
-import { ProjectWithPullResult } from 'src/module/observer/observer.module';
+import { ProjectWithMeta } from 'src/module/observer/observer.module';
 
 export class ObserverManager {
-  private shouldRunProjectWithPullResult$ = new Subject<ProjectWithPullResult>();
+  private shouldRunProjectWithMeta$ = new Subject<ProjectWithMeta>();
   private observers: Observer[];
 
   public watchProjects(projects: Project[]) {
@@ -21,14 +21,14 @@ export class ObserverManager {
     }, this.observers);
   }
 
-  public getShouldRUnProjectStream(): Subject<ProjectWithPullResult> {
-    return this.shouldRunProjectWithPullResult$;
+  public getShouldRUnProjectStream(): Subject<ProjectWithMeta> {
+    return this.shouldRunProjectWithMeta$;
   }
 
   private startObservers(observers: Observer[]): void {
     observers.forEach(observer => {
-      observer.pollToPullRepo().subscribe((projectWithPullResult: ProjectWithPullResult) => {
-        this.shouldRunProjectWithPullResult$.next(projectWithPullResult);
+      observer.pollToPullRepo().subscribe((projectWithMeta: ProjectWithMeta) => {
+        this.shouldRunProjectWithMeta$.next(projectWithMeta);
       });
     });
   }

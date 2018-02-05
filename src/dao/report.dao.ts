@@ -37,12 +37,37 @@ export async function saveProjectRunReport(
     });
 }
 
-export async function getLastBuildReport(projectName: string): Promise<ProjectBuildReportRow> {
-  const reportRows: ProjectBuildReportRow[] = await knex(projectRunReportTableName)
+export async function queryProjectLastRunReport(projectName: string): Promise<ProjectRunReportRow> {
+  const reportRows: ProjectRunReportRow[] = await knex(projectRunReportTableName)
     .select('*')
     .where('project_name', '=', projectName)
     .orderBy('start_date', 'desc')
     .limit(1);
 
   return reportRows.length ? reportRows[0] : null;
+}
+
+export async function queryProjectRunReport(
+  projectName: string,
+  reportId: number
+): Promise<ProjectRunReportRow> {
+  const reportRows: ProjectRunReportRow[] = await knex(projectRunReportTableName)
+    .select('*')
+    .where('project_name', '=', projectName)
+    .andWhere('id', '=', reportId);
+
+  return reportRows.length ? reportRows[0] : null;
+}
+
+export async function queryProjectRunReportHistory(
+  projectName: string,
+  limit: number,
+  offset: number
+): Promise<ProjectRunReportRow[]> {
+  return await knex(projectRunReportTableName)
+    .select('*')
+    .where('project_name', '=', projectName)
+    .orderBy('start_date', 'desc')
+    .offset(offset)
+    .limit(limit);
 }

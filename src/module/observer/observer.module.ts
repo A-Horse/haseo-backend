@@ -1,11 +1,6 @@
-import Project from 'src/module/project/project';
+import { Project } from 'src/module/project/project';
 
-export interface PullResult {
+export interface RepoVersion {
   commitHash: string;
-  output: string;
-}
-
-export interface ProjectWithPullResult {
-  pullResult: PullResult;
-  project: Project;
+  output?: string;
 }

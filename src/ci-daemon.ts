@@ -2,13 +2,21 @@ import { Subject } from 'rxjs/Subject';
 import { ProjectManager } from './module/project/project-manager';
 import { TaskManager } from './module/task/task-manager';
 import { ObserverManager } from './module/observer/observer-manager';
-import { ProjectWithPullResult } from './module/observer/observer.module';
+import { ReportManager } from 'src/module/report/report-manager';
+import { Project } from 'src/module/project/project';
+import { ProjectWithMeta } from 'src/module/project/product.module';
 
 export class CIDaemon {
   public projectManager: ProjectManager = new ProjectManager();
   public getProjects = this.projectManager.getProjects;
   public getProjectByName = this.projectManager.getProjectByName;
-  public getProjectRunReportHistory = this.projectManager.getProjectRunReportHistory;
+  public mapOutRunProject = this.projectManager.mapOutRunProject;
+
+  public reportManager: ReportManager = new ReportManager();
+  public getProjectRunReportHistory = this.reportManager.getProjectRunReportHistory;
+  public getProjectLastRunReportHistory = this.reportManager.getProjectLastRunReportHistory;
+  public getProjectRunReport = this.reportManager.getProjectRunReport;
+
   public taskManager: TaskManager;
   private taskEvent$ = new Subject<{ type: string; payload: any }>();
   private observerManager: ObserverManager = new ObserverManager();
@@ -20,8 +28,12 @@ export class CIDaemon {
 
     this.observerManager
       .getShouldRUnProjectStream()
-      .subscribe((projectWithPullResult: ProjectWithPullResult) => {
-        this.taskManager.addToQueue(projectWithPullResult);
+      .subscribe((projectWithMeta: ProjectWithMeta) => {
+        this.taskManager.addToQueue(projectWithMeta);
       });
+
+    this.projectManager.runProjectWithMeta$.subscribe((toRunProjectWithMata: ProjectWithMeta) => {
+      this.taskManager.addToQueue(toRunProjectWithMata);
+    });
   }
 }

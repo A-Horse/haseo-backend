@@ -7,41 +7,29 @@ import { WebSocketHelper } from './websocket-helper';
 import { HWebSocket } from './socket';
 import GlobalEmmiterInstance from '../module/project/global-emmiter';
 
-export default function setupWS(server, ciCtrlDaemon) {
-  const wss: WebSocket.Server = new WebSocket.Server({ server, path: '/ws' });
+export default function setupWS(server, daemon) {
+  const wsserver: WebSocket.Server = new WebSocket.Server({ server, path: '/ws' });
 
-  wss.on('connection', function connection(ws: HWebSocket, req) {
+  wsserver.on('connection', function connection(ws: HWebSocket, req) {
     const message$: Subject<SocketMessage> = new Subject();
-    const wsh: WebSocketHelper = new WebSocketHelper(ws);
-    ws.wsh = wsh;
+    const wshelper: WebSocketHelper = new WebSocketHelper(ws);
+    ws.wshelper = wshelper;
 
-    setupWebsocketSubscriber(message$, wsh, ciCtrlDaemon);
+    setupWebsocketSubscriber(message$, wshelper, daemon);
 
     ws.on('close', () => {
       message$.complete();
     });
 
-    // NOTE: 这里由服务器发出去的消息也会触发事件，其实是不需要的，可以优化
+    // send message event also trigger this listener
     ws.on('message', (revent: string) => {
       const message: SocketMessage = JSON.parse(revent);
       message$.next(message);
     });
   });
 
-  GlobalEmmiterInstance.on('PROJECT_BUILD_INFORMATION_UPDATE', data => {
-    wss.clients.forEach((client: HWebSocket) => {
-      if (!client.wsh.state.listenPrjectsUpdate) {
-        return;
-      }
-      client.wsh.sendJSON({
-        type: 'WS_PROJECT_UPDATE_SUCCESS',
-        payload: data
-      });
-    });
-  });
-
   GlobalEmmiterInstance.on('PROJECT_UNIT_FRAGMENT_UPDATE', data => {
-    wss.clients.forEach((client: HWebSocket) => {
+    wsserver.clients.forEach((client: HWebSocket) => {
       if (!client.wsh.state.listenPrjectUpdateMap[data.name]) {
         return;
       }

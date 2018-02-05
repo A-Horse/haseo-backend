@@ -3,9 +3,13 @@ import * as path from 'path';
 import * as R from 'ramda';
 import configure from '../../configure';
 import { Project } from 'src/module/project/project';
+import { Subject } from 'rxjs/Subject';
+import { CommitAcquirer } from 'src/module/version/commit-acquirer';
+import { ProjectWithMeta } from 'src/module/project/product.module';
 
 export class ProjectManager {
   public projects: Project[];
+  public runProjectWithMeta$ = new Subject<ProjectWithMeta>();
   private storePath: string = path.join(__dirname, '../../../', configure['REPO_STORAGE_PATH']);
 
   public initial(): void {
@@ -22,7 +26,17 @@ export class ProjectManager {
     );
   }
 
-  public getProjectRunReportHistory() {}
+  public async mapOutRunProject(projectName: string): Promise<void> {
+    const project: Project = this.getProjectByName(projectName);
+    const commitAcquirer: CommitAcquirer = new CommitAcquirer(project.repoPath);
+    const commitHash = await commitAcquirer.getRepoCurrentCommitHash();
+    this.runProjectWithMeta$.next({
+      project,
+      version: {
+        commitHash
+      }
+    });
+  }
 
   private generateProjectFromDirConfigs(): Project[] {
     return fs

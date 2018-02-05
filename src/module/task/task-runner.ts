@@ -1,19 +1,19 @@
 import * as Rx from 'rxjs';
-import { ProjectWithPullResult } from 'src/module/observer/observer.module';
+import { ProjectWithMeta } from 'src/module/observer/observer.module';
 import { FlowController } from 'src/module/flow/flow-controller';
-import Project from 'src/module/project/project';
+import { Project } from 'src/module/project/project';
 import { initProjectRunReport, saveProjectRunReport } from 'src/dao/report.dao';
 
 export class TaskRunner {
   public complete$ = new Rx.Subject<void>();
 
-  constructor(private projectWithPullResult: ProjectWithPullResult) {}
+  constructor(private projectWithMeta: ProjectWithMeta) {}
 
   public async run(
     taskEvent$: Rx.Subject<{ type: string; payload: any }>
   ): Promise<Rx.Subject<void>> {
-    const project: Project = this.projectWithPullResult.project;
-    const flowController = new FlowController(project.setting.flow, {
+    const project: Project = this.projectWithMeta.project;
+    const flowController = new FlowController(project.getSetting().flow, {
       repoPath: project.repoPath,
       taskEvent$
     });
@@ -22,8 +22,8 @@ export class TaskRunner {
     const projectRunReportInitalRow: { id: number } = await initProjectRunReport({
       projectName: project.name,
       startDate: new Date().getDate(),
-      commitHash: this.projectWithPullResult.pullResult.commitHash,
-      repoPullOuput: this.projectWithPullResult.pullResult.output
+      commitHash: this.projectWithMeta.version.commitHash,
+      repoPullOuput: this.projectWithMeta.version.output
     });
 
     flowController.flowResult$.subscribe(null, null, async () => {

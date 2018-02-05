@@ -1,11 +1,10 @@
 import * as R from 'ramda';
 import * as Rx from 'rxjs';
 import { TaskQueue } from './task-queue';
-import { ProjectWithPullResult } from 'src/module/observer/observer.module';
-import Project from 'src/module/project/project';
 import { FlowController } from 'src/module/flow/flow-controller';
 import { OutputUnit } from 'src/module/flow/flow.module';
 import { TaskRunner } from 'src/module/task/task-runner';
+import { ProjectWithMeta } from 'src/module/project/product.module';
 
 export class TaskManager {
   private queue: TaskQueue = new TaskQueue();
@@ -19,11 +18,11 @@ export class TaskManager {
   }
 
   public stop(): void {
-    // flag running false and clean running process
+    // TODO flag running false and clean running process
   }
 
-  public addToQueue(projectWithPullResult: ProjectWithPullResult): void {
-    this.queue.push(projectWithPullResult);
+  public addToQueue(projectWithMeta: ProjectWithMeta): void {
+    this.queue.push(projectWithMeta);
     this.runQueueTask();
   }
 
@@ -37,8 +36,8 @@ export class TaskManager {
       return Promise.resolve();
     }
     this.looping = true;
-    const projectWithPullResult: ProjectWithPullResult = this.queue.shift();
-    const taskRunner: TaskRunner = new TaskRunner(projectWithPullResult);
+    const projectWithMeta: ProjectWithMeta = this.queue.shift();
+    const taskRunner: TaskRunner = new TaskRunner(projectWithMeta);
     (await taskRunner.run(this.taskEvent$)).subscribe(() => {
       this.runQueueTask();
     });

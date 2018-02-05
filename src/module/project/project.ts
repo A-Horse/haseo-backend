@@ -1,16 +1,12 @@
 import * as path from 'path';
 import * as YAML from 'yamljs';
 import * as R from 'ramda';
-import gloablEmmiterInstance from './global-emmiter';
+// import gloablEmmiterInstance from './global-emmiter';
 import { ProjectSetting } from 'src/module/project/project.module';
 
 export class Project {
   public name: string;
   private setting: ProjectSetting;
-
-  // private options: any;
-  // private eventEmitter: EventEmitter;
-  // private state = { isRunning: false, isWaitting: false, currentFlowName: null };
 
   constructor(public repoPath: string, public repoName: string) {
     this.readProjectSetting();
@@ -23,7 +19,7 @@ export class Project {
     };
   }
 
-  public getProjectSetting(): ProjectSetting {
+  public getSetting(): ProjectSetting {
     return this.setting;
   }
 

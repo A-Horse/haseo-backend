@@ -1,21 +1,21 @@
-import { ProjectWithPullResult } from '../observer/observer.module';
+import { ProjectWithMeta } from 'src/module/project/product.module';
 
 export class TaskQueue {
-  private queue: ProjectWithPullResult[] = [];
+  private queue: ProjectWithMeta[] = [];
 
   get length(): number {
     return this.queue.length;
   }
 
-  public push(projectWithPullResult: ProjectWithPullResult): void {
-    this.queue.push(projectWithPullResult);
+  public push(projectWithMeta: ProjectWithMeta): void {
+    this.queue.push(projectWithMeta);
   }
 
-  public pop(): ProjectWithPullResult {
+  public pop(): ProjectWithMeta {
     return this.queue.pop();
   }
 
-  public shift(): ProjectWithPullResult {
+  public shift(): ProjectWithMeta {
     return this.queue.shift();
   }
 }
