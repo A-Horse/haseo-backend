@@ -8,10 +8,9 @@ import { ProjectWithMeta } from 'src/module/project/project.module';
 
 export class TaskManager {
   private queue: TaskQueue = new TaskQueue();
+  private taskEvent$ = new Rx.Subject<{ type: string; payload: any }>();
   private looping = false;
   private running = false;
-
-  constructor(private taskEvent$: Rx.Subject<{ type: string; payload: any }>) {}
 
   public start(): void {
     this.running = true;
@@ -27,18 +26,24 @@ export class TaskManager {
   }
 
   // single thread here
-  private async runQueueTask(): Promise<void> {
+  private runQueueTask(): void {
     if (!this.running || this.looping) {
-      return Promise.resolve();
+      return;
     }
     if (!this.queue.length) {
       this.looping = false;
-      return Promise.resolve();
+      return;
     }
     this.looping = true;
+    this.runProjectTask();
+  }
+
+  private async runProjectTask(): Promise<void> {
     const projectWithMeta: ProjectWithMeta = this.queue.shift();
-    const taskRunner: TaskRunner = new TaskRunner(projectWithMeta);
-    (await taskRunner.run(this.taskEvent$)).subscribe(() => {
+    const taskRunner: TaskRunner = new TaskRunner(projectWithMeta, this.taskEvent$);
+    const taskRunComplete$ = await taskRunner.run();
+
+    taskRunComplete$.subscribe(() => {
       this.runQueueTask();
     });
   }

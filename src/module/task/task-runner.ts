@@ -7,15 +7,16 @@ import { ProjectWithMeta } from 'src/module/project/project.module';
 export class TaskRunner {
   public complete$ = new Rx.Subject<void>();
 
-  constructor(private projectWithMeta: ProjectWithMeta) {}
+  constructor(
+    private projectWithMeta: ProjectWithMeta,
+    private taskEvent$: Rx.Subject<{ type: string; payload: any }>
+  ) {}
 
-  public async run(
-    taskEvent$: Rx.Subject<{ type: string; payload: any }>
-  ): Promise<Rx.Subject<void>> {
+  public async run(): Promise<Rx.Subject<void>> {
     const project: Project = this.projectWithMeta.project;
     const flowController = new FlowController(project.getSetting().flow, {
       repoPath: project.repoPath,
-      taskEvent$
+      taskEvent$: this.taskEvent$
     });
 
     flowController.start();
