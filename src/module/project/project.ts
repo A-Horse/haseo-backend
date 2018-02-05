@@ -27,8 +27,8 @@ export class Project {
   }
 
   private readProjectSetting(): void {
-    const heseoConfigFilePath = path.join(this.repoPath, 'haseo.yaml');
-    this.setting = YAML.load(heseoConfigFilePath);
+    const configFilePath = path.join(this.repoPath, 'haseo.yaml');
+    this.setting = YAML.load(configFilePath);
     this.name = this.setting.name;
   }
 }

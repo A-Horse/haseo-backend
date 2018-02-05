@@ -4,7 +4,8 @@ import * as Rx from 'rxjs';
 import configure from '../../configure';
 import { Project } from 'src/module/project/project';
 import { RepoPuller } from 'src/module/observer/repo-puller';
-import { ProjectWithMeta, PullResult } from 'src/module/observer/observer.module';
+import { ProjectWithMeta } from 'src/module/project/project.module';
+import { RepoVersion } from 'src/module/observer/observer.module';
 
 export class Observer {
   private polling: boolean = false;
@@ -18,7 +19,7 @@ export class Observer {
     const pullDelay$ = pull$.delay(configure['DEFAULT_PULL_INTERVAL']);
     const poll$ = pullDelay$
       .repeat()
-      .map((version: PullResult) => ({ version, project: this.project }))
+      .map((version: RepoVersion) => ({ version, project: this.project }))
       .share();
 
     this.polling = true;
@@ -31,7 +32,7 @@ export class Observer {
     return this.project;
   }
 
-  private createPullObservable(): Rx.Observable<PullResult> {
+  private createPullObservable(): Rx.Observable<RepoVersion> {
     return Rx.Observable.create(observer => {
       const repoPuller = new RepoPuller();
       repoPuller.pullRepo(this.project.repoPath).subscribe(observer);

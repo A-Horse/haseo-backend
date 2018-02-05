@@ -1,8 +1,8 @@
 import * as R from 'ramda';
 import { Project } from 'src/module/project/project';
-import Observer from 'src/module/observer/observer';
+import { Observer } from 'src/module/observer/observer';
 import { Subject } from 'rxjs/Subject';
-import { ProjectWithMeta } from 'src/module/observer/observer.module';
+import { ProjectWithMeta } from 'src/module/project/product.module';
 
 export class ObserverManager {
   private shouldRunProjectWithMeta$ = new Subject<ProjectWithMeta>();
@@ -34,6 +34,6 @@ export class ObserverManager {
   }
 
   private findProjectShouldObserve(projects: Project[]) {
-    return projects.filter(project => project.getProjectSetting().watch);
+    return projects.filter(project => project.getSetting().watch);
   }
 }

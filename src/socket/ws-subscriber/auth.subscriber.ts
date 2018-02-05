@@ -4,8 +4,11 @@ import { CIDaemon } from 'src/ci-daemon';
 import { WebSocketHelper } from 'src/socket/websocket-helper';
 import { verityJwt } from '../../service/auth';
 
-
-export const WS_AUTH_REQUEST = (message$: Subject<SocketMessage>, wsh: WebSocketHelper, ciCtrlDaemon: CIDaemon) =>
+export const WS_AUTH_REQUEST = (
+  message$: Subject<SocketMessage>,
+  wsh: WebSocketHelper,
+  ciCtrlDaemon: CIDaemon
+) =>
   message$.ofType('WS_AUTH_REQUEST').subscribe((message: SocketMessage) => {
     try {
       const user = verityJwt(message.payload).data;

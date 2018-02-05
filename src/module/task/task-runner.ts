@@ -1,8 +1,8 @@
 import * as Rx from 'rxjs';
-import { ProjectWithMeta } from 'src/module/observer/observer.module';
 import { FlowController } from 'src/module/flow/flow-controller';
 import { Project } from 'src/module/project/project';
 import { initProjectRunReport, saveProjectRunReport } from 'src/dao/report.dao';
+import { ProjectWithMeta } from 'src/module/project/project.module';
 
 export class TaskRunner {
   public complete$ = new Rx.Subject<void>();

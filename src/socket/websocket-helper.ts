@@ -1,7 +1,7 @@
 import * as WebSocket from 'ws';
 
 export class WebSocketHelper {
-  private state: any = {
+  public state: any = {
     listenPrjectUpdateMap: {}
   };
 

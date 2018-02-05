@@ -61,10 +61,9 @@ export const WS_START_PROJECT_FLOW_REQUEST = (
       })
     )
     .subscribe(async (message: SocketMessage) => {
-      daemon.startProject(message.payload.name);
+      daemon.mapOutRunProject(message.payload.name);
       wsh.sendJSON({
-        type: 'WS_START_PROJECT_SUCCESS',
-        payload: reportHistory
+        type: 'WS_START_PROJECT_SUCCESS'
       });
     });
 
@@ -73,13 +72,18 @@ export const WS_GET_PROJECT_REPORT_REQUEST = (
   wsh: WebSocketHelper,
   daemon: CIDaemon
 ) =>
-  message$.ofType('WS_GET_PROJECT_REPORT_REQUEST').subscribe(async (message: SocketMessage) => {
-    const payload: { name: string; reportId: string } = message.payload;
-    wsh.sendJSON({
-      type: 'WS_GET_PROJECT_REPORT_SUCCESS',
-      payload: await daemon.projectManager.getProjectReport(
-        message.payload.name,
-        message.payload.reportId
-      )
+  message$
+    .ofType('WS_GET_PROJECT_REPORT_REQUEST')
+    .filter(
+      insureProjectExist(wsh, daemon, {
+        errorType: 'WS_GET_PROJECT_REPORT_FAILURE'
+      })
+    )
+    .subscribe(async (message: SocketMessage) => {
+      const payload: { name: string; reportId: string } = message.payload;
+
+      wsh.sendJSON({
+        type: 'WS_GET_PROJECT_REPORT_SUCCESS',
+        payload: await daemon.getProjectRunReport(message.payload.name, message.payload.reportId)
+      });
     });
-  });

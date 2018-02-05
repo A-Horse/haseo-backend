@@ -23,7 +23,10 @@ export class CIDaemon {
 
   public startup(): void {
     this.taskManager = new TaskManager(this.taskEvent$);
+
+    this.taskManager.start();
     this.projectManager.initial();
+
     this.observerManager.watchProjects(this.projectManager.getProjects());
 
     this.observerManager

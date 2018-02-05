@@ -4,7 +4,7 @@ import { TaskQueue } from './task-queue';
 import { FlowController } from 'src/module/flow/flow-controller';
 import { OutputUnit } from 'src/module/flow/flow.module';
 import { TaskRunner } from 'src/module/task/task-runner';
-import { ProjectWithMeta } from 'src/module/project/product.module';
+import { ProjectWithMeta } from 'src/module/project/project.module';
 
 export class TaskManager {
   private queue: TaskQueue = new TaskQueue();
