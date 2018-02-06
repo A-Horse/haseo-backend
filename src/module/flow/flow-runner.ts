@@ -7,8 +7,8 @@ import { OutputUnit } from './flow.module';
 export class FlowRunner {
   public success$ = new Rx.Subject<OutputUnit[]>();
   public failure$ = new Rx.Subject<OutputUnit[]>();
+  public unitouput$ = new Rx.Subject<OutputUnit>();
   private cprocess: ChildProcess;
-  private unitouput$ = new Rx.Subject<OutputUnit>();
   private output: OutputUnit[] = [];
 
   constructor(

@@ -5,7 +5,7 @@ import configure from '../../configure';
 import { Project } from 'src/module/project/project';
 import { Subject } from 'rxjs/Subject';
 import { CommitAcquirer } from 'src/module/version/commit-acquirer';
-import { ProjectWithMeta } from 'src/module/project/product.module';
+import { ProjectWithMeta } from 'src/module/project/project.module';
 
 export class ProjectManager {
   public projects: Project[];

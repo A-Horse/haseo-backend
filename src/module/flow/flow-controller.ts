@@ -8,6 +8,7 @@ export class FlowController {
   public flowResult$ = new Rx.Subject<FlowResult>();
   public result: FlowResult[] = [];
   public status: 'INITIAL' | 'RUNING' | 'SUCCESS' | 'FAILURE' = 'INITIAL';
+  public outputUnitSequence: Array<{ outputUnit: OutputUnit; flowName: string }> = [];
 
   constructor(
     private flows: object[],
@@ -33,6 +34,7 @@ export class FlowController {
     this.runFlows(this.flows);
   }
 
+  // tslint:disable-next-line
   public clean(): void {}
 
   private runFlows(flows: object[]): void {
@@ -41,9 +43,15 @@ export class FlowController {
       return;
     }
     const [flow, restFlows] = R.splitAt(1, flows);
+    const flowName: string = R.keys(flow)[0];
 
     const flowRunner = new FlowRunner(flow, this.option);
     flowRunner.run();
+
+    flowRunner.unitouput$.subscribe((outputUnit: OutputUnit) =>
+      this.outputUnitSequence.push({ outputUnit, flowName })
+    );
+
     flowRunner.success$.subscribe((flowResult: OutputUnit[]) => {
       this.flowResult$.next({
         status: 'SUCCESS',
@@ -52,6 +60,7 @@ export class FlowController {
       });
       this.runFlows(restFlows);
     });
+
     flowRunner.failure$.subscribe((flowResult: OutputUnit[]) => {
       this.flowResult$.next({
         status: 'FAILURE',

@@ -5,6 +5,7 @@ import { initProjectRunReport, saveProjectRunReport } from 'src/dao/report.dao';
 import { ProjectWithMeta } from 'src/module/project/project.module';
 
 export class TaskRunner {
+  public reportId: number;
   public complete$ = new Rx.Subject<void>();
 
   constructor(
@@ -12,7 +13,7 @@ export class TaskRunner {
     private taskEvent$: Rx.Subject<{ type: string; payload: any }>
   ) {}
 
-  public async run(): Promise<Rx.Subject<void>> {
+  public async run(): Promise<void> {
     const project: Project = this.projectWithMeta.project;
     const flowController = new FlowController(project.getSetting().flow, {
       repoPath: project.repoPath,
@@ -36,7 +37,9 @@ export class TaskRunner {
       this.complete$.next();
       this.complete$.complete();
     });
+  }
 
-    return this.complete$;
+  private assignRepotId(reportId: number): void {
+    this.reportId = reportId;
   }
 }

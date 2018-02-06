@@ -5,12 +5,15 @@ import { FlowController } from 'src/module/flow/flow-controller';
 import { OutputUnit } from 'src/module/flow/flow.module';
 import { TaskRunner } from 'src/module/task/task-runner';
 import { ProjectWithMeta } from 'src/module/project/project.module';
+import { TaskRunContainer } from 'src/module/task/task-run-container';
 
 export class TaskManager {
   private queue: TaskQueue = new TaskQueue();
+  private runContainer = new TaskRunContainer();
   private taskEvent$ = new Rx.Subject<{ type: string; payload: any }>();
   private looping = false;
   private running = false;
+  private flow$;
 
   public start(): void {
     this.running = true;
@@ -41,9 +44,11 @@ export class TaskManager {
   private async runProjectTask(): Promise<void> {
     const projectWithMeta: ProjectWithMeta = this.queue.shift();
     const taskRunner: TaskRunner = new TaskRunner(projectWithMeta, this.taskEvent$);
-    const taskRunComplete$ = await taskRunner.run();
 
-    taskRunComplete$.subscribe(() => {
+    this.runContainer.add(taskRunner);
+    // taskRunner.run();
+
+    taskRunner.complete$.subscribe(() => {
       this.runQueueTask();
     });
   }

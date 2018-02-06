@@ -5,6 +5,7 @@ import { ObserverManager } from './module/observer/observer-manager';
 import { ReportManager } from 'src/module/report/report-manager';
 import { Project } from 'src/module/project/project';
 import { ProjectWithMeta } from 'src/module/project/project.module';
+import { FlowManager } from 'src/module/flow/flow-manager';
 
 // tslint:disable:member-ordering
 export class CIDaemon {
@@ -19,6 +20,7 @@ export class CIDaemon {
   public getProjectRunReport = this.reportManager.getProjectRunReport;
 
   private taskManager: TaskManager = new TaskManager();
+  private flowManager: FlowManager = new FlowManager();
   private observerManager: ObserverManager = new ObserverManager();
 
   public startup(): void {
