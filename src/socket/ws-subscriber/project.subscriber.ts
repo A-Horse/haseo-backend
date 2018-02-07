@@ -48,7 +48,7 @@ export const WS_GET_PROJECT_REPORT_HISTORY_REQUEST = (
 //     wsh.state.listenPrjectsUpdate = true;
 //   });
 
-export const WS_START_PROJECT_FLOW_REQUEST = (
+export const WS_START_PROJECT_REQUEST = (
   message$: Rx.Subject<SocketMessage>,
   wsh: WebSocketHelper,
   daemon: CIDaemon
@@ -85,5 +85,26 @@ export const WS_GET_PROJECT_REPORT_REQUEST = (
       wsh.sendJSON({
         type: 'WS_GET_PROJECT_REPORT_SUCCESS',
         payload: await daemon.getProjectRunReport(message.payload.name, message.payload.reportId)
+      });
+    });
+
+export const WS_GET_PROJECT_REPORT_OUTPUT_PART_REQUEST = (
+  message$: Rx.Subject<SocketMessage>,
+  wsh: WebSocketHelper,
+  daemon: CIDaemon
+) =>
+  message$
+    .ofType('WS_GET_PROJECT_REPORT_OUTPUT_PART_REQUEST')
+    .filter(
+      insureProjectExist(wsh, daemon, {
+        errorType: 'WS_GET_PROJECT_REPORT_OUTPUT_PART_FAILURE'
+      })
+    )
+    .subscribe((message: SocketMessage) => {
+      const payload: { name: string; reportId: number; offset: number } = message.payload;
+
+      wsh.sendJSON({
+        type: 'WS_GET_PROJECT_REPORT_OUTPUT_PART_SUCCESS',
+        payload: daemon.queryTaskRunnerOutputPartByReportId(payload.reportId, payload.offset)
       });
     });

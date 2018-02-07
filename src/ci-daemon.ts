@@ -19,6 +19,7 @@ export class CIDaemon {
   public getProjectRunReport = this.reportManager.getProjectRunReport;
 
   private taskManager: TaskManager = new TaskManager();
+  public queryTaskRunnerOutputPartByReportId = this.taskManager.queryTaskRunnerOutputPartByReportId;
   private observerManager: ObserverManager = new ObserverManager();
 
   public startup(): void {

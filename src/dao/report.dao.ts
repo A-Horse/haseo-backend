@@ -3,9 +3,10 @@ import knex from '../service/knex';
 import { pipelineLogger } from '../util/logger';
 import { ColumnInfo } from 'knex';
 import { Project } from 'src/platform/project/project';
-import { FlowResult } from 'src/platform/flow/flow.module';
+import { FlowResult } from 'src/platform/task/flow/flow.module';
 
 const projectRunReportTableName = 'project_run_report';
+
 export async function initProjectRunReport(payload: {
   projectName: string;
   startDate: number;
