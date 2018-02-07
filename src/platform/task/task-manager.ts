@@ -2,10 +2,11 @@ import * as R from 'ramda';
 import * as Rx from 'rxjs';
 import { TaskQueue } from './task-queue';
 import { FlowController } from 'src/module/flow/flow-controller';
-import { OutputUnit } from 'src/module/flow/flow.module';
-import { TaskRunner } from 'src/module/task/task-runner';
-import { ProjectWithMeta } from 'src/module/project/project.module';
-import { TaskRunContainer } from 'src/module/task/task-run-container';
+import { OutputUnit } from 'src/platform/flow/flow.module';
+import { TaskRunner } from 'src/platform/task/task-runner';
+import { ProjectWithMeta } from 'src/platform/project/project.module';
+import { TaskRunContainer } from 'src/platform/task/task-run-container';
+import { FlowOutputUnit } from 'src/platform/task/flow/flow.module';
 
 export class TaskManager {
   private queue: TaskQueue = new TaskQueue();
@@ -26,6 +27,14 @@ export class TaskManager {
   public addToQueue(projectWithMeta: ProjectWithMeta): void {
     this.queue.push(projectWithMeta);
     this.runQueueTask();
+  }
+
+  public queryTaskRunnerOutputPartByReportId(reportId: number, offset: number): FlowOutputUnit[] {
+    const taskRunner: TaskRunner = this.runContainer.findTaskRunnerByReportId(reportId);
+    if (!taskRunner) {
+      return null;
+    }
+    return taskRunner.queryRunOutputPart(offset);
   }
 
   // single thread here

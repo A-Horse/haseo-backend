@@ -4,14 +4,14 @@
     "baseUrl": "./",
     "allowJs": true,
     "target": "es5",
-    "lib": ["es2015", "es2017"],
+    "lib": ["es2015", "es2017", "dom"], // dom lib for rxjs dom and ajx error
     "sourceMap": true,
     "moduleResolution": "node",
     "experimentalDecorators": true
   },
   "include": ["./src/**/*"],
   "files": [
-    "src/module/project/project.d.ts",
+    "src/platform/project/project.d.ts",
     "src/socket/socket.d.ts"
   ]
 }

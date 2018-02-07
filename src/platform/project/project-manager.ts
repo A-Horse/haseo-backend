@@ -2,10 +2,10 @@ import * as fs from 'fs';
 import * as path from 'path';
 import * as R from 'ramda';
 import configure from '../../configure';
-import { Project } from 'src/module/project/project';
+import { Project } from 'src/platform/project/project';
 import { Subject } from 'rxjs/Subject';
-import { CommitAcquirer } from 'src/module/version/commit-acquirer';
-import { ProjectWithMeta } from 'src/module/project/project.module';
+import { CommitAcquirer } from 'src/platform/version/commit-acquirer';
+import { ProjectWithMeta } from 'src/platform/project/project.module';
 
 export class ProjectManager {
   public projects: Project[];

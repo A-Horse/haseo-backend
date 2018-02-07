@@ -3,16 +3,16 @@ import * as path from 'path';
 import * as Rx from 'rxjs';
 import configure from '../../configure';
 import { exec, ChildProcess } from 'child_process';
-import { Project } from 'src/module/project/project';
+import { Project } from 'src/platform/project/project';
 import { Subject } from 'rxjs/Subject';
 import { Observable } from 'rxjs/Observable';
-import { PullResult } from './observer.module';
+import { RepoVersion } from './observer.module';
 
 export class RepoPuller {
   private cprocess: ChildProcess;
 
-  public pullRepo(repoPath: string): Observable<PullResult> {
-    const subject$ = new Rx.Subject<PullResult>();
+  public pullRepo(repoPath: string): Observable<RepoVersion> {
+    const subject$ = new Rx.Subject<RepoVersion>();
     this.cprocess = exec(path.join(__dirname, '../../../shell/update-repo.sh'), {
       cwd: repoPath
     });

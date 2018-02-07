@@ -1,4 +1,4 @@
-import { Project } from 'src/module/project/project';
+import { Project } from 'src/platform/project/project';
 
 export interface RepoVersion {
   commitHash: string;

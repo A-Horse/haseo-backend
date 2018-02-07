@@ -2,10 +2,10 @@ import * as fs from 'fs';
 import * as path from 'path';
 import * as Rx from 'rxjs';
 import configure from '../../configure';
-import { Project } from 'src/module/project/project';
-import { RepoPuller } from 'src/module/observer/repo-puller';
-import { ProjectWithMeta } from 'src/module/project/project.module';
-import { RepoVersion } from 'src/module/observer/observer.module';
+import { Project } from 'src/platform/project/project';
+import { RepoPuller } from 'src/platform/observer/repo-puller';
+import { ProjectWithMeta } from 'src/platform/project/project.module';
+import { RepoVersion } from 'src/platform/observer/observer.module';
 
 export class Observer {
   private polling: boolean = false;

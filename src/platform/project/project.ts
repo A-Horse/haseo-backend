@@ -1,7 +1,7 @@
 import * as path from 'path';
 import * as YAML from 'yamljs';
 import * as R from 'ramda';
-import { ProjectSetting } from 'src/module/project/project.module';
+import { ProjectSetting } from 'src/platform/project/project.module';
 
 export class Project {
   public name: string;

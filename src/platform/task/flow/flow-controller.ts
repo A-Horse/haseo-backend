@@ -1,14 +1,14 @@
 import * as R from 'ramda';
 import * as Rx from 'rxjs';
 import { FlowRunner } from './flow-runner';
-import { OutputUnit, FlowResult } from './flow.module';
+import { OutputUnit, FlowResult, FlowOutputUnit } from './flow.module';
 import { Subject } from 'rxjs/Subject';
 
 export class FlowController {
   public flowResult$ = new Rx.Subject<FlowResult>();
   public result: FlowResult[] = [];
   public status: 'INITIAL' | 'RUNING' | 'SUCCESS' | 'FAILURE' = 'INITIAL';
-  public outputUnitSequence: Array<{ outputUnit: OutputUnit; flowName: string }> = [];
+  public outputUnitSequence: FlowOutputUnit[] = [];
 
   constructor(
     private flows: object[],
@@ -37,6 +37,12 @@ export class FlowController {
   // tslint:disable-next-line
   public clean(): void {}
 
+  public getFlowOutputUnitPart(offset: number): FlowOutputUnit[] {
+    const diffOutputUnitCount: number = this.outputUnitSequence.length - offset;
+    const fixedCount: number = Math.max(diffOutputUnitCount, 0);
+    return R.takeLast(fixedCount, this.outputUnitSequence);
+  }
+
   private runFlows(flows: object[]): void {
     if (!flows.length) {
       this.finish('SUCCESS');
@@ -49,7 +55,7 @@ export class FlowController {
     flowRunner.run();
 
     flowRunner.unitouput$.subscribe((outputUnit: OutputUnit) =>
-      this.outputUnitSequence.push({ outputUnit, flowName })
+      this.outputUnitSequence.push({ ...outputUnit, flowName })
     );
 
     flowRunner.success$.subscribe((flowResult: OutputUnit[]) => {

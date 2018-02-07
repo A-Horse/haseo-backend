@@ -5,7 +5,6 @@ import { Subject } from 'rxjs/Subject';
 import { setupWebsocketSubscriber } from './ws-subscriber/index';
 import { WebSocketHelper } from './websocket-helper';
 import { HWebSocket } from './socket';
-import GlobalEmmiterInstance from '../module/project/global-emmiter';
 
 export default function setupWS(server, daemon) {
   const wsserver: WebSocket.Server = new WebSocket.Server({ server, path: '/ws' });
@@ -28,15 +27,15 @@ export default function setupWS(server, daemon) {
     });
   });
 
-  GlobalEmmiterInstance.on('PROJECT_UNIT_FRAGMENT_UPDATE', data => {
-    wsserver.clients.forEach((client: HWebSocket) => {
-      if (!client.wsh.state.listenPrjectUpdateMap[data.name]) {
-        return;
-      }
-      client.wsh.sendJSON({
-        type: 'WS_PROJECT_UNIT_FRAGMENT_UPDATE_SUCCESS',
-        payload: data
-      });
-    });
-  });
+  // GlobalEmmiterInstance.on('PROJECT_UNIT_FRAGMENT_UPDATE', data => {
+  //   wsserver.clients.forEach((client: HWebSocket) => {
+  //     if (!client.wsh.state.listenPrjectUpdateMap[data.name]) {
+  //       return;
+  //     }
+  //     client.wsh.sendJSON({
+  //       type: 'WS_PROJECT_UNIT_FRAGMENT_UPDATE_SUCCESS',
+  //       payload: data
+  //     });
+  //   });
+  // });
 }

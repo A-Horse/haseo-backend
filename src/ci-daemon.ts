@@ -1,11 +1,10 @@
 import { Subject } from 'rxjs/Subject';
-import { ProjectManager } from './module/project/project-manager';
-import { TaskManager } from './module/task/task-manager';
-import { ObserverManager } from './module/observer/observer-manager';
-import { ReportManager } from 'src/module/report/report-manager';
-import { Project } from 'src/module/project/project';
-import { ProjectWithMeta } from 'src/module/project/project.module';
-import { FlowManager } from 'src/module/flow/flow-manager';
+import { ProjectManager } from './platform/project/project-manager';
+import { TaskManager } from './platform/task/task-manager';
+import { ObserverManager } from './platform/observer/observer-manager';
+import { ReportManager } from 'src/platform/report/report-manager';
+import { Project } from 'src/platform/project/project';
+import { ProjectWithMeta } from 'src/platform/project/project.module';
 
 // tslint:disable:member-ordering
 export class CIDaemon {
@@ -20,7 +19,6 @@ export class CIDaemon {
   public getProjectRunReport = this.reportManager.getProjectRunReport;
 
   private taskManager: TaskManager = new TaskManager();
-  private flowManager: FlowManager = new FlowManager();
   private observerManager: ObserverManager = new ObserverManager();
 
   public startup(): void {

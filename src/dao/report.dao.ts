@@ -2,8 +2,8 @@ import * as R from 'ramda';
 import knex from '../service/knex';
 import { pipelineLogger } from '../util/logger';
 import { ColumnInfo } from 'knex';
-import { Project } from 'src/module/project/project';
-import { FlowResult } from 'src/module/flow/flow.module';
+import { Project } from 'src/platform/project/project';
+import { FlowResult } from 'src/platform/flow/flow.module';
 
 const projectRunReportTableName = 'project_run_report';
 export async function initProjectRunReport(payload: {
