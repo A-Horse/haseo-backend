@@ -1,12 +1,12 @@
 import * as R from 'ramda';
 import * as Rx from 'rxjs';
 import { TaskQueue } from './task-queue';
-import { FlowController } from 'src/platform/task/flow/flow-controller';
-import { OutputUnit } from 'src/platform/task/flow/flow.module';
-import { TaskRunner } from 'src/platform/task/task-runner';
-import { ProjectWithMeta } from 'src/platform/project/project.module';
-import { TaskRunContainer } from 'src/platform/task/task-run-container';
-import { FlowOutputUnit } from 'src/platform/task/flow/flow.module';
+import { FlowController } from '../task/flow/flow-controller';
+import { OutputUnit } from '../task/flow/flow.module';
+import { TaskRunner } from '../task/task-runner';
+import { ProjectWithMeta } from '../project/project.module';
+import { TaskRunContainer } from '../task/task-run-container';
+import { FlowOutputUnit } from '../task/flow/flow.module';
 
 export class TaskManager {
   private queue: TaskQueue = new TaskQueue();

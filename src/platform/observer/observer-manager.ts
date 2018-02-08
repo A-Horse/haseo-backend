@@ -1,8 +1,8 @@
 import * as R from 'ramda';
-import { Project } from 'src/platform/project/project';
-import { Observer } from 'src/platform/observer/observer';
 import { Subject } from 'rxjs/Subject';
-import { ProjectWithMeta } from 'src/platform/project/project.module';
+import { Project } from '../project/project';
+import { Observer } from '../observer/observer';
+import { ProjectWithMeta } from '../project/project.module';
 
 export class ObserverManager {
   private shouldRunProjectWithMeta$ = new Subject<ProjectWithMeta>();

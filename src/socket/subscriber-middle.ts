@@ -1,6 +1,6 @@
 import { WebSocketHelper } from 'src/socket/websocket-helper';
 import { CIDaemon } from 'src/ci-daemon';
-import { Project } from 'src/platform/project/project';
+import { Project } from '../platform/project/project';
 import { Socket } from 'net';
 
 export function insureProjectExist(

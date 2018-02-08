@@ -48,7 +48,8 @@ export class FlowController {
       this.finish('SUCCESS');
       return;
     }
-    const [flow, restFlows] = R.splitAt(1, flows);
+    const [flowArray, restFlows] = R.splitAt(1, flows);
+    const flow = R.head(flowArray);
     const flowName: string = R.keys(flow)[0];
 
     const flowRunner = new FlowRunner(flow, this.option);

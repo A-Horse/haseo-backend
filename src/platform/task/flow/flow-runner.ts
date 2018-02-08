@@ -62,7 +62,9 @@ export class FlowRunner {
     const outputUnit = { type, data: outputText };
     this.unitouput$.next(outputUnit);
     if (this.option.std) {
-      process.stdout.write(outputText);
+      // can not output color because stdio not in context
+      // https://stackoverflow.com/questions/7725809/preserve-color-when-executing-child-process-spawn
+      process.stdout.write(data.toString());
     }
     this.output.push(outputUnit);
   }

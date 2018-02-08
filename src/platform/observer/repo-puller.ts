@@ -1,17 +1,15 @@
 import * as fs from 'fs';
 import * as path from 'path';
 import * as Rx from 'rxjs';
-import configure from '../../configure';
 import { exec, ChildProcess } from 'child_process';
-import { Project } from 'src/platform/project/project';
-import { Subject } from 'rxjs/Subject';
-import { Observable } from 'rxjs/Observable';
+import configure from '../../configure';
+import { Project } from '../project/project';
 import { RepoVersion } from './observer.module';
 
 export class RepoPuller {
   private cprocess: ChildProcess;
 
-  public pullRepo(repoPath: string): Observable<RepoVersion> {
+  public pullRepo(repoPath: string): Rx.Observable<RepoVersion> {
     const subject$ = new Rx.Subject<RepoVersion>();
     this.cprocess = exec(path.join(__dirname, '../../../shell/update-repo.sh'), {
       cwd: repoPath

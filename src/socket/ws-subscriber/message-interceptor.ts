@@ -1,4 +1,4 @@
-import { WebSocketHelper } from 'src/socket/websocket-helper';
+import { WebSocketHelper } from '../websocket-helper';
 import { Subject } from 'rxjs/Subject';
 import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/operator/do';

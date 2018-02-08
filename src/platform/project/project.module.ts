@@ -1,5 +1,5 @@
-import { RepoVersion } from 'src/module/observer/observer.module';
-import { Project } from 'src/platform/project/project';
+import { RepoVersion } from '../observer/observer.module';
+import { Project } from './project';
 
 export interface ProjectWithMeta {
   version: RepoVersion;

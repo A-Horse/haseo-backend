@@ -1,9 +1,9 @@
 import * as Rx from 'rxjs';
-import { Project } from 'src/platform/project/project';
-import { initProjectRunReport, saveProjectRunReport } from 'src/dao/report.dao';
-import { ProjectWithMeta } from 'src/platform/project/project.module';
-import { FlowController } from 'src/platform/task/flow/flow-controller';
-import { FlowOutputUnit } from 'src/platform/task/flow/flow.module';
+import { Project } from '../project/project';
+import { initProjectRunReport, saveProjectRunReport } from '../../dao/report.dao';
+import { ProjectWithMeta } from '../project/project.module';
+import { FlowController } from '../task/flow/flow-controller';
+import { FlowOutputUnit } from '../task/flow/flow.module';
 
 export class TaskRunner {
   public reportId: number;

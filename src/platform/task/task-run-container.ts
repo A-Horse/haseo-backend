@@ -1,5 +1,5 @@
 import * as R from 'ramda';
-import { TaskRunner } from 'src/platform/task/task-runner';
+import { TaskRunner } from '../task/task-runner';
 
 export class TaskRunContainer {
   private taskRunners: TaskRunner[] = [];

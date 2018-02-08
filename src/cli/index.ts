@@ -1,11 +1,25 @@
+process.on('unhandledRejection', console.log);
+
 import 'babel-polyfill';
 
 import * as fs from 'fs';
+import * as path from 'path';
+import * as R from 'ramda';
+import * as Rx from 'rxjs';
 import * as colors from 'colors';
+import { Project } from '../platform/project/project';
+import { CommitAcquirer } from '../platform/version/commit-acquirer';
+import { ProjectWithMeta } from '../platform/project/project.module';
+import { FlowController } from '../platform/task/flow/flow-controller';
 
-const argv = require('optimist').argv;
+import { argv } from 'optimist';
 
-function main(): void {
+// tslint:disable:no-console
+async function main(): Promise<void> {
+  const version = JSON.parse(fs.readFileSync(path.join(__dirname, '../../package.json')).toString())
+    .version;
+
+  console.log(version);
   if (!fs.existsSync('haseo.yaml')) {
     console.log(
       colors.bold.red('Error: '),
@@ -13,11 +27,32 @@ function main(): void {
     );
   }
 
-  const project = new Project('.', 'Project', {
-    watch: false
-  });
+  const repoName = R.takeLast(1, path.resolve('.').split('/'));
 
-  project.start();
+  const project = new Project('.', repoName);
+  const commitAcquirer: CommitAcquirer = new CommitAcquirer(project.repoPath);
+  const commitHash: string = await commitAcquirer.getRepoCurrentCommitHash();
+  const projectWithMeta: ProjectWithMeta = {
+    project,
+    version: {
+      commitHash
+    }
+  };
+
+  const taskEvent$ = new Rx.Subject<{
+    type: string;
+    payload: any;
+  }>();
+
+  const flowController = new FlowController(projectWithMeta.project.getSetting().flow, {
+    repoPath: projectWithMeta.project.repoPath,
+    taskEvent$,
+    std: true
+  });
+  flowController.start();
+  flowController.flowResult$.subscribe(null, null, () => {
+    console.log(colors.green('success!'));
+  });
 }
 
 main();

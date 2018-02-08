@@ -1,9 +1,9 @@
 import * as Rx from 'rxjs';
 import { CIDaemon } from 'src/ci-daemon';
-import { WebSocketHelper } from 'src/socket/websocket-helper';
-import { Project } from 'src/platform/project/project';
+import { WebSocketHelper } from '../websocket-helper';
+import { Project } from '../../platform/project/project';
 import './operator/of-type.operator';
-import { insureProjectExist } from 'src/socket/subscriber-middle';
+import { insureProjectExist } from '../subscriber-middle';
 
 export const WS_GET_PROJECTS_REQUEST = (
   message$: Rx.Subject<SocketMessage>,

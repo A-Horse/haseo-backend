@@ -3,8 +3,8 @@ import { ProjectManager } from './platform/project/project-manager';
 import { TaskManager } from './platform/task/task-manager';
 import { ObserverManager } from './platform/observer/observer-manager';
 import { ReportManager } from 'src/platform/report/report-manager';
-import { Project } from 'src/platform/project/project';
-import { ProjectWithMeta } from 'src/platform/project/project.module';
+import { Project } from './platform/project/project';
+import { ProjectWithMeta } from './platform/project/project.module';
 
 // tslint:disable:member-ordering
 export class CIDaemon {

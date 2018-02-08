@@ -1,6 +1,6 @@
-import './of-type.operator';
 import { Subject } from 'rxjs/Subject';
-import { CIDaemon } from 'src/ci-daemon';
+import './of-type.operator';
+import { CIDaemon } from '../../ci-daemon';
 import { WebSocketHelper } from 'src/socket/websocket-helper';
 import { verityJwt } from '../../service/auth';
 
