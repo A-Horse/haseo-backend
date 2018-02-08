@@ -23,7 +23,7 @@ export class FlowRunner {
     }
   ) {}
 
-  public run() {
+  public run(): void {
     const flow = this.flow;
     const [flowName, flowCommand] = R.flatten([R.keys(flow), R.values(flow)]);
 

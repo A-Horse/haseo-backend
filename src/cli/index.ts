@@ -13,13 +13,15 @@ import { ProjectWithMeta } from '../platform/project/project.module';
 import { FlowController } from '../platform/task/flow/flow-controller';
 
 import { argv } from 'optimist';
+import { FlowResult } from 'src/platform/task/flow/flow.module';
 
 // tslint:disable:no-console
 async function main(): Promise<void> {
   const version = JSON.parse(fs.readFileSync(path.join(__dirname, '../../package.json')).toString())
     .version;
 
-  console.log(version);
+  console.log('Haseo cli version: ', version);
+
   if (!fs.existsSync('haseo.yaml')) {
     console.log(
       colors.bold.red('Error: '),
@@ -50,9 +52,17 @@ async function main(): Promise<void> {
     std: true
   });
   flowController.start();
-  flowController.flowResult$.subscribe(null, null, () => {
-    console.log(colors.green('success!'));
-  });
+  flowController.flowResult$.subscribe(
+    (flowResult: FlowResult) => {
+      if (flowResult.status === 'FAILURE') {
+        console.log(colors.red(`run failure`));
+      }
+    },
+    null,
+    () => {
+      console.log('complete!');
+    }
+  );
 }
 
 main();
