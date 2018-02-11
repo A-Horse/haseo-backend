@@ -5,6 +5,7 @@ import { exec, ChildProcess } from 'child_process';
 import configure from '../../configure';
 import { Project } from '../project/project';
 import { RepoVersion } from './observer.module';
+import { repoLogger } from '../../util/logger';
 
 export class RepoPuller {
   private cprocess: ChildProcess;
@@ -30,10 +31,9 @@ export class RepoPuller {
       } else {
         const commitIdPath = path.join(repoPath, '.commit_id');
         if (fs.existsSync(commitIdPath)) {
-          subject$.next({
-            commitHash: fs.readFileSync(commitIdPath).toString(),
-            output
-          });
+          const commitHash = fs.readFileSync(commitIdPath).toString();
+          repoLogger.info(`${repoPath} has new commit`, commitHash);
+          subject$.next({ commitHash, output });
         }
       }
       subject$.complete();

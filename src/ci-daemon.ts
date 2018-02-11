@@ -2,7 +2,7 @@ import { Subject } from 'rxjs/Subject';
 import { ProjectManager } from './platform/project/project-manager';
 import { TaskManager } from './platform/task/task-manager';
 import { ObserverManager } from './platform/observer/observer-manager';
-import { ReportManager } from 'src/platform/report/report-manager';
+import { ReportManager } from './platform/report/report-manager';
 import { Project } from './platform/project/project';
 import { ProjectWithMeta } from './platform/project/project.module';
 

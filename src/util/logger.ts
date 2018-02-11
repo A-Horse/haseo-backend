@@ -19,6 +19,16 @@ export const pipelineLogger = new createLogger({
   transports: [new transports.Console({ level: consoleLogLevel })]
 });
 
+export const taskLogger = new createLogger({
+  format: combine(timestamp(), formatLog),
+  transports: [new transports.Console({ level: consoleLogLevel })]
+});
+
+export const repoLogger = new createLogger({
+  format: combine(timestamp(), formatLog),
+  transports: [new transports.Console({ level: consoleLogLevel })]
+});
+
 export const expressLogger = new createLogger({
   format: combine(timestamp(), formatLog),
   transports: [new transports.Console({ level: consoleLogLevel })]

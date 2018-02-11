@@ -8,8 +8,8 @@ export class ObserverManager {
   private shouldRunProjectWithMeta$ = new Subject<ProjectWithMeta>();
   private observers: Observer[];
 
-  public watchProjects(projects: Project[]) {
-    this.observers = this.findProjectShouldObserve(projects).map((project: Project): Observer => {
+  public watchProjects(projects: Project[]): void {
+    this.observers = this.filterProjectShouldObserve(projects).map((project: Project): Observer => {
       return new Observer(project);
     });
     this.startObservers(this.observers);
@@ -33,7 +33,7 @@ export class ObserverManager {
     });
   }
 
-  private findProjectShouldObserve(projects: Project[]) {
+  private filterProjectShouldObserve(projects: Project[]) {
     return projects.filter(project => project.getSetting().watch);
   }
 }
