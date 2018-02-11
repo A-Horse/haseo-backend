@@ -32,7 +32,6 @@ export class RepoPuller {
         const commitIdPath = path.join(repoPath, '.commit_id');
         if (fs.existsSync(commitIdPath)) {
           const commitHash = fs.readFileSync(commitIdPath).toString();
-          repoLogger.info(`${repoPath} has new commit`, commitHash);
           subject$.next({ commitHash, output });
         }
       }
