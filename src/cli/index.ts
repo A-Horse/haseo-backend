@@ -20,7 +20,8 @@ async function main(): Promise<void> {
   const version = JSON.parse(fs.readFileSync(path.join(__dirname, '../../package.json')).toString())
     .version;
 
-  console.log('Haseo cli version: ', version);
+  console.log(colors.green('➤'), ' Haseo cli version: ', colors.yellow(version));
+  console.log();
 
   if (!fs.existsSync('haseo.yaml')) {
     console.log(
@@ -51,16 +52,19 @@ async function main(): Promise<void> {
     taskEvent$,
     std: true
   });
+
   flowController.start();
   flowController.flowResult$.subscribe(
     (flowResult: FlowResult) => {
       if (flowResult.status === 'FAILURE') {
-        console.log(colors.red(`run failure`));
+        console.log();
+        console.log(colors.red(`✗ Run failure`));
+        console.log();
       }
     },
     null,
     () => {
-      console.log('complete!');
+      console.log('Haseo run complete!');
     }
   );
 }
