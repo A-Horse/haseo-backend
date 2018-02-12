@@ -1,10 +1,9 @@
-import { WebSocketHelper } from 'src/socket/websocket-helper';
 import { CIDaemon } from 'src/ci-daemon';
 import { Project } from '../platform/project/project';
-import { Socket } from 'net';
+import * as WebSocket from 'ws';
 
 export function insureProjectExist(
-  wsh: WebSocketHelper,
+  ws: WebSocket,
   daemon: CIDaemon,
   option: {
     errorType: string;
@@ -14,11 +13,13 @@ export function insureProjectExist(
     const payload: { name: string; offset: number; limit: number } = message.payload;
     const project: Project = daemon.getProjectByName(payload.name);
     if (!project) {
-      wsh.sendJSON({
-        type: option.errorType,
-        error: true,
-        payload: `${payload.name} project not exist.`
-      });
+      ws.send(
+        JSON.stringify({
+          type: option.errorType,
+          error: true,
+          payload: `${payload.name} project not exist.`
+        })
+      );
       return false;
     }
     return true;
