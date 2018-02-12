@@ -13,7 +13,7 @@ export function signJwt(data) {
   );
 }
 
-export function verityJwt(data) {
+export function verityJwt(data: string): { data: User; exp: number } {
   return jwt.verify(data, configure['SERCET_KEY']);
 }
 

@@ -24,8 +24,9 @@ UserRouter.post(
         password: password.trim()
       };
       const authedUser = await authUser(cred);
-      const jwtToken = signJwt(authedUser);
-      return res.header({ jwt: jwtToken }).json(R.omit('password', authedUser));
+      const userWithoutPassword = R.omit('password', authedUser);
+      const jwtToken = signJwt(userWithoutPassword);
+      return res.header({ jwt: jwtToken }).json(userWithoutPassword);
     } catch (error) {
       switch (error.message) {
         case 'UserNotFound':

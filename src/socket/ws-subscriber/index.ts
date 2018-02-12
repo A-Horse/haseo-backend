@@ -3,12 +3,33 @@ import * as path from 'path';
 import * as R from 'ramda';
 import { WebSocketHelper } from 'src/socket/websocket-helper';
 import { CIDaemon } from 'src/ci-daemon';
-import { setupMessageInterceptor } from './message-interceptor';
+import * as Rx from 'rxjs';
+import { verityJwt } from '../../service/auth';
+import { Observable } from 'rxjs/Observable';
 
-export function setupWebsocketSubscriber(
-  message$,
-  wsh: WebSocketHelper,
-  ciCtrlDaemon: CIDaemon
+function authMessage(
+  message$: Rx.Subject<SocketMessage>,
+  ws: WebSocket
+): Rx.Observable<SocketMessage> {
+  return message$
+    .map((message: SocketMessage): SocketMessage => {
+      const user: User = !message.meta.jwt ? verityJwt(message.meta.jwt).data : null;
+      return R.mergeDeepRight(message, { meta: { user } });
+    })
+    .do((message: SocketMessage): void => {
+      if (!message.meta.user) {
+        ws.send(JSON.stringify({ type: 'AUTH_FAILURE', error: true }));
+      }
+    })
+    .filter((message: SocketMessage): boolean => {
+      return !!message.meta.user;
+    });
+}
+
+export function createWebsocketReactive(
+  message$: Rx.Subject<SocketMessage>,
+  ws: WebSocket,
+  daemon: CIDaemon
 ): void {
   const dirpath = path.join(__dirname);
   const wsSubscriptionModules = fs
@@ -19,7 +40,7 @@ export function setupWebsocketSubscriber(
     });
   const subscriptionFns = R.compose(R.flatten, R.map(R.values))(wsSubscriptionModules);
 
-  const filteredMessage$ = setupMessageInterceptor(message$, wsh);
+  const authedMessage$: Observable<SocketMessage> = authMessage(message$, ws);
 
-  subscriptionFns.forEach(subscriptionFn => subscriptionFn(filteredMessage$, wsh, ciCtrlDaemon));
+  subscriptionFns.forEach(subscriptionFn => subscriptionFn(authedMessage$, ws, daemon));
 }
