@@ -20,10 +20,11 @@ export class Observer {
     const poll$ = pullDelay$
       .repeat()
       .map((version: RepoVersion) => ({ version, project: this.project }))
-      .share();
+      .share()
+      .retryWhen(errors => errors.delay(1000));
 
     this.polling = true;
-    poll$.subscribe(null, null, () => (this.polling = false));
+    poll$.subscribe(null, console.error, () => (this.polling = false));
 
     return poll$;
   }
