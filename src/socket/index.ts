@@ -2,10 +2,9 @@ import * as R from 'ramda';
 import * as Rx from 'rxjs';
 import * as WebSocket from 'ws';
 import { verityJwt } from '../service/auth';
-import { createWebsocketReactive } from './ws-subscriber/';
-import { WebSocketHelper } from './websocket-helper';
+import { createWebsocketReactive } from './ws-epic/';
 
-export default function setupWS(server, daemon) {
+export function startWebSocketServe(server, daemon) {
   const wsserver: WebSocket.Server = new WebSocket.Server({ server, path: '/ws' });
 
   wsserver.on('connection', function connection(ws: WebSocket) {

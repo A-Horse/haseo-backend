@@ -1,4 +1,4 @@
-process.on('unhandledRejection', console.log);
+process.on('unhandledRejection', console.error);
 
 import 'babel-polyfill';
 

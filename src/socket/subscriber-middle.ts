@@ -1,4 +1,4 @@
-import { CIDaemon } from 'src/ci-daemon';
+import { CIDaemon } from 'src/platform/ci-daemon';
 import { Project } from '../platform/project/project';
 import * as WebSocket from 'ws';
 

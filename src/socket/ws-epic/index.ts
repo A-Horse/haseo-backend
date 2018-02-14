@@ -1,13 +1,14 @@
 import * as fs from 'fs';
 import * as path from 'path';
 import * as R from 'ramda';
-import { CIDaemon } from 'src/ci-daemon';
 import * as WebSocket from 'ws';
 import * as Rx from 'rxjs';
+import { Observable } from 'rxjs/Observable';
+
+import { CIDaemon } from '../../platform/ci-daemon';
 import { verityJwt } from '../../service/auth';
 
 import './operator/of-type.operator';
-import { Observable } from 'rxjs/Observable';
 
 function authMessage(
   message$: Rx.Subject<SocketMessage>,
@@ -51,7 +52,6 @@ export function createWebsocketReactive(
   const output$ = new Rx.Subject<any>();
 
   epicFns.forEach((epicFn: (Observable, CIDaemon, WebSocket) => Rx.Observable<any>): void => {
-    console.log(epicFn);
     epicFn(authedMessage$, daemon, ws).subscribe(output$);
   });
 
