@@ -9,17 +9,23 @@ import { ProjectWithMeta } from './platform/project/project.module';
 // tslint:disable:member-ordering
 export class CIDaemon {
   private projectManager: ProjectManager = new ProjectManager();
-  public getProjects = this.projectManager.getProjects;
-  public getProjectByName = this.projectManager.getProjectByName;
-  public mapOutRunProject = this.projectManager.mapOutRunProject;
+  public getProjects = this.projectManager.getProjects.bind(this.projectManager);
+  public getProjectByName = this.projectManager.getProjectByName.bind(this.projectManager);
+  public mapOutRunProject = this.projectManager.mapOutRunProject.bind(this.projectManager);
 
   private reportManager: ReportManager = new ReportManager();
-  public getProjectRunReportHistory = this.reportManager.getProjectRunReportHistory;
-  public getProjectLastRunReportHistory = this.reportManager.getProjectLastRunReportHistory;
-  public getProjectRunReport = this.reportManager.getProjectRunReport;
+  public getProjectRunReportHistory = this.reportManager.getProjectRunReportHistory.bind(
+    this.reportManager
+  );
+  public getProjectLastRunReportHistory = this.reportManager.getProjectLastRunReportHistory.bind(
+    this.reportManager
+  );
+  public getProjectRunReport = this.reportManager.getProjectRunReport.bind(this.reportManager);
 
   private taskManager: TaskManager = new TaskManager();
-  public queryTaskRunnerOutputPartByReportId = this.taskManager.queryTaskRunnerOutputPartByReportId;
+  public queryTaskRunnerOutputPartByReportId = this.taskManager.queryTaskRunnerOutputPartByReportId.bind(
+    this.taskManager
+  );
   private observerManager: ObserverManager = new ObserverManager();
 
   public startup(): void {

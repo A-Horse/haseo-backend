@@ -4,26 +4,18 @@ import { CIDaemon } from 'src/ci-daemon';
 import { Project } from '../../platform/project/project';
 import { insureProjectExist } from '../subscriber-middle';
 
-import './operator/of-type.operator';
-
-export const WS_GET_PROJECTS_REQUEST = (
-  message$: Rx.Subject<SocketMessage>,
-  ws: WebSocket,
-  daemon: CIDaemon
-) =>
-  message$.ofType('WS_GET_PROJECTS_REQUEST').subscribe((message: SocketMessage): void => {
-    ws.send(
-      JSON.stringify({
-        type: 'WS_GET_PROJECTS_SUCCESS',
-        payload: daemon.getProjects().map((project: Project) => project.getInfomartion())
-      })
-    );
+export const WS_GET_PROJECTS_REQUEST = (message$: Rx.Subject<SocketMessage>, daemon: CIDaemon) =>
+  message$.ofType('WS_GET_PROJECTS_REQUEST').map((message: SocketMessage) => {
+    return {
+      type: 'WS_GET_PROJECTS_SUCCESS',
+      payload: daemon.getProjects().map((project: Project) => project.getInfomartion())
+    };
   });
 
 export const WS_GET_PROJECT_REPORT_HISTORY_REQUEST = (
   message$: Rx.Subject<SocketMessage>,
-  ws: WebSocket,
-  daemon: CIDaemon
+  daemon: CIDaemon,
+  ws: WebSocket
 ) =>
   message$
     .ofType('WS_GET_PROJECT_REPORT_HISTORY_REQUEST')
@@ -32,16 +24,13 @@ export const WS_GET_PROJECT_REPORT_HISTORY_REQUEST = (
         errorType: 'WS_GET_PROJECT_REPORT_HISTORY_FAILURE'
       })
     )
-    .subscribe(async (message: SocketMessage): Promise<void> => {
+    .mergeMap(async (message: SocketMessage): Promise<FSAction> => {
       const payload: { name: string; offset: number; limit: number } = message.payload;
       const reportHistory = await daemon.getProjectLastRunReportHistory(payload.name);
-
-      ws.send(
-        JSON.stringify({
-          type: 'WS_GET_PROJECT_REPORT_HISTORY_SUCCESS',
-          payload: reportHistory
-        })
-      );
+      return {
+        type: 'WS_GET_PROJECT_REPORT_HISTORY_SUCCESS',
+        payload: reportHistory
+      };
     });
 
 // export const WS_LISTEN_PROJECTS_UPDATE_REQUEST = (

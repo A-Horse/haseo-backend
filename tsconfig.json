@@ -12,7 +12,7 @@
   "include": ["./src/**/*"],
   "files": [
     "src/platform/project/project.d.ts",
-    "src/socket/socket.d.ts"
+    "src/socket/socket.d.ts",
     "src/model.d.ts"
   ]
 }

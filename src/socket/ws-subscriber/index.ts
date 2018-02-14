@@ -5,6 +5,8 @@ import { CIDaemon } from 'src/ci-daemon';
 import * as WebSocket from 'ws';
 import * as Rx from 'rxjs';
 import { verityJwt } from '../../service/auth';
+
+import './operator/of-type.operator';
 import { Observable } from 'rxjs/Observable';
 
 function authMessage(
@@ -18,7 +20,7 @@ function authMessage(
     })
     .do((message: SocketMessage): void => {
       if (!message.meta.user) {
-        ws.send(JSON.stringify({ type: 'AUTH_FAILURE', error: true }));
+        ws.send(JSON.stringify({ type: 'WS_AUTH_FAILURE', error: true }));
       }
     })
     .filter((message: SocketMessage): boolean => {
@@ -38,12 +40,24 @@ export function createWebsocketReactive(
     .map(filename => {
       return require(path.join(dirpath, filename));
     });
-  const subscriptionFns: Array<(Observable, WebSocket, CIDaemon) => void> = R.compose(
+
+  const epicFns: Array<(Observable, CIDaemon, WebSocket) => Rx.Observable<any>> = R.compose(
     R.flatten,
     R.map(R.values)
   )(wsSubscriptionModules);
 
-  const authedMessage$: Observable<SocketMessage> = authMessage(message$, ws).share();
+  const authedMessage$: Rx.Observable<SocketMessage> = authMessage(message$, ws).share();
 
-  subscriptionFns.forEach(subscriptionFn => subscriptionFn(authedMessage$, ws, daemon));
+  const output$ = new Rx.Subject<any>();
+
+  epicFns.forEach((epicFn: (Observable, CIDaemon, WebSocket) => Rx.Observable<any>): void => {
+    console.log(epicFn);
+    epicFn(authedMessage$, daemon, ws).subscribe(output$);
+  });
+
+  output$.subscribe((output: object) => {
+    ws.send(JSON.stringify(output));
+  });
+
+  // subscriptionFns.forEach(subscriptionFn => subscriptionFn(authedMessage$, ws, daemon));
 }
