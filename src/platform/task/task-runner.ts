@@ -26,18 +26,25 @@ export class TaskRunner {
 
   public async run(): Promise<void> {
     this.flowController.start();
-    const projectRunReportInitalRow: { id: number } = await initProjectRunReport({
+    const projectRunReportInitalRowId: number = await initProjectRunReport({
       projectName: this.projectWithMeta.project.name,
       startDate: new Date().getDate(),
       commitHash: this.projectWithMeta.version.commitHash,
-      repoPullOuput: this.projectWithMeta.version.output
+      repoPullOuput: this.projectWithMeta.version.output,
+      status: this.flowController.status
     });
 
     this.flowController.flowResult$.subscribe(null, null, async () => {
-      await saveProjectRunReport(projectRunReportInitalRow.id, {
-        result: this.flowController.result,
-        status: this.flowController.status
-      });
+      try {
+        await saveProjectRunReport(projectRunReportInitalRowId, {
+          result: this.flowController.result,
+          status: this.flowController.status
+        });
+      } catch (error) {
+        // tslint:disable-next-line
+        console.error(error);
+      }
+
       this.flowController.clean();
       this.complete$.next();
       this.complete$.complete();

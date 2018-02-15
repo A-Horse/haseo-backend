@@ -13,10 +13,10 @@
 
 declare interface ProjectRunReportRow {
   id: number;
-  project_name: string;
-  start_date: string;
-  commit_hash: string;
-  repo_pull_output: string;
+  projectName: string;
+  startDate: string;
+  commitHash: string;
+  repoPullOutput: string;
   result: string;
 }
 

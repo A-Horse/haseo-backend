@@ -3,6 +3,7 @@ import * as WebSocket from 'ws';
 import { CIDaemon } from 'src/platform/ci-daemon';
 import { Project } from '../../platform/project/project';
 import { projectExistMiddle } from './middle/project.epic.middle';
+import { createActionType } from '../util/action.util';
 
 export const WS_GET_PROJECTS_REQUEST = (message$: Rx.Subject<SocketMessage>, daemon: CIDaemon) =>
   message$.ofType('WS_GET_PROJECTS_REQUEST').map((message: SocketMessage) => {
@@ -31,13 +32,18 @@ export const WS_GET_PROJECT_LAST_REPORT_REQUEST = (
     )
   );
 
-export const WS_START_PROJECT_REQUEST = (message$: Rx.Subject<SocketMessage>, daemon: CIDaemon) =>
-  message$.ofType('WS_START_PROJECT_REQUEST').mergeMap(async (message: SocketMessage) => {
+export const WS_START_PROJECT_FLOW_REQUEST = (
+  message$: Rx.Subject<SocketMessage>,
+  daemon: CIDaemon
+) => {
+  const actionType: ActionType = createActionType('WS_START_PROJECT_FLOW');
+  return message$.ofType(actionType.REQUEST).mergeMap(async (message: SocketMessage) => {
     daemon.mapOutRunProject(message.payload.name);
     return {
-      type: 'WS_START_PROJECT_SUCCESS'
+      type: actionType.SUCCESS
     };
   });
+};
 
 export const WS_GET_PROJECT_REPORT_REQUEST = (
   message$: Rx.Subject<SocketMessage>,

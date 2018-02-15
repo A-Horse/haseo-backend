@@ -1,4 +1,5 @@
 import * as R from 'ramda';
+import * as camelcaseKeys from 'camelcase-keys';
 import knex from '../service/knex';
 import { pipelineLogger } from '../util/logger';
 import { ColumnInfo } from 'knex';
@@ -12,28 +13,28 @@ export async function initProjectRunReport(payload: {
   startDate: number;
   commitHash: string;
   repoPullOuput: string;
-}): Promise<{
-  id: number;
-}> {
+  status: string;
+}): Promise<number> {
   return await knex(projectRunReportTableName).insert({
     project_name: payload.projectName,
     start_date: payload.startDate,
     commit_hash: payload.commitHash,
-    repo_pull_output: payload.repoPullOuput
+    repo_pull_output: payload.repoPullOuput,
+    status: payload.status
   });
 }
 
 export async function saveProjectRunReport(
-  columnId: number,
+  reportId: number,
   payload: {
     result: FlowResult[];
     status: string;
   }
 ): Promise<void> {
   await knex(projectRunReportTableName)
-    .where('id', '=', columnId)
+    .where('id', '=', reportId.toString())
     .update({
-      result: payload.result,
+      result: JSON.stringify(payload.result),
       status: payload.status
     });
 }
@@ -45,7 +46,7 @@ export async function queryProjectLastRunReport(projectName: string): Promise<Pr
     .orderBy('start_date', 'desc')
     .limit(1);
 
-  return reportRows.length ? reportRows[0] : null;
+  return reportRows.length ? camelcaseKeys(reportRows[0]) : null;
 }
 
 export async function queryProjectRunReport(

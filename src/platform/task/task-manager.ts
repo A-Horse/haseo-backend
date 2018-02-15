@@ -58,6 +58,7 @@ export class TaskManager {
     // taskRunner.run();
 
     taskRunner.complete$.subscribe(() => {
+      this.looping = false;
       this.runQueueTask();
     });
   }
