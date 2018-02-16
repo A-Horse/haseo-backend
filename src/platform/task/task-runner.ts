@@ -28,7 +28,7 @@ export class TaskRunner {
     this.flowController.start();
     const projectRunReportInitalRowId: number = await initProjectRunReport({
       projectName: this.projectWithMeta.project.name,
-      startDate: new Date().getDate(),
+      startDate: new Date().getTime(),
       commitHash: this.projectWithMeta.version.commitHash,
       repoPullOuput: this.projectWithMeta.version.output,
       status: this.flowController.status

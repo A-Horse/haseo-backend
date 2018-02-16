@@ -45,8 +45,13 @@ export async function queryProjectLastRunReport(projectName: string): Promise<Pr
     .where('project_name', '=', projectName)
     .orderBy('start_date', 'desc')
     .limit(1);
-
-  return reportRows.length ? camelcaseKeys(reportRows[0]) : null;
+  if (!reportRows.length) {
+    return null;
+  }
+  return camelcaseKeys({
+    ...reportRows[0],
+    result: JSON.parse(reportRows[0].result)
+  });
 }
 
 export async function queryProjectRunReport(
