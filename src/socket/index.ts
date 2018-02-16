@@ -19,13 +19,22 @@ export function startWebSocketServe(server, daemon: CIDaemon) {
 
     // NOTE: send message event also trigger this listener
     ws.on('message', (revent: string) => {
+      // tslint:disable-next-line
       console.log('received: %s', revent);
       const message: SocketMessage = JSON.parse(revent);
       message$.next(message);
     });
   });
 
-  daemon.getTaskEvent$().subscribe(taskEvent => {
-    console.log(taskEvent);
+  daemon.getTaskEvent$().subscribe((taskEvent: FSAction) => {
+    wsserver.clients.forEach((client: WebSocket) => {
+      const type = 'WS_TASK_' + taskEvent.type + '_SUCCESS';
+      client.send(
+        JSON.stringify({
+          ...taskEvent,
+          type
+        })
+      );
+    });
   });
 }

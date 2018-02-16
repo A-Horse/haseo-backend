@@ -33,11 +33,14 @@ export class TaskRunner {
     });
 
     this.flowController.flowResult$.subscribe(
-      (flowResult: FlowResult) => {
+      (flowResult: FlowResult): void => {
         this.taskEvent$.next({
           type: 'PROJECT_FLOW_UNIT_UPDATE',
           payload: {
-            projectName: this.projectWithMeta.project.name,
+            project: {
+              name: this.projectWithMeta.project.name,
+              status: this.flowController.status
+            },
             flowResult
           }
         });

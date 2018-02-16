@@ -6,7 +6,7 @@ import { Subject } from 'rxjs/Subject';
 export class FlowController {
   public flowResult$ = new Rx.Subject<FlowResult>();
   public result: FlowResult[] = [];
-  public status: 'INITIAL' | 'RUNING' | 'SUCCESS' | 'FAILURE' = 'INITIAL';
+  public status: 'INITIAL' | 'RUNNING' | 'SUCCESS' | 'FAILURE' = 'INITIAL';
   public outputUnitSequence: FlowOutputUnit[] = [];
 
   constructor(
@@ -24,7 +24,7 @@ export class FlowController {
   }
 
   public start(): void {
-    this.status = 'RUNING';
+    this.status = 'RUNNING';
     this.runFlows(this.flows);
   }
 
