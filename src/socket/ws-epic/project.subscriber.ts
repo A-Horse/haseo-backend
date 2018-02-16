@@ -5,13 +5,25 @@ import { Project } from '../../platform/project/project';
 import { projectExistMiddle } from './middle/project.epic.middle';
 import { createActionType } from '../util/action.util';
 
-export const WS_GET_PROJECTS_REQUEST = (message$: Rx.Subject<SocketMessage>, daemon: CIDaemon) =>
-  message$.ofType('WS_GET_PROJECTS_REQUEST').map((message: SocketMessage) => {
+export const WS_GET_PROJECTS_REQUEST = (message$: Rx.Subject<SocketMessage>, daemon: CIDaemon) => {
+  const actionType: ActionType = createActionType('WS_GET_PROJECTS');
+  return message$.ofType(actionType.REQUEST).map((message: SocketMessage) => {
     return {
-      type: 'WS_GET_PROJECTS_SUCCESS',
+      type: actionType.SUCCESS,
       payload: daemon.getProjects().map((project: Project) => project.getInfomartion())
     };
   });
+};
+
+export const WS_GET_PROJECT_REQUEST = (message$: Rx.Subject<SocketMessage>, daemon: CIDaemon) => {
+  const actionType: ActionType = createActionType('WS_GET_PROJECT');
+  return message$.ofType(actionType.REQUEST).map((message: SocketMessage) => {
+    return {
+      type: actionType.SUCCESS,
+      payload: daemon.getProjects().map((project: Project) => project.getInfomartion())
+    };
+  });
+};
 
 export const WS_GET_PROJECT_LAST_REPORT_REQUEST = (
   message$: Rx.Subject<SocketMessage>,
