@@ -3,7 +3,6 @@ import { Project } from '../project/project';
 import { initProjectRunReport, saveProjectRunReport } from '../../dao/report.dao';
 import { ProjectWithMeta } from '../project/project.module';
 import { FlowController } from '../task/flow/flow-controller';
-import { FlowOutputUnit } from '../task/flow/flow.module';
 
 export class TaskRunner {
   public reportId: number;
@@ -15,8 +14,7 @@ export class TaskRunner {
     private taskEvent$: Rx.Subject<{ type: string; payload: any }>
   ) {
     this.flowController = new FlowController(projectWithMeta.project.getSetting().flow, {
-      repoPath: projectWithMeta.project.repoPath,
-      taskEvent$: this.taskEvent$
+      repoPath: projectWithMeta.project.repoPath
     });
   }
 
@@ -34,21 +32,33 @@ export class TaskRunner {
       status: this.flowController.status
     });
 
-    this.flowController.flowResult$.subscribe(null, null, async () => {
-      try {
-        await saveProjectRunReport(projectRunReportInitalRowId, {
-          result: this.flowController.result,
-          status: this.flowController.status
+    this.flowController.flowResult$.subscribe(
+      (flowResult: FlowResult) => {
+        this.taskEvent$.next({
+          type: 'PROJECT_FLOW_UNIT_UPDATE',
+          payload: {
+            projectName: this.projectWithMeta.project.name,
+            flowResult
+          }
         });
-      } catch (error) {
-        // tslint:disable-next-line
-        console.error(error);
-      }
+      },
+      null,
+      async () => {
+        try {
+          await saveProjectRunReport(projectRunReportInitalRowId, {
+            result: this.flowController.result,
+            status: this.flowController.status
+          });
+        } catch (error) {
+          // tslint:disable-next-line
+          console.error(error);
+        }
 
-      this.flowController.clean();
-      this.complete$.next();
-      this.complete$.complete();
-    });
+        this.flowController.clean();
+        this.complete$.next();
+        this.complete$.complete();
+      }
+    );
   }
 
   private assignRepotId(reportId: number): void {

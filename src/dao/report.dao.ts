@@ -4,7 +4,6 @@ import knex from '../service/knex';
 import { pipelineLogger } from '../util/logger';
 import { ColumnInfo } from 'knex';
 import { Project } from '../platform/project/project';
-import { FlowResult } from '../platform/task/flow/flow.module';
 
 const projectRunReportTableName = 'project_run_report';
 

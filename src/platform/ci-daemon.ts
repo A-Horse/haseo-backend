@@ -26,6 +26,7 @@ export class CIDaemon {
   public queryTaskRunnerOutputPartByReportId = this.taskManager.queryTaskRunnerOutputPartByReportId.bind(
     this.taskManager
   );
+  public getTaskEvent$ = this.taskManager.getTaskEvent$.bind(this.taskManager);
   private observerManager: ObserverManager = new ObserverManager();
 
   public startup(): void {

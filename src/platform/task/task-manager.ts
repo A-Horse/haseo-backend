@@ -2,16 +2,14 @@ import * as R from 'ramda';
 import * as Rx from 'rxjs';
 import { TaskQueue } from './task-queue';
 import { FlowController } from '../task/flow/flow-controller';
-import { OutputUnit } from '../task/flow/flow.module';
 import { TaskRunner } from '../task/task-runner';
 import { ProjectWithMeta } from '../project/project.module';
 import { TaskRunContainer } from '../task/task-run-container';
-import { FlowOutputUnit } from '../task/flow/flow.module';
 
 export class TaskManager {
   private queue: TaskQueue = new TaskQueue();
   private runContainer = new TaskRunContainer();
-  private taskEvent$ = new Rx.Subject<{ type: string; payload: any }>();
+  private taskEvent$ = new Rx.Subject<FSAction>();
   private looping = false;
   private running = false;
   private flow$;
@@ -35,6 +33,10 @@ export class TaskManager {
       return null;
     }
     return taskRunner.queryRunOutputPart(offset);
+  }
+
+  public getTaskEvent$(): Rx.Subject<FSAction> {
+    return this.taskEvent$;
   }
 
   // single thread here

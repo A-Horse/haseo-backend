@@ -13,7 +13,6 @@ import { ProjectWithMeta } from '../platform/project/project.module';
 import { FlowController } from '../platform/task/flow/flow-controller';
 
 import { argv } from 'optimist';
-import { FlowResult } from 'src/platform/task/flow/flow.module';
 
 // tslint:disable:no-console
 async function main(): Promise<void> {
@@ -42,14 +41,8 @@ async function main(): Promise<void> {
     }
   };
 
-  const taskEvent$ = new Rx.Subject<{
-    type: string;
-    payload: any;
-  }>();
-
   const flowController = new FlowController(projectWithMeta.project.getSetting().flow, {
     repoPath: projectWithMeta.project.repoPath,
-    taskEvent$,
     std: true
   });
 

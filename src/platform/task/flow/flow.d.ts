@@ -1,16 +1,16 @@
-export interface OutputUnit {
+interface OutputUnit {
   type: 'stdout' | 'stderr';
   data: string;
 }
 
-export interface FlowOutputUnit {
+interface FlowOutputUnit {
   flowName: string;
   type: 'stdout' | 'stderr';
   data: string;
 }
 
-export interface FlowResult {
+interface FlowResult {
   status: 'SUCCESS' | 'FAILURE';
-  flow: object;
+  flowName: string;
   result: OutputUnit[];
 }

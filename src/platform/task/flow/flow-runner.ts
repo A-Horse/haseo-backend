@@ -2,7 +2,6 @@ import * as R from 'ramda';
 import * as Rx from 'rxjs';
 import { exec, ChildProcess } from 'child_process';
 import { EventEmitter } from 'events';
-import { OutputUnit } from './flow.module';
 
 export class FlowRunner {
   public success$ = new Rx.Subject<OutputUnit[]>();
@@ -15,10 +14,6 @@ export class FlowRunner {
     private flow: object,
     private option: {
       repoPath: string;
-      taskEvent$: Rx.Subject<{
-        type: string;
-        payload: any;
-      }>;
       std?: boolean;
     }
   ) {}

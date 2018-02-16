@@ -5,7 +5,7 @@ import { checkAdminCreate } from './util/admin-creater';
 
 import UserRouter from './router/user';
 
-export function serve(daemonCtrl) {
+export function serve(daemon) {
   checkAdminCreate();
 
   const app = express();
@@ -19,7 +19,7 @@ export function serve(daemonCtrl) {
   app.use('/api/', UserRouter);
 
   const server = http.createServer(app);
-  startWebSocketServe(server, daemonCtrl);
+  startWebSocketServe(server, daemon);
 
   server.listen(8075, function listening() {
     // tslint:disable-next-line
