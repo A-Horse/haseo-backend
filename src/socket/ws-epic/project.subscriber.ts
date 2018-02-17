@@ -27,6 +27,25 @@ export const WS_GET_PROJECT_REQUEST = (message$: Rx.Subject<SocketMessage>, daem
   );
 };
 
+export const WS_GET_PROJECT_REPORT_HISTORY_REQUEST = (
+  message$: Rx.Subject<SocketMessage>,
+  daemon: CIDaemon
+) => {
+  const actionType: ActionType = createActionType('WS_GET_PROJECT_REPORT_HISTORY');
+  return message$.ofType(actionType.REQUEST).mergeMap(
+    projectExistMiddle(daemon, actionType.FAILURE, async (message: SocketMessage): Promise<
+      FSAction
+    > => {
+      const payload: { name: string; offset: number; limit: number } = message.payload;
+      const reportHistory = await daemon.getProjectLastRunReport(payload.name);
+      return {
+        type: actionType.SUCCESS,
+        payload: reportHistory
+      };
+    })
+  );
+};
+
 export const WS_GET_PROJECT_LAST_REPORT_REQUEST = (
   message$: Rx.Subject<SocketMessage>,
   daemon: CIDaemon
@@ -37,10 +56,10 @@ export const WS_GET_PROJECT_LAST_REPORT_REQUEST = (
       'WS_GET_PROJECT_LAST_REPORT_FAILURE',
       async (message: SocketMessage): Promise<FSAction> => {
         const payload: { name: string; offset: number; limit: number } = message.payload;
-        const reportHistory = await daemon.getProjectLastRunReport(payload.name);
+        const report = await daemon.getProjectLastRunReport(payload.name);
         return {
           type: 'WS_GET_PROJECT_LAST_REPORT_SUCCESS',
-          payload: reportHistory
+          payload: report
         };
       }
     )
