@@ -17,12 +17,14 @@ export const WS_GET_PROJECTS_REQUEST = (message$: Rx.Subject<SocketMessage>, dae
 
 export const WS_GET_PROJECT_REQUEST = (message$: Rx.Subject<SocketMessage>, daemon: CIDaemon) => {
   const actionType: ActionType = createActionType('WS_GET_PROJECT');
-  return message$.ofType(actionType.REQUEST).map((message: SocketMessage) => {
-    return {
-      type: actionType.SUCCESS,
-      payload: daemon.getProjects().map((project: Project) => project.getInfomartion())
-    };
-  });
+  return message$.ofType(actionType.REQUEST).map(
+    projectExistMiddle(daemon, actionType.FAILURE, (message: SocketMessage) => {
+      return {
+        type: actionType.SUCCESS,
+        payload: daemon.getProjectByName(message.payload.name).getInfomartion()
+      };
+    })
+  );
 };
 
 export const WS_GET_PROJECT_LAST_REPORT_REQUEST = (
