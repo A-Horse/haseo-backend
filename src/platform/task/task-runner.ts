@@ -38,10 +38,13 @@ export class TaskRunner {
           type: 'PROJECT_FLOW_UNIT_UPDATE',
           payload: {
             project: {
-              name: this.projectWithMeta.project.name,
-              status: this.flowController.status
+              name: this.projectWithMeta.project.name
             },
-            flowResult
+            report: {
+              status: this.flowController.status,
+              flowResult,
+              id: projectRunReportInitalRowId
+            }
           }
         });
       },

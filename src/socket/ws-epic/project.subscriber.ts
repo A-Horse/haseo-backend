@@ -37,7 +37,11 @@ export const WS_GET_PROJECT_REPORT_HISTORY_REQUEST = (
       FSAction
     > => {
       const payload: { name: string; offset: number; limit: number } = message.payload;
-      const reportHistory = await daemon.getProjectLastRunReport(payload.name);
+      const reportHistory = await daemon.getProjectRunReportHistory(
+        payload.name,
+        payload.limit,
+        payload.offset
+      );
       return {
         type: actionType.SUCCESS,
         payload: reportHistory
@@ -55,7 +59,7 @@ export const WS_GET_PROJECT_LAST_REPORT_REQUEST = (
       daemon,
       'WS_GET_PROJECT_LAST_REPORT_FAILURE',
       async (message: SocketMessage): Promise<FSAction> => {
-        const payload: { name: string; offset: number; limit: number } = message.payload;
+        const payload: { name: string } = message.payload;
         const report = await daemon.getProjectLastRunReport(payload.name);
         return {
           type: 'WS_GET_PROJECT_LAST_REPORT_SUCCESS',

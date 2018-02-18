@@ -27,8 +27,11 @@ export function startWebSocketServe(server, daemon: CIDaemon) {
   });
 
   daemon.getTaskEvent$().subscribe((taskEvent: FSAction) => {
-    wsserver.clients.forEach((client: WebSocket) => {
+    wsserver.clients.forEach((client: WebSocket): void => {
       const type = 'WS_TASK_' + taskEvent.type + '_SUCCESS';
+      if (client.readyState !== 1) {
+        return;
+      }
       client.send(
         JSON.stringify({
           ...taskEvent,

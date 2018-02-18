@@ -55,7 +55,10 @@ export function createWebsocketReactive(
     epicFn(authedMessage$, daemon, ws).subscribe(output$);
   });
 
-  output$.subscribe((output: object) => {
+  output$.subscribe((output: object): void => {
+    if (ws.readyState !== 1) {
+      return;
+    }
     ws.send(JSON.stringify(output));
   });
 

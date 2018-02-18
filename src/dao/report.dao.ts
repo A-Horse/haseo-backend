@@ -7,6 +7,13 @@ import { Project } from '../platform/project/project';
 
 const projectRunReportTableName = 'project_run_report';
 
+function transformReportRow(row): ProjectRunReportRow {
+  return camelcaseKeys({
+    ...row,
+    result: JSON.parse(row.result)
+  });
+}
+
 export async function initProjectRunReport(payload: {
   projectName: string;
   startDate: number;
@@ -47,10 +54,8 @@ export async function queryProjectLastRunReport(projectName: string): Promise<Pr
   if (!reportRows.length) {
     return null;
   }
-  return camelcaseKeys({
-    ...reportRows[0],
-    result: JSON.parse(reportRows[0].result)
-  });
+
+  return transformReportRow(reportRows[0]);
 }
 
 export async function queryProjectRunReport(
@@ -75,5 +80,6 @@ export async function queryProjectRunReportHistory(
     .where('project_name', '=', projectName)
     .orderBy('start_date', 'desc')
     .offset(offset)
-    .limit(limit);
+    .limit(limit)
+    .map(transformReportRow);
 }
