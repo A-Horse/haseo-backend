@@ -24,6 +24,7 @@ export class TaskRunner {
 
   public async run(): Promise<void> {
     this.flowController.start();
+
     const projectRunReportInitalRowId: number = await initProjectRunReport({
       projectName: this.projectWithMeta.project.name,
       startDate: new Date().getTime(),
@@ -32,21 +33,11 @@ export class TaskRunner {
       status: this.flowController.status
     });
 
+    this.notifyFlowStart(projectRunReportInitalRowId);
+
     this.flowController.flowResult$.subscribe(
       (flowResult: FlowResult): void => {
-        this.taskEvent$.next({
-          type: 'PROJECT_FLOW_UNIT_UPDATE',
-          payload: {
-            project: {
-              name: this.projectWithMeta.project.name
-            },
-            report: {
-              status: this.flowController.status,
-              flowResult,
-              id: projectRunReportInitalRowId
-            }
-          }
-        });
+        this.notfiyFlowUnitUpdate(flowResult, projectRunReportInitalRowId);
       },
       null,
       async () => {
@@ -69,5 +60,32 @@ export class TaskRunner {
 
   private assignRepotId(reportId: number): void {
     this.reportId = reportId;
+  }
+
+  private notifyFlowStart(reportId: number): void {
+    this.taskEvent$.next({
+      type: 'PROJECT_FLOW_START',
+      payload: {
+        report: {
+          id: reportId
+        }
+      }
+    });
+  }
+
+  private notfiyFlowUnitUpdate(flowResult: FlowResult, reportId: number): void {
+    this.taskEvent$.next({
+      type: 'PROJECT_FLOW_UNIT_UPDATE',
+      payload: {
+        project: {
+          name: this.projectWithMeta.project.name
+        },
+        report: {
+          status: this.flowController.status,
+          flowResult,
+          id: reportId
+        }
+      }
+    });
   }
 }

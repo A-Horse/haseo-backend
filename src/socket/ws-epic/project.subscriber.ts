@@ -85,14 +85,25 @@ export const WS_START_PROJECT_FLOW_REQUEST = (
 export const WS_GET_PROJECT_REPORT_REQUEST = (
   message$: Rx.Subject<SocketMessage>,
   daemon: CIDaemon
-) =>
-  message$.ofType('WS_GET_PROJECT_REPORT_REQUEST').mergeMap(async (message: SocketMessage) => {
-    const payload: { name: string; reportId: string } = message.payload;
+) => {
+  const actionType: ActionType = createActionType('WS_GET_PROJECT_REPORT');
+  return message$.ofType(actionType.REQUEST).mergeMap(async (message: SocketMessage) => {
+    const payload: { id: number } = message.payload;
+
+    // TODO: valide middle
+    if (!payload.id && payload.id !== 0) {
+      return {
+        type: actionType.FAILURE,
+        error: true
+      };
+    }
+
     return {
-      type: 'WS_GET_PROJECT_REPORT_SUCCESS',
-      payload: await daemon.getProjectRunReport(message.payload.name, message.payload.reportId)
+      type: actionType.SUCCESS,
+      payload: await daemon.getProjectRunReport(payload.id)
     };
   });
+};
 
 export const WS_GET_PROJECT_REPORT_OUTPUT_PART_REQUEST = (
   message$: Rx.Subject<SocketMessage>,

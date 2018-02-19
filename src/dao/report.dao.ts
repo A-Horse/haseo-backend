@@ -21,13 +21,13 @@ export async function initProjectRunReport(payload: {
   repoPullOuput: string;
   status: string;
 }): Promise<number> {
-  return await knex(projectRunReportTableName).insert({
+  return (await knex(projectRunReportTableName).insert({
     project_name: payload.projectName,
     start_date: payload.startDate,
     commit_hash: payload.commitHash,
     repo_pull_output: payload.repoPullOuput,
     status: payload.status
-  });
+  }))[0];
 }
 
 export async function saveProjectRunReport(
@@ -58,16 +58,22 @@ export async function queryProjectLastRunReport(projectName: string): Promise<Pr
   return transformReportRow(reportRows[0]);
 }
 
-export async function queryProjectRunReport(
-  projectName: string,
-  reportId: number
-): Promise<ProjectRunReportRow> {
-  const reportRows: ProjectRunReportRow[] = await knex(projectRunReportTableName)
-    .select('*')
-    .where('project_name', '=', projectName)
-    .andWhere('id', '=', reportId);
+export async function queryProjectRunReport(reportId: number): Promise<ProjectRunReportRow> {
+  let reportRows: ProjectRunReportRow[] = [];
+  try {
+    reportRows = await knex(projectRunReportTableName)
+      .select('*')
+      .where('id', '=', reportId);
+  } catch (error) {
+    // tslint:disable-next-line
+    console.error(error);
+  }
 
-  return reportRows.length ? reportRows[0] : null;
+  if (!reportRows.length) {
+    return null;
+  }
+
+  return transformReportRow(reportRows[0]);
 }
 
 export async function queryProjectRunReportHistory(

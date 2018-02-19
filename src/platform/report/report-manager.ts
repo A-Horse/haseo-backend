@@ -17,10 +17,7 @@ export class ReportManager {
     return await queryProjectRunReportHistory(projectName, limit, offset);
   }
 
-  public async getProjectRunReport(
-    projectName: string,
-    reportId: number
-  ): Promise<ProjectRunReportRow> {
-    return await queryProjectRunReport(projectName, reportId);
+  public async getProjectRunReport(reportId: number): Promise<ProjectRunReportRow> {
+    return await queryProjectRunReport(reportId);
   }
 }
