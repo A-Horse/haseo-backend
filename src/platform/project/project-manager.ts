@@ -6,6 +6,7 @@ import { Project } from './project';
 import { Subject } from 'rxjs/Subject';
 import { CommitAcquirer } from '../version/commit-acquirer';
 import { ProjectWithMeta } from './project.module';
+import * as Git from 'nodegit';
 
 export class ProjectManager {
   public projects: Project[];
@@ -36,6 +37,16 @@ export class ProjectManager {
         commitHash
       }
     });
+  }
+
+  public async getProjectCommitMessageByHash(
+    projectName: string,
+    commitHash: string
+  ): Promise<string> {
+    const project: Project = this.getProjectByName(projectName);
+    return Git.Commit
+      .lookup(await Git.Repository.init(project.repoPath, 0), commitHash)
+      .then(commit => commit.message());
   }
 
   private generateProjectFromDirConfigs(): Project[] {

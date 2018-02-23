@@ -8,5 +8,9 @@
 ## TODO
 - logger split
 
+
+## Required
+- libgit2 [https://github.com/nodegit/nodegit](https://github.com/nodegit/nodegit)
+
 ## License
 MIT
