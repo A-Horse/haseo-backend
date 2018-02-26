@@ -27,6 +27,28 @@ export const WS_GET_PROJECT_REQUEST = (message$: Rx.Subject<SocketMessage>, daem
   );
 };
 
+export const WS_GET_PROJECT_COMMIT_MESSAGE_REQUEST = (
+  message$: Rx.Subject<SocketMessage>,
+  daemon: CIDaemon
+) => {
+  const actionType: ActionType = createActionType('WS_GET_PROEJCT_COMMIT_MESSAGE');
+  return message$.ofType(actionType.REQUEST).mergeMap(
+    projectExistMiddle(daemon, actionType.FAILURE, async (message: SocketMessage) => {
+      return {
+        type: actionType.SUCCESS,
+        payload: await daemon.getProjectCommitMessageByHash(
+          message.payload.name,
+          message.payload.commitHash
+        ),
+        meta: {
+          projectName: message.payload.name,
+          reportId: parseInt(message.payload.reportId, 10)
+        }
+      };
+    })
+  );
+};
+
 export const WS_GET_PROJECT_REPORT_HISTORY_REQUEST = (
   message$: Rx.Subject<SocketMessage>,
   daemon: CIDaemon

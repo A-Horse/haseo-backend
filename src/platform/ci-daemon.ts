@@ -12,6 +12,9 @@ export class CIDaemon {
   public getProjects = this.projectManager.getProjects.bind(this.projectManager);
   public getProjectByName = this.projectManager.getProjectByName.bind(this.projectManager);
   public mapOutRunProject = this.projectManager.mapOutRunProject.bind(this.projectManager);
+  public getProjectCommitMessageByHash = this.projectManager.getProjectCommitMessageByHash.bind(
+    this.projectManager
+  );
 
   private reportManager: ReportManager = new ReportManager();
   public getProjectRunReportHistory = this.reportManager.getProjectRunReportHistory.bind(
