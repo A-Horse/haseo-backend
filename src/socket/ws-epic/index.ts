@@ -16,7 +16,12 @@ function authMessage(
 ): Rx.Observable<SocketMessage> {
   return message$
     .map((message: SocketMessage): SocketMessage => {
-      const user: User = message.meta.jwt ? verityJwt(message.meta.jwt).data : null;
+      let user: User;
+      try {
+        user = message.meta.jwt ? verityJwt(message.meta.jwt).data : null;
+      } catch (error) {
+        /* ignore */
+      }
       return R.mergeDeepRight(message, { meta: { user } });
     })
     .do((message: SocketMessage): void => {
