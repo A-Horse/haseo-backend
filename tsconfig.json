@@ -13,6 +13,7 @@
   "files": [
     "src/platform/project/project.d.ts",
     "src/platform/task/flow/flow.d.ts",
+    "src/platform/report/report.d.ts",
     "src/socket/socket.d.ts",
     "src/model.d.ts"
   ]
