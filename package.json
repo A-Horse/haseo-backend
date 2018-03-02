@@ -35,6 +35,7 @@
   },
   "dependencies": {
     "@types/nodegit": "^0.18.5",
+    "@types/winston": "^2.3.8",
     "babel-polyfill": "^6.26.0",
     "bcryptjs": "^2.4.3",
     "bluebird": "^3.5.0",

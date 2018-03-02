@@ -9,7 +9,7 @@ const formatLog = printf(info => {
   return `${info.timestamp} ${info.level}: ${info.message}`;
 });
 
-const logger = new createLogger({
+export const logger = new createLogger({
   format: combine(timestamp(), formatLog),
   transports: [new transports.Console({ level: consoleLogLevel })]
 });

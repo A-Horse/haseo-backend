@@ -4,9 +4,10 @@ import * as R from 'ramda';
 import configure from '../../configure';
 import { Project } from './project';
 import { Subject } from 'rxjs/Subject';
-import { CommitAcquirer } from '../version/commit-acquirer';
 import { ProjectWithMeta } from './project.module';
 import * as Git from 'nodegit';
+import { RepoPuller } from '../observer/repo-puller';
+import { logger } from '../../util/logger';
 
 export class ProjectManager {
   public projects: Project[];
@@ -27,16 +28,23 @@ export class ProjectManager {
     );
   }
 
-  public async mapOutRunProject(projectName: string): Promise<void> {
+  public mapOutRunProject(projectName: string): void {
     const project: Project = this.getProjectByName(projectName);
-    const commitAcquirer: CommitAcquirer = new CommitAcquirer(project.repoPath);
-    const commitHash = await commitAcquirer.getRepoCurrentCommitHash();
-    this.runProjectWithMeta$.next({
-      project,
-      version: {
-        commitHash
+    const repoPuller = new RepoPuller();
+    repoPuller.pullRepo(project.repoPath).subscribe(
+      (result: { commitHash: string; output: string }) => {
+        this.runProjectWithMeta$.next({
+          project,
+          version: {
+            commitHash: result.commitHash,
+            output: result.output
+          }
+        });
+      },
+      error => {
+        logger.error(error);
       }
-    });
+    );
   }
 
   public async getProjectCommitMessageByHash(
