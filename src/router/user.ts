@@ -12,7 +12,7 @@ UserRouter.post('/logout', (req, res) => {
 });
 
 UserRouter.get('/self-info', async (req, res, next) => {
-  const jwt = req.headers['jwt'];
+  const jwt = req.header['jwt'];
   try {
     const user = verityJwt(jwt).data;
     res.send(user);
