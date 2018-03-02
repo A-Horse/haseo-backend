@@ -4,10 +4,14 @@ import * as fs from 'fs';
 
 class Configure {
   constructor() {
-    Object.assign(
-      this,
-      yaml.safeLoad(fs.readFileSync(path.join(__dirname, '../config.yaml'), 'utf-8'))
-    );
+    const configYamlFilePath = path.join(__dirname, '../config.yaml');
+    const configUserYamlFilePath = path.join(__dirname, '../config.user.yaml');
+    Object.assign(this, {
+      ...yaml.safeLoad(fs.readFileSync(configYamlFilePath, 'utf-8')),
+      ...fs.existsSync(configUserYamlFilePath)
+        ? yaml.safeLoad(fs.readFileSync(configUserYamlFilePath, 'utf-8'))
+        : {}
+    });
   }
 }
 
