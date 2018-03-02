@@ -96,12 +96,16 @@ export const WS_START_PROJECT_FLOW_REQUEST = (
   daemon: CIDaemon
 ) => {
   const actionType: ActionType = createActionType('WS_START_PROJECT_FLOW');
-  return message$.ofType(actionType.REQUEST).mergeMap(async (message: SocketMessage) => {
-    daemon.mapOutRunProject(message.payload.name);
-    return {
-      type: actionType.SUCCESS
-    };
-  });
+  return message$
+    .ofType(actionType.REQUEST)
+    .do((message: SocketMessage) => {
+      daemon.mapOutRunProject(message.payload.name);
+    })
+    .map(() => {
+      return {
+        type: actionType.SUCCESS
+      };
+    });
 };
 
 export const WS_GET_PROJECT_REPORT_REQUEST = (
