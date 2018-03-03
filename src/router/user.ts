@@ -3,6 +3,7 @@ import * as R from 'ramda';
 import { validate } from '../router-middle/validate';
 import knex from '../service/knex';
 import { createUser, authUser, signJwt } from '../service/auth';
+import * as camelcaseKeys from 'camelcase-keys';
 import { verityJwt } from '../service/auth';
 
 const UserRouter = express.Router();
@@ -15,7 +16,7 @@ UserRouter.get('/self-info', async (req, res, next) => {
   const jwt = req.get('jwt');
   try {
     const user = verityJwt(jwt).data;
-    res.send(user);
+    res.send(camelcaseKeys(user));
   } catch (error) {
     res.status(401).send();
   }

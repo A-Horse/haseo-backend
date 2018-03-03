@@ -6,7 +6,7 @@
   "scripts": {
     "test": "jest",
     "tsc": "tsc",
-    "prod-start": "pm2 start src/main.js --interpreter ./node_modules/.bin/babel-node --name=\"haseo-server\"",
+    "prod-start": "pm2 start build/main.js --name=\"haseo-server\"",
     "prod-stop": "pm2 stop haseo-server",
     "prod-restart": "pm2 restart haseo-server"
   },
