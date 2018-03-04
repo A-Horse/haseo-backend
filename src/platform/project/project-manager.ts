@@ -42,7 +42,7 @@ export class ProjectManager {
         });
       },
       error => {
-        logger.error(error);
+        logger.error(JSON.stringify(error));
       }
     );
   }
