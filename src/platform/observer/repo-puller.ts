@@ -6,7 +6,7 @@ import configure from '../../configure';
 import { Project } from '../project/project';
 import { RepoVersion } from './observer.module';
 import { repoLogger } from '../../util/logger';
-import { CommitAcquirer } from 'src/platform/version/commit-acquirer';
+import { CommitAcquirer } from '../version/commit-acquirer';
 
 export class RepoPuller {
   private cprocess: ChildProcess;
