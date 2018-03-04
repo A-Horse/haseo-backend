@@ -35,6 +35,7 @@ export class ProjectManager {
     const repoPuller = new RepoPuller();
     repoPuller.pullRepo(project.repoPath).subscribe(
       (result: { commitHash: string; output: string }) => {
+        console.log(1);
         this.runProjectWithMeta$.next({
           project,
           version: {

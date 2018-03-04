@@ -53,6 +53,7 @@ export class TaskManager {
   }
 
   private async runProjectTask(): Promise<void> {
+    console.log(2);
     const projectWithMeta: ProjectWithMeta = this.queue.shift();
     const taskRunner: TaskRunner = new TaskRunner(projectWithMeta, this.taskEvent$);
 
