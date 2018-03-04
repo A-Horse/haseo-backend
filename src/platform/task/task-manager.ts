@@ -57,7 +57,6 @@ export class TaskManager {
     const taskRunner: TaskRunner = new TaskRunner(projectWithMeta, this.taskEvent$);
 
     this.runContainer.add(taskRunner);
-    // taskRunner.run();
 
     taskRunner.complete$.subscribe(() => {
       this.looping = false;

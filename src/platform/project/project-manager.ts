@@ -8,6 +8,7 @@ import { ProjectWithMeta } from './project.module';
 import * as Git from 'nodegit';
 import { RepoPuller } from '../observer/repo-puller';
 import { logger } from '../../util/logger';
+import { initProjectRunReport } from '../../dao/report.dao';
 
 export class ProjectManager {
   public projects: Project[];
@@ -41,8 +42,13 @@ export class ProjectManager {
           }
         });
       },
-      error => {
-        logger.error(JSON.stringify(error));
+      async (error: { output: string }) => {
+        const projectRunReportInitalRowId: number = await initProjectRunReport({
+          projectName: project.name,
+          startDate: new Date().getTime(),
+          repoPullOuput: error.output,
+          status: 'FAILURE'
+        });
       }
     );
   }

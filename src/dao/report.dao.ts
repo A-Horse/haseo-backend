@@ -17,7 +17,7 @@ function transformReportRow(row): ProjectRunReportRow {
 export async function initProjectRunReport(payload: {
   projectName: string;
   startDate: number;
-  commitHash: string;
+  commitHash?: string;
   repoPullOuput: string;
   status: string;
 }): Promise<number> {
