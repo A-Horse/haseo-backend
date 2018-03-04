@@ -23,6 +23,10 @@ export class TaskRunner {
   }
 
   public async run(): Promise<void> {
+    // TODO
+    // save initial in report module =>
+    // flowController.start() =>
+    // subscribe stop
     this.flowController.start();
 
     const projectRunReportInitalRowId: number = await initProjectRunReport({

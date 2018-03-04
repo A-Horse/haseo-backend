@@ -30,6 +30,7 @@ export class ProjectManager {
   }
 
   public mapOutRunProject(projectName: string): void {
+    // TODO put it to version-manager and report-manager
     const project: Project = this.getProjectByName(projectName);
     const repoPuller = new RepoPuller();
     repoPuller.pullRepo(project.repoPath).subscribe(
