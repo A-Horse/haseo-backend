@@ -27,7 +27,6 @@ export class TaskRunner {
     // save initial in report module =>
     // flowController.start() =>
     // subscribe stop
-    console.log(3);
     this.flowController.start();
 
     const projectRunReportInitalRowId: number = await initProjectRunReport({

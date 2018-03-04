@@ -33,9 +33,8 @@ export class ProjectManager {
     // TODO put it to version-manager and report-manager
     const project: Project = this.getProjectByName(projectName);
     const repoPuller = new RepoPuller();
-    repoPuller.pullRepo(project.repoPath).subscribe(
+    repoPuller.pullRepo(project.repoPath, { askForCurrentCommit: true }).subscribe(
       (result: { commitHash: string; output: string }) => {
-        console.log(1);
         this.runProjectWithMeta$.next({
           project,
           version: {

@@ -6,11 +6,15 @@ import configure from '../../configure';
 import { Project } from '../project/project';
 import { RepoVersion } from './observer.module';
 import { repoLogger } from '../../util/logger';
+import { CommitAcquirer } from 'src/platform/version/commit-acquirer';
 
 export class RepoPuller {
   private cprocess: ChildProcess;
 
-  public pullRepo(repoPath: string): Rx.Observable<RepoVersion> {
+  public pullRepo(
+    repoPath: string,
+    options: { askForCurrentCommit: boolean } = { askForCurrentCommit: false }
+  ): Rx.Observable<RepoVersion> {
     const subject$ = new Rx.Subject<RepoVersion>();
     this.cprocess = exec(path.join(__dirname, '../../../shell/update-repo.sh'), {
       cwd: repoPath
@@ -25,13 +29,17 @@ export class RepoPuller {
       output += data.toString();
     });
 
-    this.cprocess.on('close', (code: number) => {
+    this.cprocess.on('close', async (code: number) => {
       if (!!code) {
         subject$.error({ output });
       } else {
         const commitIdPath = path.join(repoPath, '.commit_id');
         if (fs.existsSync(commitIdPath)) {
           const commitHash = fs.readFileSync(commitIdPath).toString();
+          subject$.next({ commitHash, output });
+        } else if (options.askForCurrentCommit) {
+          const commitAcquirer: CommitAcquirer = new CommitAcquirer(repoPath);
+          const commitHash: string = await commitAcquirer.getRepoCurrentCommitHash();
           subject$.next({ commitHash, output });
         }
       }
