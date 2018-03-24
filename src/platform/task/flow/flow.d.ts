@@ -13,4 +13,6 @@ interface FlowResult {
   status: 'SUCCESS' | 'FAILURE';
   flowName: string;
   result: OutputUnit[];
+  finishTime: number;
+  duration: number;
 }
