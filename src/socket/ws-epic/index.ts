@@ -42,7 +42,7 @@ export function createWebsocketReactive(
   const dirpath = path.join(__dirname);
   const wsSubscriptionModules = fs
     .readdirSync(dirpath)
-    .filter(filename => /subscriber.js$/.test(filename))
+    .filter(filename => /epic.js$/.test(filename)) // ts => js
     .map(filename => {
       return require(path.join(dirpath, filename));
     });
@@ -66,6 +66,4 @@ export function createWebsocketReactive(
     }
     ws.send(JSON.stringify(output));
   });
-
-  // subscriptionFns.forEach(subscriptionFn => subscriptionFn(authedMessage$, ws, daemon));
 }
