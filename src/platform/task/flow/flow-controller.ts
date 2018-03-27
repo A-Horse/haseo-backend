@@ -16,11 +16,9 @@ export class FlowController {
       std?: boolean;
     }
   ) {
-    this.flowResult$.subscribe(
-      (flowResult: { status: 'SUCCESS' | 'FAILURE'; flowName: string; result: OutputUnit[] }) => {
-        this.result.push(flowResult);
-      }
-    );
+    this.flowResult$.subscribe((flowResult: FlowResult) => {
+      this.result.push(flowResult);
+    });
   }
 
   public start(): void {
@@ -47,17 +45,20 @@ export class FlowController {
     const flowName: string = R.keys(flow)[0];
 
     const flowRunner = new FlowRunner(flow, this.option);
+    const startTime: number = new Date().getTime();
     flowRunner.run();
 
     flowRunner.unitouput$.subscribe((outputUnit: OutputUnit) =>
       this.outputUnitSequence.push({ ...outputUnit, flowName })
-    );
+                                   );
 
     flowRunner.success$.subscribe((flowResult: OutputUnit[]) => {
       this.flowResult$.next({
         status: 'SUCCESS',
         flowName,
-        result: flowResult
+        result: flowResult,
+        startTime,
+        duration: startTime - new Date().getTime()
       });
       this.runFlows(restFlows);
     });
@@ -66,7 +67,9 @@ export class FlowController {
       this.flowResult$.next({
         status: 'FAILURE',
         flowName,
-        result: flowResult
+        result: flowResult,
+        startTime,
+        duration: startTime - new Date().getTime()
       });
       this.finish('FAILURE');
     });
