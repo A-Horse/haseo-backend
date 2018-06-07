@@ -45,16 +45,19 @@ export class FlowController {
     const flowName: string = R.keys(flow)[0];
 
     const flowRunner = new FlowRunner(flow, this.option);
-    const startTime: number = new Date().getTime();
+    const startedTime: number = new Date().getTime();
     flowRunner.run();
 
     flowRunner.unitouput$.subscribe((outputUnit: OutputUnit) =>
       this.outputUnitSequence.push({ ...outputUnit, flowName })
-                                   );
+    );
 
     flowRunner.success$.subscribe((flowResult: OutputUnit[]) => {
+      const finishTime = new Date().getTime();
       this.flowResult$.next({
         status: 'SUCCESS',
+        duration: finishTime - startedTime,
+        finishTime,
         flowName,
         result: flowResult,
         startTime,
@@ -64,8 +67,11 @@ export class FlowController {
     });
 
     flowRunner.failure$.subscribe((flowResult: OutputUnit[]) => {
+      const finishTime = new Date().getTime();
       this.flowResult$.next({
         status: 'FAILURE',
+        duration: finishTime - startedTime,
+        finishTime,
         flowName,
         result: flowResult,
         startTime,
