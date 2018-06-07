@@ -13,6 +13,6 @@ declare interface FlowResult {
   status: 'SUCCESS' | 'FAILURE';
   flowName: string;
   result: OutputUnit[];
-  startTime: number;
+  finishTime: number;
   duration: number;
 }

@@ -56,12 +56,10 @@ export class FlowController {
       const finishTime = new Date().getTime();
       this.flowResult$.next({
         status: 'SUCCESS',
-        duration: finishTime - startedTime,
         finishTime,
+        duration: finishTime - startedTime,
         flowName,
-        result: flowResult,
-        startTime,
-        duration: startTime - new Date().getTime()
+        result: flowResult
       });
       this.runFlows(restFlows);
     });
@@ -70,12 +68,10 @@ export class FlowController {
       const finishTime = new Date().getTime();
       this.flowResult$.next({
         status: 'FAILURE',
-        duration: finishTime - startedTime,
         finishTime,
+        duration: finishTime - startedTime,
         flowName,
-        result: flowResult,
-        startTime,
-        duration: startTime - new Date().getTime()
+        result: flowResult
       });
       this.finish('FAILURE');
     });
