@@ -11,6 +11,14 @@ export class Project {
     this.readProjectSetting();
   }
 
+  public getSetting(): ProjectSetting {
+    return this.setting;
+  }
+
+  public updateProjectConfig(): void {
+    this.readProjectSetting();
+  }
+
   public getInfomartion() {
     return {
       name: this.setting.name,
@@ -18,12 +26,13 @@ export class Project {
     };
   }
 
-  public getSetting(): ProjectSetting {
-    return this.setting;
-  }
-
-  public updateProjectConfig(): void {
-    this.readProjectSetting();
+  public getInfomartionWithoutOuput() {
+    return {
+      name: this.setting.name,
+      flows: this.setting.flow.map((flow: FlowResult) => {
+        return R.omit(['result'], flow);
+      })
+    };
   }
 
   private readProjectSetting(): void {
