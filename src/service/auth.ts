@@ -45,11 +45,14 @@ export async function authUser(cred) {
   return user;
 }
 
-export async function createAdmin() {
+export async function createAdmin(password: string) {
+  if (!password) {
+    throw new Error('You must provide a password');
+  }
   await createUser(
     {
       username: 'admin',
-      password: configure['DEFAULT_ADMIN_PASSWORD']
+      password
     },
     true
   );
