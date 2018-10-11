@@ -6,8 +6,6 @@ import UserRouter from './router/user';
 import configure from './configure';
 
 export function serve(daemon) {
-  checkAdminCreate();
-
   const app = express();
 
   app.use(require('body-parser').json());

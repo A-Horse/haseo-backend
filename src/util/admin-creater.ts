@@ -1,8 +1,8 @@
 import { checkHasAdmin, createAdmin } from '../service/auth';
 
-export async function checkAdminCreate(): Promise<void> {
+export async function checkAdminCreate(password): Promise<void> {
   const hasAdmin = await checkHasAdmin();
   if (!hasAdmin) {
-    await createAdmin();
+    await createAdmin(password);
   }
 }
