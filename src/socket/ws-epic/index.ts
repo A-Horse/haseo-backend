@@ -43,6 +43,7 @@ export function createWebsocketReactive(
   const wsSubscriptionModules = fs
     .readdirSync(dirpath)
     .filter(filename => /epic.js$/.test(filename)) // ts => js
+    .filter(filename => !/^flycheck/.test(filename))
     .map(filename => {
       return require(path.join(dirpath, filename));
     });
