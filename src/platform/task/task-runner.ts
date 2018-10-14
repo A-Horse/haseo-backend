@@ -48,7 +48,8 @@ export class TaskRunner {
         try {
           await saveProjectRunReport(projectRunReportInitalRowId, {
             result: this.flowController.result,
-            status: this.flowController.status
+            status: this.flowController.status,
+            flows: this.projectWithMeta.project.getSetting().flow
           });
         } catch (error) {
           // tslint:disable-next-line

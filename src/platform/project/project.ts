@@ -31,9 +31,7 @@ export class Project {
   public getInfomartionWithoutOuput() {
     return {
       name: this.setting.name,
-      flows: this.setting.flow.map((flow: FlowResult) => {
-        return R.omit(['result'], flow);
-      })
+      flows: this.setting.flow
     };
   }
 
@@ -49,7 +47,6 @@ export class Project {
       throw new Error('Can not find project haseo file.')
     }
 
-    this.setting = YAML.load(configFilePath);
     this.name = this.setting.name;
   }
 }

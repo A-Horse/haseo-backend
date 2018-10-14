@@ -35,13 +35,15 @@ export async function saveProjectRunReport(
   payload: {
     result: FlowResult[];
     status: string;
+    flows: any[]
   }
 ): Promise<void> {
   await knex(projectRunReportTableName)
     .where('id', '=', reportId.toString())
     .update({
       result: JSON.stringify(payload.result),
-      status: payload.status
+      status: payload.status,
+      flows: JSON.stringify(payload.flows)
     });
 }
 
