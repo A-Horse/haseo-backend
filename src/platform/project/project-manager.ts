@@ -29,6 +29,7 @@ export class ProjectManager {
     );
   }
 
+  // TODO rename
   public mapOutRunProject(projectName: string): void {
     // TODO put it to version-manager and report-manager
     const project: Project = this.getProjectByName(projectName);
