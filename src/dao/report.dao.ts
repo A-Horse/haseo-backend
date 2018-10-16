@@ -10,7 +10,8 @@ const projectRunReportTableName = 'project_run_report';
 function transformReportRow(row): ProjectRunReportRow {
   return camelcaseKeys({
     ...row,
-    result: JSON.parse(row.result)
+    result: JSON.parse(row.result),
+    flows: JSON.parse(row.flows)
   });
 }
 
