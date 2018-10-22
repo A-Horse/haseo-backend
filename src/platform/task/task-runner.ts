@@ -34,7 +34,8 @@ export class TaskRunner {
       startDate: new Date().getTime(),
       commitHash: this.projectWithMeta.version.commitHash,
       repoPullOuput: this.projectWithMeta.version.output,
-      status: this.flowController.status
+      status: this.flowController.status,
+      flows: this.projectWithMeta.project.getSetting().flow
     });
 
     this.notifyFlowStart(projectRunReportInitalRowId);

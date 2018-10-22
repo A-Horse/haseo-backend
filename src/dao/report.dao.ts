@@ -21,13 +21,15 @@ export async function initProjectRunReport(payload: {
   commitHash?: string;
   repoPullOuput: string;
   status: string;
+  flows: object[];
 }): Promise<number> {
   return (await knex(projectRunReportTableName).insert({
     project_name: payload.projectName,
     start_date: payload.startDate,
     commit_hash: payload.commitHash,
     repo_pull_output: payload.repoPullOuput,
-    status: payload.status
+    status: payload.status,
+    flows: JSON.stringify(payload.flows)
   }))[0];
 }
 

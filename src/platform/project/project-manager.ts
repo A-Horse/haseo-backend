@@ -49,7 +49,8 @@ export class ProjectManager {
           projectName: project.name,
           startDate: new Date().getTime(),
           repoPullOuput: error.output,
-          status: 'FAILURE'
+          status: 'FAILURE',
+          flows: project.getSetting().flow // TODO 还是统一一下，究竟是叫 flows 还是 flow，感觉还是 flow
         });
       }
     );

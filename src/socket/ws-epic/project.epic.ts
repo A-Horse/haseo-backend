@@ -129,7 +129,7 @@ export const WS_GET_PROJECT_REPORT_REQUEST = (
   return message$.ofType(actionType.REQUEST).mergeMap(async (message: SocketMessage) => {
     const payload: { id: number } = message.payload;
 
-    // TODO: valide middle
+    // TODO: valide in middle
     if (!payload.id && payload.id !== 0) {
       return {
         type: actionType.FAILURE,
