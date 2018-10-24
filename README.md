@@ -17,6 +17,11 @@ the user custom file store in `config.user.yaml` file, but it tracked by git, so
 
 `git update-index --skip-worktree config.user.yaml`
 
+## haseo config
+
+### know issue
+`watch` in `haseo.yaml` is work throught all config file
+
 ## Required
 - libgit2 [https://github.com/nodegit/nodegit](https://github.com/nodegit/nodegit)
 
