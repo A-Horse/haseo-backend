@@ -9,7 +9,7 @@ export class Project {
   public invalid: boolean;
   private setting: ProjectSetting;
 
-  constructor(public repoPath: string, public repoName: string) {
+  constructor(public repoPath: string, private configFileName: string) {
     this.readProjectSetting();
   }
 
@@ -36,17 +36,8 @@ export class Project {
   }
 
   private readProjectSetting(): void {
-    const userConfigFilePath = path.join(this.repoPath, 'haseo.user.yaml');
-    const configFilePath = path.join(this.repoPath, 'haseo.yaml');
-    if (fs.existsSync(userConfigFilePath)) {
-      this.setting = YAML.load(userConfigFilePath);
-    } else if (fs.existsSync(configFilePath)) {
-      this.setting = YAML.load(configFilePath);
-    } else {
-      this.invalid = true;
-      throw new Error('Can not find project haseo file.')
-    }
-
+    const configFilePath = path.join(this.repoPath, this.configFileName);
+    this.setting = YAML.load(configFilePath);
     this.name = this.setting.name;
   }
 }
