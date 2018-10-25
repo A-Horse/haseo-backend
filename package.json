@@ -1,6 +1,6 @@
 {
   "name": "haseo-cli",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "",
   "main": "index.js",
   "scripts": {
@@ -39,13 +39,13 @@
     "camelcase-keys": "^4.2.0",
     "colors": "^1.1.2",
     "es6-promise": "^4.1.0",
-    "express": "^4.15.3",
+    "express": "^4.16.4",
     "jest": "^21.0.2",
     "js-yaml": "^3.10.0",
     "jsonwebtoken": "^8.1.0",
     "knex": "^0.13.0",
     "moment": "^2.22.2",
-    "nodegit": "^0.20.3",
+    "nodegit": "^0.23.0",
     "optimist": "^0.6.1",
     "ramda": "^0.24.1",
     "rxjs": "^5.5.6",
