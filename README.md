@@ -29,6 +29,22 @@ the user custom file store in `config.user.yaml` file, but it tracked by git, so
 
 
 ## Repository heseo file config
+### config
+
+#### example
+```yaml
+name: TEST-ONE
+flow:
+  - first: echo "first"
+  - second: echo "second"
+  - third: echo "third"
+watch: true
+```
+
+#### name
+**required**
+
+
 
 ### know issue
 `watch` in `haseo.yaml` is work throught all config file
