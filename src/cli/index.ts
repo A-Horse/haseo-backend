@@ -31,7 +31,7 @@ async function main(): Promise<void> {
 
   const repoName = R.takeLast(1, path.resolve('.').split('/'));
 
-  const project = new Project('.', repoName);
+  const project = new Project('.', 'haseo.yaml');
   const commitAcquirer: CommitAcquirer = new CommitAcquirer(project.repoPath);
   const commitHash: string = await commitAcquirer.getRepoCurrentCommitHash();
   const projectWithMeta: ProjectWithMeta = {
