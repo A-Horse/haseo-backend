@@ -2,18 +2,24 @@
 > backend repo
 
 ## Use
-### setup #server
-### initial database(sqlite3) manualy_
+
+### setup server
+
+#### initial database(sqlite3) manualy_
+
 `sqlite3 ./db.sqlite3 < sql/create-table.sql`
 
 `npm run start`
 --logLevel=debug|info|warning|error
 
 #### create user
+
 `node built/tool/create-user.js username password`
 
 ### setup repository
-#### make sure `REPO_STORAGE_PATH` in config.yaml, it is the storage of all pipeline repository. It default is `REPO` in this repository.
+
+#### note
+make sure `REPO_STORAGE_PATH` in config.yaml, it is the storage of all pipeline repository. It default is `REPO` in this repository.
 
 
 ## Config
