@@ -5,7 +5,8 @@ create table project_run_report (
        commit_hash TEXT,
        repo_pull_output TEXT,
        status TEXT NOT NULL,
-       result TEXT
+       result TEXT,
+       flows TEXT
 );
 
 create table user (
