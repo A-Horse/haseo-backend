@@ -5,7 +5,7 @@
 
 ### setup server
 
-#### initial database(sqlite3) manualy_
+#### initial database(sqlite3) manualy
 
 `sqlite3 ./db.sqlite3 < sql/create-table.sql`
 
