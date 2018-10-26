@@ -34,7 +34,7 @@
     "@types/nodegit": "^0.18.5",
     "babel-polyfill": "^6.26.0",
     "bcryptjs": "^2.4.3",
-    "bluebird": "^3.5.0",
+    "bluebird": "^3.5.2",
     "body-parser": "^1.18.2",
     "camelcase-keys": "^4.2.0",
     "colors": "^1.1.2",
