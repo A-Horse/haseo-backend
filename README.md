@@ -22,6 +22,12 @@
 make sure `REPO_STORAGE_PATH` in config.yaml, it is the storage of all pipeline repository. It default is `REPO` in this repository.
 
 
+## Cli
+make sure `npm i -g haseo-cli`
+
+and go a project folder which it has `haseo.config`
+
+
 ## Config
 the user custom file store in `config.user.yaml` file, but it tracked by git, so it should 
 
