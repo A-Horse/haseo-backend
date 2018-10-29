@@ -7,6 +7,7 @@ import { ProjectSetting } from './project.module';
 export class Project {
   public name: string;
   public invalid: boolean;
+  private configSource: string;
   private setting: ProjectSetting;
 
   constructor(public repoPath: string, private configFileName: string) {
@@ -35,8 +36,13 @@ export class Project {
     };
   }
 
+  public getConfigSource(): string {
+    return this.configSource;
+  }
+
   private readProjectSetting(): void {
     const configFilePath = path.join(this.repoPath, this.configFileName);
+    this.configSource = fs.readFileSync(this.configFileName, 'utf-8');
     this.setting = YAML.load(configFilePath);
     this.name = this.setting.name;
   }
