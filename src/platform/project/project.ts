@@ -42,7 +42,7 @@ export class Project {
 
   private readProjectSetting(): void {
     const configFilePath = path.join(this.repoPath, this.configFileName);
-    this.configSource = fs.readFileSync(this.configFileName, 'utf-8');
+    this.configSource = fs.readFileSync(configFilePath, 'utf-8');
     this.setting = YAML.load(configFilePath);
     this.name = this.setting.name;
   }

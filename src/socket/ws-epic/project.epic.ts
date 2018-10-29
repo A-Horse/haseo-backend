@@ -15,6 +15,19 @@ export const WS_GET_PROJECTS_REQUEST = (message$: Rx.Subject<SocketMessage>, dae
   });
 };
 
+export const WS_GET_PROJECT_CONFIG_REQUEST = (message$: Rx.Subject<SocketMessage>, daemon: CIDaemon) => {
+  const actionType: ActionType = createActionType('WS_GET_PROJECT_CONFIG');
+  return message$.ofType(actionType.REQUEST).map((message: SocketMessage) => {
+    return {
+      type: actionType.SUCCESS,
+      payload: {
+        projectName: message.payload.name,
+        configSource: daemon.getProjectByName(message.payload.name).getConfigSource()
+      }
+    };
+  });
+};
+
 export const WS_GET_SIMPLE_PROJECTS_REQUEST = (
   message$: Rx.Subject<SocketMessage>,
   daemon: CIDaemon
