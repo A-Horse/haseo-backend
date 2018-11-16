@@ -75,7 +75,7 @@ export class ProjectManager {
       .filter(p => fs.lstatSync(path.join(this.storePath, p)).isDirectory())
       .filter(p => {
         const files = fs.readdirSync(path.join(this.storePath, p));
-        return R.any(f => /^haseo(\.[a-zA-Z0-9]+)?\.yaml$/.test(f))(files)
+        return R.any(f => /^\.?haseo(\.[a-zA-Z0-9]+)?\.yaml$/.test(f))(files)
       })
       .map(p => path.join(this.storePath, p))
       .map(projectSplit)
