@@ -25,7 +25,8 @@ export class FlowRunner {
     const repoPath = this.option.repoPath;
 
     this.cprocess = exec(flowCommand, {
-      cwd: repoPath
+      cwd: repoPath,
+      env: process.env
     });
 
     this.cprocess.stdout.on('data', (data: Buffer) => {
