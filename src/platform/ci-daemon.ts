@@ -5,6 +5,7 @@ import { ObserverManager } from './observer/observer-manager';
 import { ReportManager } from './report/report-manager';
 import { Project } from './project/project';
 import { ProjectWithMeta } from './project/project.module';
+import { SchedueManager } from './schedue/schedue-manager';
 
 // tslint:disable:member-ordering
 export class CIDaemon {
@@ -32,6 +33,7 @@ export class CIDaemon {
   public getTaskEvent$ = this.taskManager.getTaskEvent$.bind(this.taskManager);
 
   public observerManager: ObserverManager = new ObserverManager();
+  public schedueManager: SchedueManager = new SchedueManager();
 
   public startup(): void {
     this.taskManager.start();
@@ -40,7 +42,15 @@ export class CIDaemon {
     this.observerManager.watchProjects(this.projectManager.getProjects());
 
     this.observerManager
-      .getShouldRUnProjectStream()
+      .getShouldRunProjectStream()
+      .subscribe((projectWithMeta: ProjectWithMeta) => {
+        this.taskManager.addToQueue(projectWithMeta);
+      });
+
+    this.schedueManager.schedueProjects(this.projectManager.getProjects());
+
+    this.schedueManager
+      .getShouldRunProjectStream()
       .subscribe((projectWithMeta: ProjectWithMeta) => {
         this.taskManager.addToQueue(projectWithMeta);
       });

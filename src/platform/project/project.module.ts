@@ -9,5 +9,6 @@ export interface ProjectWithMeta {
 export interface ProjectSetting {
   name: string;
   flow: object[];
-  watch?: boolean;
+  toggle: 'MANUAL' | 'WATCH' | 'SCHEDUE';
+  schedue?: string;
 }

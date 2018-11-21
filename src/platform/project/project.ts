@@ -44,6 +44,7 @@ export class Project {
     const configFilePath = path.join(this.repoPath, this.configFileName);
     this.configSource = fs.readFileSync(configFilePath, 'utf-8');
     this.setting = YAML.load(configFilePath);
+    this.setting.toggle = this.setting.toggle || 'MANUAL';
     this.name = this.setting.name;
   }
 }

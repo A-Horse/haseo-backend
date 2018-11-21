@@ -33,7 +33,7 @@ export class TaskRunner {
       projectName: this.projectWithMeta.project.name,
       startDate: new Date().getTime(),
       commitHash: this.projectWithMeta.version.commitHash,
-      repoPullOuput: this.projectWithMeta.version.output,
+      repoPullOuput: this.projectWithMeta.version.output, // TODO 搞一个中间的东西来搞 vesion， 不要把version的逻辑放到 observer , watch 里面
       status: this.flowController.status,
       flows: this.projectWithMeta.project.getSetting().flow
     });

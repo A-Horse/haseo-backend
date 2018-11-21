@@ -4,6 +4,7 @@ import { Project } from '../project/project';
 import { Observer } from '../observer/observer';
 import { ProjectWithMeta } from '../project/project.module';
 
+// TODO 应该要和 schedue 抽一个基类
 export class ObserverManager {
   private shouldRunProjectWithMeta$ = new Subject<ProjectWithMeta>();
   private observers: Observer[];
@@ -21,7 +22,7 @@ export class ObserverManager {
     }, this.observers);
   }
 
-  public getShouldRUnProjectStream(): Subject<ProjectWithMeta> {
+  public getShouldRunProjectStream(): Subject<ProjectWithMeta> {
     return this.shouldRunProjectWithMeta$;
   }
 
@@ -34,6 +35,6 @@ export class ObserverManager {
   }
 
   private filterProjectShouldObserve(projects: Project[]) {
-    return projects.filter(project => project.getSetting().watch);
+    return projects.filter(project => project.getSetting().toggle === 'WATCH');
   }
 }
