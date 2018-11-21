@@ -38,6 +38,7 @@
     "body-parser": "^1.18.2",
     "camelcase-keys": "^4.2.0",
     "colors": "^1.1.2",
+    "cron": "^1.5.0",
     "es6-promise": "^4.1.0",
     "express": "^4.16.4",
     "jest": "^21.0.2",
@@ -50,10 +51,10 @@
     "ramda": "^0.24.1",
     "rxjs": "^5.5.6",
     "source-map-support": "^0.5.2",
-    "sqlite3": "^3.1.13",
+    "sqlite3": "^4.0.4",
     "validator": "^9.1.1",
     "winston": "^3.0.0-rc1",
-    "ws": "^3.0.0",
+    "ws": "^6.1.2",
     "yamljs": "^0.3.0"
   }
 }
