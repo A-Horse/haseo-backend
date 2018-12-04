@@ -41,6 +41,7 @@ export class ProjectManager {
       const repoPuller = new RepoPuller();
       repoPuller.pullRepo(project.repoPath, { askForCurrentCommit: true }).subscribe(
         (result: { commitHash: string; output: string }) => {
+          // TODO 重命名 runProjectWithMeta => runProjectWithVersion
           this.runProjectWithMeta$.next({
             project,
             version: {
@@ -63,7 +64,10 @@ export class ProjectManager {
       // TODO 重构
       this.runProjectWithMeta$.next({
         project,
-        version: null
+        version: {
+          commitHash: null,
+          output: null
+        }
       });
     }
   }
