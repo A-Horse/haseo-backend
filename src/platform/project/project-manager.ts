@@ -15,7 +15,7 @@ export class ProjectManager {
   public projects: Project[];
   public runProjectWithMeta$ = new Subject<ProjectWithMeta>();
 
-  private storePath: string = path.join(__dirname, '../../../', configure['REPO_STORAGE_PATH']);
+  private storePath: string = path.join(configure['REPO_STORAGE_PATH']);
 
   public initial(): void {
     this.projects = this.generateProjectFromDirConfigs();
