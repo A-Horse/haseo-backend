@@ -1,8 +1,7 @@
 import * as path from 'path';
 import * as YAML from 'yamljs';
-import * as R from 'ramda';
 import * as fs from 'fs';
-import { ProjectSetting } from './project.module';
+import { ProjectSetting } from './project.type';
 
 export class Project {
   public name: string;
@@ -12,6 +11,10 @@ export class Project {
 
   constructor(public repoPath: string, private configFileName: string) {
     this.readProjectSetting();
+  }
+
+  public useGit() {
+    return this.setting.useGit;
   }
 
   public getSetting(): ProjectSetting {

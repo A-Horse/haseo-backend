@@ -1,9 +1,7 @@
-import * as R from 'ramda';
 import * as Rx from 'rxjs';
 import { TaskQueue } from './task-queue';
-import { FlowController } from '../task/flow/flow-controller';
 import { TaskRunner } from '../task/task-runner';
-import { ProjectWithMeta } from '../project/project.module';
+import { ProjectWithMeta } from '../project/project.type';
 import { TaskRunContainer } from '../task/task-run-container';
 
 export class TaskManager {

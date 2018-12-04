@@ -2,7 +2,7 @@ import * as R from 'ramda';
 import { Subject } from 'rxjs/Subject';
 import { Project } from '../project/project';
 import { Observer } from '../observer/observer';
-import { ProjectWithMeta } from '../project/project.module';
+import { ProjectWithMeta } from '../project/project.type';
 
 // TODO 应该要和 schedue 抽一个基类
 export class ObserverManager {

@@ -1,7 +1,7 @@
 import * as cron from 'cron';
 import { Project } from '../project/project';
 import * as Rx from 'rxjs';
-import { ProjectWithMeta } from '../project/project.module';
+import { ProjectWithMeta } from '../project/project.type';
 
 const CronJob = cron.CronJob;
 

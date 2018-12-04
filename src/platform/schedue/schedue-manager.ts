@@ -2,7 +2,7 @@ import * as R from 'ramda';
 import { Subject } from 'rxjs/Subject';
 import { Project } from '../project/project';
 import { Observer } from '../observer/observer';
-import { ProjectWithMeta } from '../project/project.module';
+import { ProjectWithMeta } from '../project/project.type';
 import { CronAgent } from './cron-agent';
 
 // TODO 抽基类

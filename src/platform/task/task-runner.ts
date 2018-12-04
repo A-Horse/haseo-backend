@@ -1,7 +1,7 @@
 import * as Rx from 'rxjs';
 import { Project } from '../project/project';
 import { initProjectRunReport, saveProjectRunReport } from '../../dao/report.dao';
-import { ProjectWithMeta } from '../project/project.module';
+import { ProjectWithMeta } from '../project/project.type';
 import { FlowController } from '../task/flow/flow-controller';
 
 export class TaskRunner {

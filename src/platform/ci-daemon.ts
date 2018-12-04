@@ -4,7 +4,7 @@ import { TaskManager } from './task/task-manager';
 import { ObserverManager } from './observer/observer-manager';
 import { ReportManager } from './report/report-manager';
 import { Project } from './project/project';
-import { ProjectWithMeta } from './project/project.module';
+import { ProjectWithMeta } from './project/project.type';
 import { SchedueManager } from './schedue/schedue-manager';
 
 // tslint:disable:member-ordering

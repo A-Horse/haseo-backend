@@ -1,10 +1,8 @@
-import * as fs from 'fs';
-import * as path from 'path';
 import * as Rx from 'rxjs';
 import configure from '../../configure';
 import { Project } from '../project/project';
 import { RepoPuller } from '../observer/repo-puller';
-import { ProjectWithMeta } from '../project/project.module';
+import { ProjectWithMeta } from '../project/project.type';
 import { RepoVersion } from '../observer/observer.module';
 
 export class Observer {

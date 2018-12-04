@@ -2,10 +2,7 @@ import * as fs from 'fs';
 import * as path from 'path';
 import * as Rx from 'rxjs';
 import { exec, ChildProcess } from 'child_process';
-import configure from '../../configure';
-import { Project } from '../project/project';
 import { RepoVersion } from './observer.module';
-import { repoLogger } from '../../util/logger';
 import { CommitAcquirer } from '../version/commit-acquirer';
 
 export class RepoPuller {

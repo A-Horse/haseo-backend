@@ -1,4 +1,4 @@
-import { ProjectWithMeta } from '../project/project.module';
+import { ProjectWithMeta } from '../project/project.type';
 
 export class TaskQueue {
   private queue: ProjectWithMeta[] = [];

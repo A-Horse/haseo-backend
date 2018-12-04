@@ -3,6 +3,7 @@ import {
   queryProjectRunReportHistory,
   queryProjectRunReport
 } from '../../dao/report.dao';
+import { ProjectRunReportRow } from '../project/project.type';
 
 export class ReportManager {
   public async getProjectLastRunReport(projectName: string): Promise<ProjectRunReportRow> {
