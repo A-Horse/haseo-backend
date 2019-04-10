@@ -7,7 +7,7 @@ import * as path from 'path';
 import * as R from 'ramda';
 import * as Rx from 'rxjs';
 import * as colors from 'colors';
-import { Project } from '../platform/project/project';
+import { Project } from '../platform/project/project';  
 import { CommitAcquirer } from '../platform/version/commit-acquirer';
 import { ProjectWithMeta } from '../platform/project/project.type';
 import { FlowController } from '../platform/task/flow/flow-controller';

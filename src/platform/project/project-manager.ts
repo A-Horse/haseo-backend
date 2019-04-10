@@ -84,9 +84,9 @@ export class ProjectManager {
 
   private generateProjectFromDirConfigs(): Project[] {
     return fs
-      .readdirSync(this.storePath, 'utf-8')
-      .map(repoName => repoName.toString())
-      .filter(p => fs.lstatSync(path.join(this.storePath, p)).isDirectory())
+      .readdirSync(this.storePath)
+      .map(repoName => (<any>repoName).toString())
+      .filter((p: string) => fs.lstatSync(path.join(this.storePath, p)).isDirectory())
       .filter(p => {
         const files = fs.readdirSync(path.join(this.storePath, p));
         return R.any(f => /^\.?haseo(\.[a-zA-Z0-9]+)?\.yaml$/.test(f))(files);

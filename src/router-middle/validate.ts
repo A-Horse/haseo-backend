@@ -6,11 +6,11 @@ function required() {
   return val => !!(val + '');
 }
 
-function lenLess(len) {
+function lenLess(len: number): (val) => boolean {
   return val => val.length < len;
 }
 
-function lenMore(len) {
+function lenMore(len: number): (val) => boolean {
   return val => val.length > len;
 }
 

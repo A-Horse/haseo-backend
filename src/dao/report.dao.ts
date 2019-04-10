@@ -8,7 +8,7 @@ import { ProjectRunReportRow } from '../platform/project/project.type';
 
 const projectRunReportTableName = 'project_run_report';
 
-function transformReportRow(row): ProjectRunReportRow {
+function transformReportRow(row: any): ProjectRunReportRow {
   return camelcaseKeys({
     ...row,
     result: JSON.parse(row.result),
