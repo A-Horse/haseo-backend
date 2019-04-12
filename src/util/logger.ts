@@ -10,7 +10,7 @@ const formatLog = printf(info => {
   return `${info.timestamp} ${info.level}: ${info.message}`;
 });
 
-export const logger = new createLogger({
+export const logger = createLogger({
   format: combine(timestamp(), formatLog),
   transports: [
     new transports.Console({ level: consoleLogLevel }),
@@ -24,7 +24,7 @@ export const logger = new createLogger({
   ]
 });
 
-export const pipelineLogger = new createLogger({
+export const pipelineLogger = createLogger({
   format: combine(timestamp(), formatLog),
   transports: [
     new transports.Console({ level: consoleLogLevel }),
@@ -38,17 +38,17 @@ export const pipelineLogger = new createLogger({
   ]
 });
 
-export const taskLogger = new createLogger({
+export const taskLogger = createLogger({
   format: combine(timestamp(), formatLog),
   transports: [new transports.Console({ level: consoleLogLevel })]
 });
 
-export const repoLogger = new createLogger({
+export const repoLogger = createLogger({
   format: combine(timestamp(), formatLog),
   transports: [new transports.Console({ level: consoleLogLevel })]
 });
 
-export const expressLogger = new createLogger({
+export const expressLogger = createLogger({
   format: combine(timestamp(), formatLog),
   transports: [new transports.Console({ level: consoleLogLevel })]
 });

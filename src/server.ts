@@ -1,7 +1,6 @@
 import * as express from 'express';
 import * as http from 'http';
 import { startWebSocketServe } from './socket/index';
-import { checkAdminCreate } from './util/admin-creater';
 import UserRouter from './router/user';
 import configure from './configure';
 
@@ -21,6 +20,6 @@ export function serve(daemon) {
 
   server.listen(configure['SERVE_PORT'], function listening() {
     // tslint:disable-next-line
-    console.log('Listening on %d', server.address().port);
+    console.log('Listening on %d', server.address(), configure['SERVE_PORT']);
   });
 }

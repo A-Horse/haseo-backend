@@ -5,14 +5,12 @@ import 'babel-polyfill';
 import * as fs from 'fs';
 import * as path from 'path';
 import * as R from 'ramda';
-import * as Rx from 'rxjs';
 import * as colors from 'colors';
 import { Project } from '../platform/project/project';  
 import { CommitAcquirer } from '../platform/version/commit-acquirer';
 import { ProjectWithMeta } from '../platform/project/project.type';
 import { FlowController } from '../platform/task/flow/flow-controller';
 
-import { argv } from 'optimist';
 
 // tslint:disable:no-console
 async function main(): Promise<void> {
@@ -27,6 +25,7 @@ async function main(): Promise<void> {
       colors.bold.red('Error: '),
       colors.red('Can not found `haseo.yaml`, please cd haseo configured project and retry.`')
     );
+    return;
   }
 
   const repoName = R.takeLast(1, path.resolve('.').split('/'));

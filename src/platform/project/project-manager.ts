@@ -5,7 +5,7 @@ import configure from '../../configure';
 import { Project } from './project';
 import { Subject } from 'rxjs/Subject';
 import { ProjectWithMeta } from './project.type';
-import * as Git from 'nodegit';
+// import * as Git from 'nodegit';
 import { RepoPuller } from '../observer/repo-puller';
 import { initProjectRunReport } from '../../dao/report.dao';
 import { projectSplit } from './project-splitter';
@@ -76,10 +76,12 @@ export class ProjectManager {
     projectName: string,
     commitHash: string
   ): Promise<string> {
-    const project: Project = this.getProjectByName(projectName);
-    return Git.Commit.lookup(await Git.Repository.init(project.repoPath, 0), commitHash).then(
-      commit => commit.message()
-    );
+    // TODO uncomment and move it other
+    return Promise.resolve('#FAKECOMMIT');
+    // const project: Project = this.getProjectByName(projectName);
+    // return Git.Commit.lookup(await Git.Repository.init(project.repoPath, 0), commitHash).then(
+    //   commit => commit.message()
+    // );
   }
 
   private generateProjectFromDirConfigs(): Project[] {

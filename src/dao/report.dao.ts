@@ -1,9 +1,5 @@
-import * as R from 'ramda';
 import * as camelcaseKeys from 'camelcase-keys';
 import knex from '../service/knex';
-import { pipelineLogger } from '../util/logger';
-import { ColumnInfo } from 'knex';
-import { Project } from '../platform/project/project';
 import { ProjectRunReportRow } from '../platform/project/project.type';
 
 const projectRunReportTableName = 'project_run_report';
