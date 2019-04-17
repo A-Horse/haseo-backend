@@ -11,8 +11,8 @@
   },
   "include": ["./src/**/*"],
   "files": [
-    "src/platform/task/flow/flow.d.ts",
-    "src/platform/report/report.d.ts",
+    "src/runner/task/flow/flow.d.ts",
+    "src/runner/report/report.d.ts",
     "src/socket/socket.d.ts",
     "src/model.d.ts"
   ]

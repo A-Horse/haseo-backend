@@ -6,10 +6,10 @@ import * as fs from 'fs';
 import * as path from 'path';
 import * as R from 'ramda';
 import * as colors from 'colors';
-import { Project } from '../platform/project/project';  
-import { CommitAcquirer } from '../platform/version/commit-acquirer';
-import { ProjectWithMeta } from '../platform/project/project.type';
-import { FlowController } from '../platform/task/flow/flow-controller';
+import { Project } from '../runner/project/project';  
+import { CommitAcquirer } from '../runner/version/commit-acquirer';
+import { ProjectWithMeta } from '../runner/project/project.type';
+import { FlowController } from '../runner/task/flow/flow-controller';
 
 
 // tslint:disable:no-console

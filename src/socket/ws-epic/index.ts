@@ -5,7 +5,7 @@ import * as WebSocket from 'ws';
 import * as Rx from 'rxjs';
 import { Observable } from 'rxjs/Observable';
 
-import { CIDaemon } from '../../platform/ci-daemon';
+import { CIDaemon } from '../../runner/ci-daemon';
 import { verityJwt } from '../../service/auth';
 
 import './operator/of-type.operator';

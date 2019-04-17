@@ -1,6 +1,6 @@
 import * as camelcaseKeys from 'camelcase-keys';
 import knex from '../service/knex';
-import { ProjectRunReportRow } from '../platform/project/project.type';
+import { ProjectRunReportRow } from '../runner/project/project.type';
 
 const projectRunReportTableName = 'project_run_report';
 

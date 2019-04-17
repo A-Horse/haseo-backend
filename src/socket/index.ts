@@ -3,7 +3,7 @@ import * as Rx from 'rxjs';
 import * as WebSocket from 'ws';
 import { verityJwt } from '../service/auth';
 import { createWebsocketReactive } from './ws-epic/';
-import { CIDaemon } from '../platform/ci-daemon';
+import { CIDaemon } from '../runner/ci-daemon';
 
 export function startWebSocketServe(server, daemon: CIDaemon) {
   const wsserver: WebSocket.Server = new WebSocket.Server({ server, path: '/ws' });
