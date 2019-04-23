@@ -13,7 +13,7 @@
   "files": [
     "src/runner/task/flow/flow.d.ts",
     "src/runner/report/report.d.ts",
-    "src/socket/socket.d.ts",
+    "src/server/socket/socket.d.ts",
     "src/model.d.ts"
   ]
 }

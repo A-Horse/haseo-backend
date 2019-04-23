@@ -1,5 +1,5 @@
 import { CIDaemon } from 'src/runner/ci-daemon';
-import { Project } from '../runner/project/project';
+import { Project } from '../../runner/project/project';
 import * as WebSocket from 'ws';
 
 export function insureProjectExist(

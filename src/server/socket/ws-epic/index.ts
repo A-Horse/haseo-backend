@@ -3,10 +3,9 @@ import * as path from 'path';
 import * as R from 'ramda';
 import * as WebSocket from 'ws';
 import * as Rx from 'rxjs';
-import { Observable } from 'rxjs/Observable';
 
-import { CIDaemon } from '../../runner/ci-daemon';
-import { verityJwt } from '../../service/auth';
+import { CIDaemon } from '../../../runner/ci-daemon';
+import { verityJwt } from '../../../service/auth';
 
 import './operator/of-type.operator';
 

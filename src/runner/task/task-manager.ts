@@ -10,7 +10,6 @@ export class TaskManager {
   private taskEvent$ = new Rx.Subject<FSAction>();
   private looping = false;
   private running = false;
-  private flow$;
 
   public start(): void {
     this.running = true;

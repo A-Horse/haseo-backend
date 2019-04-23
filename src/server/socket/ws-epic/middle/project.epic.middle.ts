@@ -1,6 +1,5 @@
-import { CIDaemon } from '../../../runner/ci-daemon';
-import { Project } from '../../../runner/project/project';
-import { Observable } from 'rxjs/Observable';
+import { CIDaemon } from '../../../../runner/ci-daemon';
+import { Project } from '../../../../runner/project/project';
 
 export function projectExistMiddle(
   daemon: CIDaemon,

@@ -1,7 +1,6 @@
 import * as R from 'ramda';
 import * as Rx from 'rxjs';
 import { FlowRunner } from './flow-runner';
-import { Subject } from 'rxjs/Subject';
 
 export class FlowController {
   public flowResult$ = new Rx.Subject<FlowResult>();

@@ -1,7 +1,7 @@
 import * as Rx from 'rxjs';
 import * as WebSocket from 'ws';
 import { CIDaemon } from 'src/runner/ci-daemon';
-import { Project } from '../../runner/project/project';
+import { Project } from '../../../runner/project/project';
 import { projectExistMiddle } from './middle/project.epic.middle';
 import { createActionType } from '../util/action.util';
 

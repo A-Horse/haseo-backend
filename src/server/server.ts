@@ -2,7 +2,7 @@ import * as express from 'express';
 import * as http from 'http';
 import { startWebSocketServe } from './socket/index';
 import UserRouter from './router/user';
-import configure from './configure';
+import configure from '../configure';
 
 export function serve(daemon) {
   const app = express();
