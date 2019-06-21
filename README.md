@@ -29,9 +29,7 @@ and go a project folder which it has `haseo.config`
 
 
 ## Config
-the user custom file store in `config.user.yaml` file, but it tracked by git, so it should 
-
-`git update-index --skip-worktree config.user.yaml`
+the user custom file is in `{$HOME}/.haseo-config.yaml` file, you can change it by set env var `HASEO_CONFI_PATH`
 
 | Name                  | Description                    | Default |
 |-----------------------|--------------------------------|---------|
@@ -45,7 +43,7 @@ the user custom file store in `config.user.yaml` file, but it tracked by git, so
 
 - name: unqiue name
 - flow: see below
-- toggle: `MANUAL` | `WATCH` | `SCHEDUE`
+- toggle: `MANUAL` | `GIT` | `SCHEDUE` | `ONCE`
 - schedue: cron schedue, example `* * * * * *`
 
 ##### name
@@ -58,6 +56,7 @@ default `MANUAL`
 
 
 #### example
+
 ```yaml
 name: TEST-ONE
 flow:

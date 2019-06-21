@@ -1,10 +1,11 @@
 import * as express from 'express';
 import * as R from 'ramda';
 import { validate } from '../router-middle/validate';
-import { authUser, signJwt } from '../../service/auth';
+import { signJwt } from '../../service/auth';
 import * as camelcaseKeys from 'camelcase-keys';
 import { verityJwt } from '../../service/auth';
-import { userRepository } from '../../persist/repository/user-repository'; 
+import { User } from '../../entity/user';
+import { userRepository } from '../../persist/repository/user';
 
 const UserRouter = express.Router();
 
@@ -15,7 +16,7 @@ UserRouter.post('/logout', (req, res) => {
 UserRouter.get('/self-info', async (req, res, next) => {
   const jwt = req.get('jwt');
   try {
-    const user = verityJwt(jwt).data;
+    const user: User = verityJwt(jwt);
     res.send(camelcaseKeys(user));
   } catch (error) {
     res.status(401).send();
@@ -35,7 +36,7 @@ UserRouter.post(
         username: username.trim(),
         password: password.trim()
       };
-      const authedUser = await authUser(cred);
+      const authedUser = await userRepository.authUser(cred);
       const userWithoutPassword = R.omit('password', authedUser);
       const jwtToken = signJwt(userWithoutPassword);
       return res.header({ jwt: jwtToken }).json(userWithoutPassword);

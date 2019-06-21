@@ -1,25 +1,41 @@
 import * as express from 'express';
 import * as http from 'http';
-import { startWebSocketServe } from './socket/index';
 import UserRouter from './router/user';
 import configure from '../configure';
+import { RunnerDaemon } from '../runner/runner-daemon';
+import { SocketServer } from './socket/socket-server';
+import { Runner } from '../runner/runner';
 
-export function serve(daemon) {
-  const app = express();
+export class AppServer {
+    private app: express.Application;
+    private server: http.Server;
+    private socketServer: SocketServer;
 
-  app.use(require('body-parser').json());
+    constructor(private daemon: RunnerDaemon) {}
 
-  app.use('/api/alive', (req, res) => {
-    res.send({ msg: 'alive' });
-  });
+    public serve() {
+      this.app = express();
 
-  app.use('/api/', UserRouter);
+      this.app.use(require('body-parser').json());
+      this.app.use('/api/alive', (req, res) => {
+        res.send({ msg: 'alive' });
+      });
+      this.app.use('/api/', UserRouter);
+    
+      this.server = http.createServer(this.app);
+    
+      this.server.listen(configure['SERVE_PORT'], () => {
+        // tslint:disable-next-line
+        console.log('Listening on %d', this.server.address(), configure['SERVE_PORT']);
+      });
 
-  const server = http.createServer(app);
-  startWebSocketServe(server, daemon);
+      this.startSocketServe(this.server);
+    }
 
-  server.listen(configure['SERVE_PORT'], function listening() {
-    // tslint:disable-next-line
-    console.log('Listening on %d', server.address(), configure['SERVE_PORT']);
-  });
+    private startSocketServe(server: http.Server) {
+      this.socketServer = new SocketServer(this.server, this.daemon);
+      this.socketServer.start();
+    }
 }
+
+

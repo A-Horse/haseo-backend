@@ -1,12 +1,12 @@
 import * as R from 'ramda';
-import * as Rx from 'rxjs';
 import { exec, ChildProcess } from 'child_process';
-import { EventEmitter } from 'events';
+import { AppConsole } from '../../../util/console';
+import { Subject } from 'rxjs';
 
 export class FlowRunner {
-  public success$ = new Rx.Subject<OutputUnit[]>();
-  public failure$ = new Rx.Subject<OutputUnit[]>();
-  public unitouput$ = new Rx.Subject<OutputUnit>();
+  public success$ = new Subject<OutputUnit[]>();
+  public failure$ = new Subject<OutputUnit[]>();
+  public unitouput$ = new Subject<OutputUnit>();
   private cprocess: ChildProcess;
   private output: OutputUnit[] = [];
 
@@ -21,6 +21,8 @@ export class FlowRunner {
   public run(): void {
     const flow = this.flow;
     const [flowName, flowCommand] = R.flatten([R.keys(flow), R.values(flow)]);
+
+    AppConsole.log(`[${flowName}] ${flowCommand} :`);
 
     const repoPath = this.option.repoPath;
 
@@ -38,6 +40,7 @@ export class FlowRunner {
     });
 
     this.cprocess.on('close', code => {
+      AppConsole.log();
       if (!!code) {
         this.failure$.next(this.output);
       } else {

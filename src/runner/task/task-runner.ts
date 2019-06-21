@@ -1,60 +1,88 @@
-import * as Rx from 'rxjs';
-import { initProjectRunReport, saveProjectRunReport } from '../../dao/report.dao';
-import { ProjectWithMeta } from '../project/project.type';
 import { FlowController } from '../task/flow/flow-controller';
+import { ProjecTask } from './project-task';
+import { RunnerContext } from '../context/runner-context';
+import { TaskIdBuilder } from './task-id-builder';
+import { TASK_START_TYPE } from './event';
+import { TaskRunnerInformer } from './task-runner-informer';
+import { Observable, Subject } from 'rxjs';
+import { Project } from '../project/project';
 
 export class TaskRunner {
-  public reportId: number;
-  public complete$ = new Rx.Subject<void>();
+  private id: string;
   private flowController: FlowController;
+  private informer: TaskRunnerInformer;
+
+  public complete$ = new Subject<void>();
 
   constructor(
-    private projectWithMeta: ProjectWithMeta,
-    private taskEvent$: Rx.Subject<{ type: string; payload: any }>
+    private projecTask: ProjecTask,
+    private runnerContext: RunnerContext
   ) {
-    this.flowController = new FlowController(projectWithMeta.project.getSetting().flow, {
-      repoPath: projectWithMeta.project.repoPath
+    const taskIdBuilder = new TaskIdBuilder()
+    this.id = taskIdBuilder.generateId();
+
+    this.flowController = new FlowController(this.projecTask.project.getSetting().flow, {
+      repoPath: projecTask.project.repoPath,
+      std: true
     });
+
+    this.informer = new TaskRunnerInformer(this, this.runnerContext);
+  }
+
+  public getID(): string {
+    return this.id;
+  }
+
+  public getStatus(): string {
+    return this.flowController.status;
+  }
+
+  public getProjectTask(): ProjecTask {
+    return this.projecTask;
+  }
+
+  public getFlowController(): FlowController {
+    return this.flowController;
   }
 
   public queryRunOutputPart(offset: number): FlowOutputUnit[] {
     return this.flowController.getFlowOutputUnitPart(offset);
   }
 
-  public async run(): Promise<void> {
+  public run(): void {
     // TODO
     // save initial in report module =>
     // flowController.start() =>
     // subscribe stop
     this.flowController.start();
 
-    const projectRunReportInitalRowId: number = await initProjectRunReport({
-      projectName: this.projectWithMeta.project.name,
-      startDate: new Date().getTime(),
-      commitHash: this.projectWithMeta.version.commitHash,
-      repoPullOuput: this.projectWithMeta.version.output, // TODO 搞一个中间的东西来搞 vesion， 不要把version的逻辑放到 observer , watch 里面
-      status: this.flowController.status,
-      flows: this.projectWithMeta.project.getSetting().flow
-    });
+    // const projectRunReportInitalRowId: number = await initProjectRunReport({
+    //   projectName: this.projecTask.project.name,
+    //   startDate: new Date().getTime(),
+    //   commitHash: this.projecTask.version.commitHash,
+    //   repoPullOuput: this.projecTask.version.output,
+    //   status: this.flowController.status,
+    //   flows: this.projecTask.project.getSetting().flow
+    // });
 
-    this.notifyFlowStart(projectRunReportInitalRowId);
+    // this.notifyFlowStart(projectRunReportInitalRowId);
+
+    this.informer.notifyFlowStart();
 
     this.flowController.flowResult$.subscribe(
       (flowResult: FlowResult): void => {
-        this.notfiyFlowUnitUpdate(flowResult, projectRunReportInitalRowId);
+        // this.notfiyFlowUnitUpdate(flowResult, projectRunReportInitalRowId);
+        // this.informer
+        
       },
       null,
       async () => {
-        try {
-          await saveProjectRunReport(projectRunReportInitalRowId, {
-            result: this.flowController.result,
-            status: this.flowController.status,
-            flows: this.projectWithMeta.project.getSetting().flow
-          });
-        } catch (error) {
-          // tslint:disable-next-line
-          console.error(error);
-        }
+         // await saveProjectRunReport(projectRunReportInitalRowId, {
+          //   result: this.flowController.result,
+          //   status: this.flowController.status,
+          //   flows: this.projecTask.project.getSetting().flow
+          // });
+
 
         this.flowController.clean();
         this.complete$.next();
@@ -63,30 +91,5 @@ export class TaskRunner {
     );
   }
 
-  private notifyFlowStart(reportId: number): void {
-    this.taskEvent$.next({
-      type: 'PROJECT_FLOW_START',
-      payload: {
-        report: {
-          id: reportId
-        }
-      }
-    });
-  }
-
-  private notfiyFlowUnitUpdate(flowResult: FlowResult, reportId: number): void {
-    this.taskEvent$.next({
-      type: 'PROJECT_FLOW_UNIT_UPDATE',
-      payload: {
-        project: {
-          name: this.projectWithMeta.project.name
-        },
-        report: {
-          status: this.flowController.status,
-          flowResult,
-          id: reportId
-        }
-      }
-    });
-  }
+  
 }

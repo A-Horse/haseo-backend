@@ -1,5 +1,4 @@
-import { RepoVersion } from '../observer/observer.module';
-import { Project } from './project';
+import { TriggerType } from "../tirgger/triggered-project";
 
 export declare interface ProjectRunReportRow {
   id: number;
@@ -11,15 +10,10 @@ export declare interface ProjectRunReportRow {
   status: ReportStatus;
 }
 
-export interface ProjectWithMeta {
-  version: RepoVersion;
-  project: Project;
-}
-
 export interface ProjectSetting {
   name: string;
   flow: object[];
-  toggle: 'MANUAL' | 'WATCH' | 'SCHEDUE';
+  trigger: TriggerType;
   schedue?: string;
   useGit: boolean;
 }

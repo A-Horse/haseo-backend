@@ -2,6 +2,7 @@ import * as jwt from 'jsonwebtoken';
 import * as bcrypt from 'bcryptjs';
 import knex from './knex';
 import configure from '../configure';
+import { User } from '../entity/user';
 
 export function signJwt(data) {
   return jwt.sign(
@@ -13,8 +14,9 @@ export function signJwt(data) {
   );
 }
 
-export function verityJwt(data: string): { data: User; exp: number } {
-  return jwt.verify(data, configure['SERCET_KEY']);
+export function verityJwt(data: string): User {
+  const verifyResult = jwt.verify(data, configure['SERCET_KEY'])
+  return new User(verifyResult.data);
 }
 
 // export async function createUser(user, isAdmin) {

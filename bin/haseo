@@ -1,2 +1,2 @@
 #! /usr/bin/env node
-require('../built/cli/index') 
+require('../built/cli/cli') 

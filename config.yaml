@@ -1,3 +1,4 @@
+DEFAULT_CONFIG_FILE_NAME: 'haseo.yaml'
 SERCET_KEY: 'haseo-sercet-key'
 JWT_EXP_HOURS: 300
 

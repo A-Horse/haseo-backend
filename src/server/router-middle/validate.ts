@@ -19,7 +19,7 @@ validator.lenLess = lenLess;
 validator.lenMore = lenMore;
 
 export function validate(validatedRule) {
-  return (req, res, next) => {
+  return (req: any, res: any, next) => {
     R.map(key => {
       const value = _.get(key);
       const rules = validatedRule[key];

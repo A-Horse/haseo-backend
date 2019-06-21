@@ -9,11 +9,5 @@
     "moduleResolution": "node",
     "experimentalDecorators": true
   },
-  "include": ["./src/**/*"],
-  "files": [
-    "src/runner/task/flow/flow.d.ts",
-    "src/runner/report/report.d.ts",
-    "src/server/socket/socket.d.ts",
-    "src/model.d.ts"
-  ]
+  "include": ["./src/**/*"]
 }
